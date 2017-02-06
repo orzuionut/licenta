@@ -1,0 +1,23 @@
+{
+    "name": "instant",
+    "description": "Conference app with WebSockets",
+    "authors": [
+        "Orzu Ionut"
+    ],
+    "main": "index.html",
+    "moduleType": [
+        "globals"
+    ],
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "adapter.js": "*",
+        "kurento-utils": "master"
+    }
+}

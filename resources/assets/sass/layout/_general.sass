@@ -1,0 +1,54 @@
+/* apply a natural box layout model to all elements, but allowing components to change */
+html
+  box-sizing: border-box
+
+*, *:before, *:after
+  box-sizing: inherit
+
+body 
+  color: $black
+  font-family: 'Source Sans Pro', sans-serif
+  background-color: #fff
+
+img 
+  max-width: 100%
+
+.container 
+  width: 100%
+  padding: 0 15px
+  margin: 0 auto
+
+.container-sm 
+  width: 870px
+  padding: 0 15px
+  margin: 0 auto
+
+.blank-layout 
+  background: #f7f7f7
+  min-width: 320px
+  min-height: 100%
+  .logo 
+    text-align: center
+    padding-top: 20px
+  
+  .box 
+    max-width: 400px
+    margin: 20px auto 20px
+    background-color: #FFF
+    padding: 40px
+    border-radius: 5px
+    box-shadow: 1px 2px 5px #CCC
+  
+
+.errors 
+  li
+    line-height: 26px
+    color: red
+  
+div.dragged
+	cursor: all-scroll !important
+	border-color: blue !important
+	z-index: 10 !important
+
+#register 
+	margin-top: 30px

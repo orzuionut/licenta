@@ -3,8 +3,6 @@
 class ConferenceController {
 
   * index(request, response) {
-    
-
     yield response.sendView('pages/conferences/index')
   }
 

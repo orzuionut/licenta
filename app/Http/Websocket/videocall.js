@@ -2,7 +2,7 @@
 
 module.exports = function (io) {
 
-    var numClients = -1;
+    // var numClients = -1;
 
     // const namespace = '/videocall';
     // io = io.of(namespace);
@@ -21,8 +21,9 @@ module.exports = function (io) {
         // Handle 'create or join' messages
         socket.on('create or join', function (room) {
 
-            // var numClients = findClientsSocket(io, room);
-            numClients++;
+            var numClients = findClientsSocket(io, room);
+            // console.log(numClientss);
+            // numClients++;
 
             log('S --> Room ' + room + ' has ' + numClients + ' client(s)');
             log('S --> Request to create or join room', room);

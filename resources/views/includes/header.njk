@@ -5,15 +5,21 @@
         </div>
         <div class="menu">
             <ul>
-                <li><a href="login">Login</a></li>
-                <li><a href="login">Register</a></li>
+                
+                {% if not currentUser %}
 
-                <li>To add session verification</li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
 
-                <li><a href="friends">Friends</a></li>
+                {% else %}
 
-                <li>a href="conference">Conferences</a><li>
-                <li>a href="videocall">Videocall</a><li>
+                    <li><a href="/friends">Friends</a></li>
+                    <li><a href="/conversation">Conversations</a></li>
+                    <li><a href="/conference">Conferences</a></li>
+                    <li><a href="/videocall">Videocall</a></li>
+                    <li><a href="/logout">Logout</a></li>
+
+                {% endif %}
 
             </ul>
         </div>

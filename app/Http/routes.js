@@ -17,10 +17,43 @@
 
 const Route = use('Route');
 
+Route.group('guest', function () 
+{
+	Route.on('/').render('pages/landing');
 
-Route.on('/').render('pages/homepage');
+	Route.resource('login', 'SessionController').except('create', 'edit', 'update', 'show');
+
+	Route.resource('register', 'RegisterController').except('create', 'edit', 'update', 'show');
+
+}).middleware('guest');
 
 
-Route.resource('conference', 'ConferenceController');
+/**
+ *	Authentification required
+ *
+ */
 
-Route.resource('videocall', 'VideocallController');
+Route.group('auth', function()
+{	
+	Route.on('home').render('pages/homepage');
+
+	Route.get('logout', 'SessionController.destroy');
+
+	Route.get('profile/:id', 'ProfileController.show');
+	// TODO: add routes for edit and update on ProfileController
+
+	Route.resource('friends', 'FriendController');
+
+	Route.resource('conference', 'ConferenceController');
+
+	Route.resource('videocall', 'VideocallController');
+
+	Route.resource('conversation', 'ConversationController');
+	Route.post('conversation/ajax', 'ConversationController.ajax');
+
+}).middleware('auth');
+
+
+
+
+

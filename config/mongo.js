@@ -7,5 +7,5 @@ module.exports = {
   port: Env.get('MONGO_PORT', '27017'),
   user: Env.get('MONGO_USER', ''),
   pass: Env.get('MONGO_PASS', ''),
-  db: Env.get('MONGO_DATABASE', 'adonisjs')
+  db: Env.get('MONGO_DATABASE', 'instant')
 }

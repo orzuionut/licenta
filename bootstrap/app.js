@@ -30,6 +30,9 @@ const providers = [
   'adonis-middleware/providers/AppMiddlewareProvider',
   'adonis-auth/providers/AuthManagerProvider',
   'adonis-websocket/providers/WsProvider',
+
+  'adonis-validation-provider/providers/ValidatorProvider',
+
   'adonis-mongorito/providers/MongoritoProvider'
 ]
 
@@ -47,6 +50,7 @@ const aceProviders = [
   'adonis-lucid/providers/MigrationsProvider',
   'adonis-lucid/providers/SchemaProvider',
   'adonis-lucid/providers/SeederProvider',
+
   'adonis-ace/providers/CommandProvider',
   'adonis-commands/providers/GeneratorsProvider',
   'adonis-commands/providers/HelperCommandsProvider',
@@ -78,6 +82,9 @@ const aliases = {
   Schema: 'Adonis/Src/Schema',
   View: 'Adonis/Src/View',
   Ws: 'Adonis/Addons/Ws',
+
+  Validator: 'Adonis/Addons/Validator',
+
   MongoritoModel: 'Adonis/Addons/MongoritoModel'
 }
 

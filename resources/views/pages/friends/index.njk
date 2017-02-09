@@ -1,0 +1,26 @@
+{% extends 'layouts/master.njk' %}
+
+
+{% block content %}
+
+	{% for rows in friends | batch(4) %}
+
+	  <div class='row margin-t-50'>
+
+	    {% for friend in rows %}
+
+	      <div class='friend-box col s3 m3 l3'>
+	      	
+	      	<div class="friend-name">
+	      		{{ friend.first_name }} {{ friend.last_name }}
+			</div>
+
+	      </div>
+
+	    {% endfor %}
+
+	  </div>
+
+	{% endfor %}
+  
+{% endblock %}

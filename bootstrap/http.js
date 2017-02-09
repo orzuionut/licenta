@@ -105,6 +105,7 @@ module.exports = function (callback) {
 
       use('App/Http/Websocket/conference')(io);
       use('App/Http/Websocket/videocall')(io.of('/videocall'));
+      // use('App/Http/Websocket/chat')(io.of('/chat'));
 
       Server.listen(Env.get('HOST'), Env.get('PORT'))
       if (typeof (callback) === 'function') {

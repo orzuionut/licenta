@@ -1,0 +1,77 @@
+{% extends 'layouts/master.njk' %}
+
+{% block content %}
+
+<div class="row register-panel">
+
+	<div class="col m6 l6">
+		<img src="img/register_panel.jpg">
+	</div>
+
+	<div class="col s12 m4 l4">
+		<div class="card-panel">
+
+		<div class="row">
+			<div class="form-header">
+				Register
+			</div> 
+		</div>
+
+	
+
+		{{ form.open({action: 'RegisterController.store'}) }}
+
+		{{ csrfField }}
+
+		<div class="row">
+			<div class="input-field">
+				{{ form.label('first_name', 'Enter first name') }}
+				{{ form.text('first_name', old('first_name')) }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field">
+				{{ form.label('last_name', 'Enter last name') }}
+				{{ form.text('last_name', old('last_name')) }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field">
+				{{ form.label('email', 'Enter email address') }}
+				{{ form.email('email', old('email')) }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field">
+				{{ form.label('password', 'Enter a strong password') }}
+				{{ form.password('password') }}
+			</div>
+		</div>
+
+
+		{% if old('errors') %}
+			<div class="row">
+			{% for error in old('errors') %} 
+				<div class="form-error input-field">
+					<div> {{ error.message  | capitalize | replace('_', ' ') }} </div>
+				</div>
+			{% endfor %}
+			</div>
+		{% endif %}
+
+
+		<button class="btn waves-effect waves-light center-align" type="submit" name="action"> Submit
+			<i class="material-icons right">send</i>
+		</button>
+
+		{{ form.close() }}
+
+		</div>
+	</div>
+
+</div>
+  
+{% endblock %}

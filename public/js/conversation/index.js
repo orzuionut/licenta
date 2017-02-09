@@ -24,7 +24,7 @@ window.onload = function() {
     console.log("Status " + statusDefault);
 
     try{
-        var socket = io.connect('http://127.0.0.1:3700');
+        var socket = io.connect('http://localhost:8181/chat');
     }catch(e) {
         // Set status to warn user
     }

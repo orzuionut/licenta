@@ -1,0 +1,64 @@
+{% extends 'layouts/master.njk' %}
+
+{% block content %}
+
+<!--     <div class="chat">
+      <input type="text" placeholder="Enter your name" class="chat-name">
+      <div class="chat-messages"></div>
+      <textarea placeholder="Type your message"></textarea>
+      <div class="chat-status">Status: <span>Idle</span></div>
+    </div>
+   
+    <script src="js/conversation/index.js"></script> -->
+
+    {{ csrfField }}
+
+    
+    <div class="conversations-content">
+
+
+        <div class="conversations-list card-panel">
+
+           {% for conversation in conversations %}
+
+              <div class="row">
+
+                    
+                <div class="conversation-small-box card-panel">
+
+                   <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
+
+               </div>
+
+
+              </div>
+
+          {% endfor %}
+
+        </div>
+
+       
+        <div class="conversation-wrapper card-panel">
+
+              <div class="conversation-header"> Conv name </div>
+
+
+              <div class="conversation-body "></div>
+
+
+              <div class="conversation-footer"> 
+
+                  
+
+               </div>
+
+        </div>
+
+
+    </div>
+
+
+    <script src="/js/conversation/ajax.js"></script>
+
+
+{% endblock %}

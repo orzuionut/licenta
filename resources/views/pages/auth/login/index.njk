@@ -1,0 +1,63 @@
+{% extends 'layouts/master.njk' %}
+
+{% block content %}
+
+<div class="row">
+	<div class="intro-text center-align">
+		Instant. Realtime communication
+	</div>
+</div>
+
+<div class="row register-panel">
+
+	<div class="col m6 l6">
+		<img src="img/register_panel.jpg">
+	</div>
+
+	<div class="col s12 m4 l4">
+		<div class="card-panel">
+
+		<div class="row">
+			<div class="form-header">
+				Login
+			</div> 
+		</div>
+
+		{{ form.open({action: 'SessionController.store'}) }}
+
+		{{ csrfField }}
+
+		<div class="row">
+			<div class="input-field">
+				{{ form.label('email', 'Enter your email address') }}
+				{{ form.email('email', old('email')) }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field">
+				{{ form.label('password', 'Enter your password') }}
+				{{ form.password('password') }}
+			</div>
+		</div>
+
+		{% if old('error') %}
+			<div class="row">
+				<div class="form-error input-field">
+					<div> {{ old('error') | capitalize }} </div>
+				</div>
+			</div>
+		{% endif %}
+
+		<button class="btn waves-effect waves-light center-align" type="submit" name="action"> Login
+			<i class="material-icons right">send</i>
+		</button>
+
+		{{ form.close() }}
+
+		</div>
+	</div>
+
+</div>
+  
+{% endblock %}

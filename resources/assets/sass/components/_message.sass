@@ -18,18 +18,32 @@
 	margin-right: 2%
 	margin-left: 2%
 
-	max-height: 100vh
+	max-height: 90vh
+	overflow: auto
+	padding: 0
 
 
 
 	.conversation-header, .conversation-footer
 		min-height: 50px
 
+	.conversation-header
+		border-bottom: 2px solid #939393
+		margin-bottom: 60px
+
 	.conversation-body
 		flex: 1
 
+		overflow: auto
+
+		// Display messages to left and right
+		display: flex
+		flex-direction: column
+		align-items: center
+
+
 	.conversation-footer
-		border-top: 1px solid #000
+		margin-top: 60px
 
 
 .conversations-list
@@ -47,36 +61,127 @@
 	background-color: #434753
 
 
+.message-emitter
+	font-family: "Helvetica Neue"
+	font-size: 15px
+	font-weight: 200
 
-// .conversation-body
-// 	flex: 1
-// 	overflow: auto
-// 	bottom: 0
+	margin-left: 5%
 
+	// Push left
+	margin-right: auto
 
-// .message-box
-// 	width: 40%
-// 	height: auto
-// 	min-height: 50px
-// 	font-size: 16px
+.message-box
+	font-family: "Helvetica Neue"
+	font-size: 20px
+	font-weight: normal
 
-
-// .message-user
-// 	background: blue
-// 	color: white
-
-// .message-other
-// 	background: gray
-// 	color: black
+	max-width: 255px
+	word-wrap: break-word
+	margin-bottom: 20px
+    line-height: 24px
 
 
-// @media (min-width: 768px) 
-//  	.conversations-content
-//  		flex-direction: row
-//  		flex: 1
+.message-user
+	position: relative
+	padding: 10px 20px
+	color: white
+	background: #0B93F6
+	border-radius: 25px
 
-//  	.conversation-wrapper
-//  		flex: 1
+	margin-right: 5%
 
-//  	.conversations-list, .conversation-aside
-//  		flex: 0 0 12em
+	// Parent class display flex, using this to push right
+	margin-left: auto
+
+	&:before
+		content: ""
+		position: absolute
+		z-index: -1
+		bottom: -2px
+		right: -7px
+		height: 20px
+		border-right: 20px solid #0B93F6
+		border-bottom-left-radius: 16px 14px
+		transform: translate(0, -2px)
+
+	&:after
+		content: ""
+		position: absolute
+		z-index: 1
+		bottom: -2px
+		right: -56px
+		width: 26px
+		height: 20px
+		background: white
+		border-bottom-left-radius: 10px
+		transform: translate(-30px, -2px)
+
+
+.message-other
+	position: relative
+	padding: 10px 20px
+	background: #E5E5EA
+	border-radius: 25px
+	color: black
+
+	margin-left: 5%
+
+	// Parent class display flex, using this to push right
+	margin-right: auto
+		
+	&:before
+		content: ""
+		position: absolute
+		z-index: 2
+		bottom: -2px
+		left: -7px
+		height: 20px
+		border-left: 20px solid #E5E5EA
+		border-bottom-right-radius: 16px 14px
+		transform: translate(0, -2px)
+
+
+	&:after
+		content: ""
+		position: absolute
+		z-index: 3
+		bottom: -2px
+		left: 4px
+		width: 26px
+		height: 20px
+		background: white
+		border-bottom-right-radius: 10px
+		transform: translate(-30px, -2px)
+
+
+
+.conversation-footer
+	border-top: 2px solid #939393
+	margin-bottom: 0
+
+	display: flex
+
+	#enter-message
+		border: 0
+		margin: 0
+		color: black
+		font-size: 19px
+
+		flex-basis: 90%
+
+		&::-webkit-input-placeholder
+			color: #939393
+			font-size: 16px
+  		
+			
+
+		&:focus
+			border-bottom: 0 !important
+			box-shadow: none !important
+
+	#submit-message
+		flex-basis: 10%
+		background-color: #0B93F6
+
+		

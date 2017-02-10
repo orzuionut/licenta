@@ -24,6 +24,7 @@
     "adonis-mongorito": "0.0.2",
     "adonis-validation-provider": "^3.0.5",
     "adonis-websocket": "^1.0.2",
+    "co": "^4.6.0",
     "kurento-client": "^6.6.0",
     "mongodb": "^2.2.22",
     "mysql": "^2.13.0",

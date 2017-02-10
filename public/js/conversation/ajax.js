@@ -1,82 +1,83 @@
-$(document).ready(function(){
+// // Set as global variable. TODO: refactor if possible
+// let conversationID;
 
-	const $conversations_box = $('.conversation-full-box');
+// $(document).ready(function(){
 
-	const _csrf = getCSRF();
+// 	let $conversations_box = $('.conversation-body');
 
-	// Match all anchor tags with id like :conversation-id-{number}:
-	$("div[id^='conversation-id-']").click(function(){
+// 	const _csrf = getCSRF();
 
-		$conversations_box.empty();
+// 	// Match all anchor tags with id like :conversation-id-{number}:
+// 	$("div[id^='conversation-id-']").click(function(){
 
-		const conversationID = getConversationID(this);
+// 		$conversations_box.empty();
 
-		loadConversation(conversationID, _csrf, handleMessages);
+// 		conversationID = getConversationID(this);
 
-	});
+// 		loadConversation(conversationID, _csrf, handleMessages);
 
-
-
-
-});
-
-function getCSRF()
-{
-	return $("[name='_csrf']").val();
-}
+// 	});
 
 
-function getConversationID(conversationDiv)
-{
-	const id = $(conversationDiv).attr('id');
+// });
+
+// function getCSRF()
+// {
+// 	return $("[name='_csrf']").val();
+// }
+
+
+// function getConversationID(conversationDiv)
+// {
+// 	const id = $(conversationDiv).attr('id');
 	
-	return id.substring(id.lastIndexOf("-") + 1);
-}
+// 	return id.substring(id.lastIndexOf("-") + 1);
+// }
 
-function loadConversation(conversationID, _csrf, handleMessagesCallback)
-{
+// function loadConversation(conversationID, _csrf, handleMessagesCallback)
+// {
 
-	let data = {
-		conversationID: conversationID,
-		_csrf: _csrf
-	};
+// 	let data = {
+// 		conversationID: conversationID,
+// 		_csrf: _csrf
+// 	};
 
-	$.ajax({
-      type: "POST",
-      url: "/conversation/ajax",
-      data: data,
-      success: function(data){
-          handleMessagesCallback(data.messages, data.currentUser);
-      }
-  	});
+// 	$.ajax({
+//       type: "POST",
+//       url: "/conversation/ajax",
+//       data: data,
+//       success: function(data){
+//           handleMessagesCallback(data.messages, data.currentUser);
+//       }
+//   	});
 
-}
+// }
 
-function handleMessages(messages, currentUser)
-{
-	const $conversations_box = $('.conversation-body');
+// function handleMessages(messages, currentUser)
+// {
+// 	const $conversations_box = $('.conversation-body');
 
 
-	for(let i = 0; i < messages.length; i = i + 1)
-	{
-		createMessageBox(messages[i], $conversations_box, currentUser);		
-	}
+// 	for(let i = 0; i < messages.length; i = i + 1)
+// 	{
+// 		createMessageBox(messages[i], $conversations_box, currentUser);		
+// 	}
 
-}
+// }
 
-function createMessageBox(message, $conversations_box, currentUser)
-{
-	let $message_box;
+// function createMessageBox(message, $conversations_box, currentUser)
+// {
+// 	let $message_box;
 
-	if(message.user_id == currentUser.id)
-	{
-		$message_box = $("<div class='message-box message-user'>" + message.user_name + " : " + message.message + "</div>");
+// 	if(message.user_id == currentUser.id)
+// 	{
+// 		$message_box = $("<div class='message-box message-user'>" + message.message + "</div>");
 
-	} else
-	{
-		$message_box = $("<div class='message-box message-other'>" + message.user_name + " : " + message.message + "</div>");
-	}
+// 	} else
+// 	{
+// 		$message_box = $("<div class='message-box message-other'>" + message.user_name + " : " + message.message + "</div>");
+// 	}
 	
 
-	$conversations_box.append($message_box);
-}
+// 	$conversations_box.append($message_box);
+// }

@@ -9,11 +9,9 @@ class ConversationController {
 
   * index(request, response) 
   {
-
     const user = request.currentUser;
 
     let conversations = yield user.conversations().fetch();
-
 
     // Workaround to send array to view. TODO: fix this
     const json = JSON.stringify(conversations)

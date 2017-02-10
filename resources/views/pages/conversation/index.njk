@@ -2,15 +2,6 @@
 
 {% block content %}
 
-<!--     <div class="chat">
-      <input type="text" placeholder="Enter your name" class="chat-name">
-      <div class="chat-messages"></div>
-      <textarea placeholder="Type your message"></textarea>
-      <div class="chat-status">Status: <span>Idle</span></div>
-    </div>
-   
-    <script src="js/conversation/index.js"></script> -->
-
     {{ csrfField }}
 
     
@@ -46,9 +37,13 @@
               <div class="conversation-body "></div>
 
 
-              <div class="conversation-footer"> 
+              <div class="conversation-footer card-panel"> 
 
-                  
+                  <input id="enter-message" type="text" placeholder="Enter your message..">
+
+                  <button id="submit-message" class="btn waves-effect waves-light center-align" type="submit" name="action">
+                      <i class="material-icons right">send</i>
+                  </button>
 
                </div>
 
@@ -57,8 +52,16 @@
 
     </div>
 
+    <script> 
+
+      let user_id = {{ currentUser.id }}; 
+      let user_name = "{{ currentUser.getFullName() }}";
+      let conversation_id = {{ conversations[0].id }};
+
+    </script>
 
     <script src="/js/conversation/ajax.js"></script>
+    <script src="/js/conversation/index.js"></script>
 
 
 {% endblock %}

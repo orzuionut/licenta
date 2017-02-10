@@ -1,44 +1,104 @@
 'use strict'
 
-const Message = use('App/Model/Message')
+// 
+const co = use('co');
+
+const User = use('App/Model/User');
+const Conversation = use('App/Model/Conversation');
+const Message = use('App/Model/Message');
 
 
 module.exports = function (io) {
 
     io.on('connection', function (socket) {
 
-        var sendStatus = function (statusMsg) {
-                socket.emit('status', statusMsg);
-            };
+        socket.on('init', function(data){
 
-        // const messages =     
+            getConversationMessages(data.conversation_id).then(function(messages){
+        
+                sendMessageToUser(socket, messages);
+            });
 
-        //Display all the messages from MongoDB
-        col.find().limit(100).sort({_id: 1}).toArray(function (err, res) {
-            if (err) throw err;
-            socket.emit('output', res);
         });
 
-        socket.on('input', function (data) {
-            var name = data.name,
-                message = data.message,
-                whitespacePattern = /^\s*$/;
 
-            if (whitespacePattern.test(name) || whitespacePattern.test(message)) {
-                console.log("Not inserted");
-                sendStatus('Name and message is required');
-            } else {
-                col.insert({name: name, message: message}, function () {
-                    //Emit latest messages to all clients
-                    io.emit('output', [data]);
+        socket.on('input', function (data){
 
-                    sendStatus({
-                        message: "Message sent",
-                        clear: true
-                    });
-                });
-            }
+            // Wrapping around co, to transform into generator
+            // TODO: further documentation read
+            saveMessage(data);
+
+            sendMessageToParticipants(socket, data);
         });
 
     });
+}
+
+
+//TODO: fix this mess
+function getConversationMessages(conversation_id)
+{
+     return new Promise(function(resolve, reject) {
+
+         co(function* (){ 
+            let messages = yield getMessages(conversation_id); 
+            return messages;
+         }).then(function(messages){
+            resolve(messages);
+         }, function(error){
+             reject(error);   
+         });
+
+     });
+   
+}
+
+function* getMessages(conversation_id)
+{
+    const conversation = yield Conversation.find(conversation_id);
+
+    const messages = yield conversation.messages().fetch();
+
+    // Workaround to send array to view. TODO: fix this
+    const json = JSON.stringify(messages)
+    let build_messages = JSON.parse(json)
+
+    for(var i = 0; i < build_messages.length; i = i + 1)
+    {
+        let message_user_id = build_messages[i].user_id;
+
+        let message_user = yield User.find(message_user_id);
+
+        build_messages[i].user_name = message_user.getFullName();
+    }
+
+    return build_messages;
+}
+
+function saveMessage(data)
+{
+    co(function* (){ 
+        yield insertMessageIntoDB(data); 
+    });
+}
+
+function* insertMessageIntoDB(data)
+{
+    let message = new Message();
+
+    message.user_id = data.user_id;
+    message.conversation_id = data.conversation_id;
+    message.message = data.message;
+
+    yield message.save();
+}
+
+function sendMessageToUser(socket, data)
+{
+    socket.emit('init', data);
+}
+
+function sendMessageToParticipants(socket, data)
+{
+    socket.broadcast.emit('output', [data]);
 }

@@ -12,10 +12,10 @@
 
            {% for conversation in conversations %}
 
-              <div class="row">
+              <div class="conversation-item row">
 
                     
-                <div class="conversation-small-box card-panel">
+                <div class="card-panel">
 
                    <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
 
@@ -39,10 +39,10 @@
 
               <div class="conversation-footer card-panel"> 
 
-                  <input id="enter-message" type="text" placeholder="Enter your message..">
+                  <textarea id="enter-message" type="text" placeholder="Enter your message.."></textarea>
 
                   <button id="submit-message" class="btn waves-effect waves-light center-align" type="submit" name="action">
-                      <i class="material-icons right">send</i>
+                      <i class="material-icons">send</i>
                   </button>
 
                </div>

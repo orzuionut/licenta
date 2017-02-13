@@ -53,12 +53,31 @@
 
 	order: -1
 
+	// Self properties
+	display: flex
+	flex-direction: column
+
 	margin-left: 2%
 
 	border-style: solid
 	border-right-width: medium
 
 	background-color: #434753
+
+	.card-panel
+		margin: 0
+		padding: 15px
+
+	.conversation-item
+		margin-left: 0 !important
+		margin-right: 0 !important
+		margin-bottom: 10px !important
+		text-align: center !important
+
+		font-size: 16px
+
+		&:hover
+			background-color: $background
 
 
 .message-emitter
@@ -168,14 +187,18 @@
 		color: black
 		font-size: 19px
 
+		// Textarea fixes
+		resize: none
+		height: auto !important
+		outline: none
+    	box-shadow: none
+
 		flex-basis: 90%
 
 		&::-webkit-input-placeholder
 			color: #939393
 			font-size: 16px
   		
-			
-
 		&:focus
 			border-bottom: 0 !important
 			box-shadow: none !important

@@ -42,7 +42,6 @@ $(document).ready(function(){
 
         }
 
-
         appendMessage(data)
         {
            var $message_box;
@@ -85,6 +84,11 @@ $(document).ready(function(){
             this.$conversation_box.scrollTop(this.$conversation_box[0].scrollHeight);
         }
 
+        clear()
+        {
+            this.$conversation_box.empty();
+        }
+
     }
 
     class SocketIO {
@@ -96,16 +100,26 @@ $(document).ready(function(){
 
         sendMessage(event, data)
         {
+            // Add the room to the message
+            data.room = this.room;
+
             this.socket.emit(event, data);
+        }
+
+        setRoom(room)
+        {
+            this.room = room;
         }
 
     }
 
-    function init()
+    function buildConversation()
     {
         let conversationData = new ConversationData();
         let conversationDOM = new ConversationDOM($('.conversation-body'), $('#enter-message'), $('#submit-message'));
         let socketIO = new SocketIO(io);
+
+        let data = {};
 
         conversationData.setUserId(user_id);
         conversationData.setId(conversation_id);
@@ -117,8 +131,13 @@ $(document).ready(function(){
             //show modal alert ERROR and EXIT
         }
 
+        socketIO.setRoom(conversationData.id);
+
+        socketIO.sendMessage('room', data);
+
+
         // send init message with conversation_id
-        let data = {
+        data = {
             conversation_id: conversationData.id
         }
         socketIO.sendMessage('init', data);
@@ -151,121 +170,54 @@ $(document).ready(function(){
             };
             conversationDOM.appendMessage(data);
 
+            data.user_name = user_name;
+            data.conversation_id = conversationData.id;
 
-            data = {
-                    user_id: user_id,
-                    user_name: user_name,
-                    conversation_id: conversation_id,
-                    message: message
-            };
             socketIO.sendMessage('input', data);
 
         });
 
 
+        // Match all anchor tags with id like :conversation-id-{number}:
+        $("div[id^='conversation-id-']").click(function(){
+
+            var old_conversation_id = conversationData.id;
+
+            conversationDOM.clear();
+
+            var new_conversation_id = getConversationID(this);
+
+            conversationData.setId(new_conversation_id);
+            conversationDOM.setConversationData(conversationData);
+
+            socketIO.setRoom(new_conversation_id);
+
+            // send init message with conversation_id
+            data = {
+                conversation_id: conversationData.id
+            }
+            socketIO.sendMessage('init', data);
+
+            data.leaveRoom = old_conversation_id;
+            socketIO.sendMessage('roomChanged', data);
+
+            console.log(conversationData, conversationDOM, socketIO);
+
+        });
     }
 
     
-    init();
+    buildConversation();
 
 
-    //     // Received message from server. Only non-sender type of clients receive this.
-    //     socket.on('output', function(data){
-    //         appendReceivedMessages(data);
-    //     });
+    function getConversationID(conversationDiv)
+    {
+        const id = $(conversationDiv).attr('id');
 
+        return id.substring(id.lastIndexOf("-") + 1);
+    }
 
-    //     // Output the message and then send it to the server to broadcast it to other and save it to DB.
-    //     // TODO: refactor into functions
-    //     $submit_button.on('click', function(){
-
-    //         var message = $message_input.val();
-
-    //         clearInput($message_input);
-
-    //         appendMessage(message, $conversation_box);
-
-    //         updateScrollUI($conversation_box);
-
-    //         var data = {
-    //                 user_id: userID,
-    //                 user_name: user_name,
-    //                 conversation_id: conversationID,
-    //                 message: message
-    //         };
-
-    //         emitMessage(socket, 'input', data);
-
-    //     });
-
-    // }
-
-    // function appendReceivedMessages(data)
-    // {
-    //     if(data.length){
-
-    //         for(var i = 0; i < data.length; i++){
-    //             appendMessage(data[i].message, $conversation_box, data[i].user_name);
-    //         }
-
-    //         updateScrollUI($conversation_box);
-    //     }
-    // }
-
-    // function appendMessage(message, conversation, emitter)
-    // {
-    //     var $message_box;
-
-    //     if(emitter === undefined) {
-    //         $message_box = $("<div class='message-box message-user'>" + message + "</div>");
-    //     } else {
-    //         $emmiter = $("<div class='message-emitter'>" + emitter + "</div>");
-
-    //         conversation.append($emmiter);
-
-    //         $message_box = $("<div class='message-box message-other'>" + message + "</div>");       
-    //     }
-
-    //     conversation.append($message_box);
-    // }
-
-
-
-
-    // function createMessageBox(message, $conversations_box, user_id)
-    // {
-    //     let $message_box;
-
-    //     if(message.user_id == user_id)
-    //     {
-    //         $message_box = $("<div class='message-box message-user'>" + message.message + "</div>");
-
-    //     } else
-    //     {
-    //         $message_box = $("<div class='message-box message-other'>" + message.user_name + " : " + message.message + "</div>");
-    //     }
-        
-
-    //     $conversations_box.append($message_box);
-    // }
-
-    // function appendMessageUserToConversation
-
-    // function createMessageBoxUser(message)
-    // {
-    //     return $("<div class='message-box message-user'>" + message + "</div>");
-    // }
-
-    // function createMessageBoxOther(message, user_name)
-    // {
-    //      $emmiter = $("<div class='message-emitter'>" + emitter + "</div>");
-
-    //         conversation.append($emmiter);
-
-    //         $message_box = $("<div class='message-box message-other'>" + message + "</div>");
-    // }
-
-
+  
 
 });
 

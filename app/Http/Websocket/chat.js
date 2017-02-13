@@ -12,11 +12,20 @@ module.exports = function (io) {
 
     io.on('connection', function (socket) {
 
+        socket.on('room', function(data) {
+            socket.join(data.room);
+        });
+
+        socket.on('roomChanged', function(data) {
+            socket.leave(data.leaveRoom);
+            socket.join(data.room);
+        });
+
         socket.on('init', function(data){
 
             getConversationMessages(data.conversation_id).then(function(messages){
-        
-                sendMessageToUser(socket, messages);
+
+                sendMessageToUser(socket, data.room, messages);
             });
 
         });
@@ -28,7 +37,7 @@ module.exports = function (io) {
             // TODO: further documentation read
             saveMessage(data);
 
-            sendMessageToParticipants(socket, data);
+            sendMessageToParticipants(socket, data.room, data);
         });
 
     });
@@ -93,12 +102,13 @@ function* insertMessageIntoDB(data)
     yield message.save();
 }
 
-function sendMessageToUser(socket, data)
+function sendMessageToUser(socket, room, data)
 {
     socket.emit('init', data);
 }
 
-function sendMessageToParticipants(socket, data)
+function sendMessageToParticipants(socket, room, data)
 {
-    socket.broadcast.emit('output', [data]);
+    console.log('broadcast. ', room);
+    socket.broadcast.to(room).emit('output', [data]);
 }

@@ -89,6 +89,16 @@ $(document).ready(function(){
             this.$conversation_box.empty();
         }
 
+        getConversationID(conversationDiv)
+        {
+            const element = $(conversationDiv).find("div[id^='conversation-id-']")[0];
+
+            const id = $(element).attr('id');
+
+            return id.substring(id.lastIndexOf("-") + 1);
+        }
+
+
     }
 
     class SocketIO {
@@ -179,45 +189,37 @@ $(document).ready(function(){
 
 
         // Match all anchor tags with id like :conversation-id-{number}:
-        $("div[id^='conversation-id-']").click(function(){
+
+        $(".conversation-item").click(function(){
 
             var old_conversation_id = conversationData.id;
+            var new_conversation_id = conversationDOM.getConversationID(this);
 
-            conversationDOM.clear();
+            // Conversation changed. Update stuff
+            if(old_conversation_id !== new_conversation_id)
+            {
+                conversationDOM.clear();
 
-            var new_conversation_id = getConversationID(this);
+                conversationData.setId(new_conversation_id);
+                conversationDOM.setConversationData(conversationData);
 
-            conversationData.setId(new_conversation_id);
-            conversationDOM.setConversationData(conversationData);
+                socketIO.setRoom(new_conversation_id);
 
-            socketIO.setRoom(new_conversation_id);
 
-            // send init message with conversation_id
-            data = {
-                conversation_id: conversationData.id
+                data.leaveRoom = old_conversation_id;
+                socketIO.sendMessage('roomChanged', data);
+
+                // send init message with conversation_id
+                data = {
+                    conversation_id: conversationData.id
+                }
+                socketIO.sendMessage('init', data);        
             }
-            socketIO.sendMessage('init', data);
-
-            data.leaveRoom = old_conversation_id;
-            socketIO.sendMessage('roomChanged', data);
-
-            console.log(conversationData, conversationDOM, socketIO);
-
         });
     }
 
     
     buildConversation();
-
-
-    function getConversationID(conversationDiv)
-    {
-        const id = $(conversationDiv).attr('id');
-
-        return id.substring(id.lastIndexOf("-") + 1);
-    }
-
-  
 
 });
 

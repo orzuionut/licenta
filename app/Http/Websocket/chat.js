@@ -109,6 +109,5 @@ function sendMessageToUser(socket, room, data)
 
 function sendMessageToParticipants(socket, room, data)
 {
-    console.log('broadcast. ', room);
     socket.broadcast.to(room).emit('output', [data]);
 }

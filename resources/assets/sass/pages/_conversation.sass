@@ -1,8 +1,154 @@
-.conversation-small-box
-	height: 50px
-	font-size: 17px
-	font-weight: 200
-
-.conversation-full-box
-	font-size: 20px
+.conversations-content
+	display: flex
+	min-height: 90vh
 	
+
+.conversation-wrapper
+	flex-basis: 75%
+	flex-grow: 3
+	flex-shrink: 1
+
+	// Used for inner content scrolling when overflow
+	display: flex
+	flex-direction: column
+
+	margin-right: 2%
+	margin-left: 2%
+
+	max-height: 90vh
+	overflow: auto
+	padding: 0
+
+
+	.conversation-header, .conversation-footer
+		min-height: 50px
+
+	.conversation-header
+		border-bottom: 2px solid #939393
+		margin-bottom: 60px
+
+	.conversation-body
+		flex: 1
+
+		overflow: auto
+
+		// Display messages to left and right
+		display: flex
+		flex-direction: column
+		align-items: center
+
+
+	.conversation-footer
+		margin-top: 60px
+
+
+.conversations-list
+	flex-basis: 25%
+	flex-grow: 1
+	flex-shrink: 3
+
+	order: -1
+
+	// Used for scrolling items when overflowing
+	display: flex
+	flex-direction: column
+	max-height: 90vh
+	overflow: auto
+
+	margin-left: 2%
+
+	border-style: solid
+	border-right-width: medium
+
+	background-color: #434753
+
+	.card-panel
+		margin: 0 !important
+		padding: 15px !important
+
+
+	.conversation-item
+		margin-left: 0 !important
+		margin-right: 0 !important
+		margin-bottom: 10px !important
+		text-align: center !important
+
+		font-size: 16px
+
+		&:hover
+			cursor: pointer
+
+
+.conversation-header
+	display: flex
+
+	#conversation-head
+		margin-left: auto
+		margin-right: auto
+		flex-grow: 3
+
+		// Display items centered vertically
+		display: flex
+		align-items: center
+		justify-content: center
+
+		#conversation-name
+			color: $flat-blue
+
+		#conversation-status
+			margin-left: 10px
+			color: #36D7B7
+
+	#conversation-buttons
+		margin-left: auto
+		flex-grow: 1
+
+		// Display buttons inline
+		display: flex
+
+		text-align: center
+		align-items: center
+		justify-content: center
+
+		#conversation-video, #conversation-voice, #conversation-profile
+			flex-basis: 0
+			flex-grow: 1
+
+			cursor: pointer
+
+			.material-icons
+				color: #0B93F6
+				
+
+
+.conversation-footer
+	border-top: 2px solid #939393
+	margin-bottom: 0
+
+	display: flex
+
+	#enter-message
+		border: 0
+		margin: 0
+		color: black
+		font-size: 19px
+
+		// Textarea fixes
+		resize: none
+		height: auto !important
+		outline: none
+    	box-shadow: none
+
+		flex-basis: 90%
+
+		&::-webkit-input-placeholder
+			color: #939393
+			font-size: 16px
+  		
+		&:focus
+			border-bottom: 0 !important
+			box-shadow: none !important
+
+	#submit-message
+		flex-basis: 10%
+		background-color: #0B93F6

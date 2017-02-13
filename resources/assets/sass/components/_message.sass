@@ -1,95 +1,3 @@
-#content
-	display: flex
-	flex-direction: column
-
-.conversations-content
-	display: flex
-	min-height: 90vh
-	
-
-.conversation-wrapper
-	flex-basis: 75%
-	flex-grow: 3
-	flex-shrink: 1
-
-	display: flex
-	flex-direction: column
-
-	margin-right: 2%
-	margin-left: 2%
-
-	max-height: 90vh
-	overflow: auto
-	padding: 0
-
-
-
-	.conversation-header, .conversation-footer
-		min-height: 50px
-
-	.conversation-header
-		border-bottom: 2px solid #939393
-		margin-bottom: 60px
-
-	.conversation-body
-		flex: 1
-
-		overflow: auto
-
-		// Display messages to left and right
-		display: flex
-		flex-direction: column
-		align-items: center
-
-
-	.conversation-footer
-		margin-top: 60px
-
-
-.conversations-list
-	flex-basis: 25%
-	flex-grow: 1
-	flex-shrink: 3
-
-	order: -1
-
-	// Self properties
-	display: flex
-	flex-direction: column
-
-	margin-left: 2%
-
-	border-style: solid
-	border-right-width: medium
-
-	background-color: #434753
-
-	.card-panel
-		margin: 0
-		padding: 15px
-
-	.conversation-item
-		margin-left: 0 !important
-		margin-right: 0 !important
-		margin-bottom: 10px !important
-		text-align: center !important
-
-		font-size: 16px
-
-		&:hover
-			background-color: $background
-
-
-.message-emitter
-	font-family: "Helvetica Neue"
-	font-size: 15px
-	font-weight: 200
-
-	margin-left: 5%
-
-	// Push left
-	margin-right: auto
-
 .message-box
 	font-family: "Helvetica Neue"
 	font-size: 20px
@@ -173,38 +81,16 @@
 		border-bottom-right-radius: 10px
 		transform: translate(-30px, -2px)
 
+.message-emitter
+	font-family: "Helvetica Neue"
+	font-size: 15px
+	font-weight: 200
+
+	margin-left: 5%
+
+	// Push left
+	margin-right: auto
 
 
-.conversation-footer
-	border-top: 2px solid #939393
-	margin-bottom: 0
-
-	display: flex
-
-	#enter-message
-		border: 0
-		margin: 0
-		color: black
-		font-size: 19px
-
-		// Textarea fixes
-		resize: none
-		height: auto !important
-		outline: none
-    	box-shadow: none
-
-		flex-basis: 90%
-
-		&::-webkit-input-placeholder
-			color: #939393
-			font-size: 16px
-  		
-		&:focus
-			border-bottom: 0 !important
-			box-shadow: none !important
-
-	#submit-message
-		flex-basis: 10%
-		background-color: #0B93F6
 
 		

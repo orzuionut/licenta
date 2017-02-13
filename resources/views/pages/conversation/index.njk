@@ -10,28 +10,53 @@
 
         <div class="conversations-list card-panel">
 
-           {% for conversation in conversations %}
+            {% for conversation in conversations %}
 
-              <div class="conversation-item row">
+                <div class="conversation-item row">
 
-                    
-                <div class="card-panel">
+                  <div class="card-panel">
 
-                   <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
+                     <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
 
-               </div>
+                 </div>
 
+                </div>
 
-              </div>
-
-          {% endfor %}
+            {% endfor %}
 
         </div>
 
        
         <div class="conversation-wrapper card-panel">
 
-              <div class="conversation-header"> Conv name </div>
+              <div class="conversation-header">
+
+                <div id="conversation-head"> 
+
+                  <span id="conversation-name"> --Conversation name here-- </span>
+
+                  <span id="conversation-status">
+                     <i class="fa fa-circle" aria-hidden="true"></i>
+                  </span>
+
+                </div>
+
+                <div id="conversation-buttons">
+
+                  <div id="conversation-voice"> 
+                    <i class="material-icons">call</i>
+                  </div>
+
+                  <div id="conversation-video">
+                    <i class="material-icons">video_call</i>
+                  </div>
+
+                  <div id="conversation-profile">
+                    <i class="material-icons">account_circle</i>
+                  </div>
+
+                </div>
+              </div>
 
 
               <div class="conversation-body "></div>

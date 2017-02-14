@@ -37,6 +37,9 @@
 		flex-direction: column
 		align-items: center
 
+		#conversation-alert
+			position: absolute
+
 
 	.conversation-footer
 		margin-top: 60px
@@ -81,45 +84,89 @@
 
 .conversation-header
 	display: flex
+	flex-direction: column
 
-	#conversation-head
-		margin-left: auto
-		margin-right: auto
-		flex-grow: 3
-
-		// Display items centered vertically
-		display: flex
-		align-items: center
-		justify-content: center
-
-		#conversation-name
-			color: $flat-blue
-
-		#conversation-status
-			margin-left: 10px
-			color: #36D7B7
-
-	#conversation-buttons
-		margin-left: auto
-		flex-grow: 1
-
-		// Display buttons inline
+	#conversation-header-main
 		display: flex
 
-		text-align: center
-		align-items: center
-		justify-content: center
+		min-height: 50px
 
-		#conversation-video, #conversation-voice, #conversation-profile
-			flex-basis: 0
+		#conversation-head
+			margin-left: auto
+			margin-right: auto
+			flex-grow: 3
+
+			// Display items centered vertically
+			display: flex
+			align-items: center
+			justify-content: center
+
+			#conversation-name
+				color: $flat-blue
+
+			#conversation-status
+				margin-left: 10px
+				color: #36D7B7
+
+		#conversation-buttons
+			margin-left: auto
 			flex-grow: 1
+
+			// Display buttons inline
+			display: flex
+
+			text-align: center
+			align-items: center
+			justify-content: center
+
+			#conversation-video, #conversation-voice, #conversation-profile
+				flex-basis: 0
+				flex-grow: 1
+
+				cursor: pointer
+
+				.material-icons
+					color: #0B93F6
+
+	#conversation-header-alert
+		padding-top: 20px
+		padding-bottom: 20px
+		font-size: 20px
+		background-color: #434753
+		color: white
+
+		// Hide incoming call. Activate when needed
+		// display: flex
+		display: none
+
+		#alert-call
+			vertical-align: middle
+			text-align: center
+			line-height: 50px
+
+			flex-basis: 70%
+
+
+		#call-answer, #call-reject
+			width: 50px
+			height: 50px
+			line-height: 50px
+			text-align: center
+			vertical-align: middle
+			color: white
+			border-radius: 100%
 
 			cursor: pointer
 
-			.material-icons
-				color: #0B93F6
-				
 
+
+		#call-answer
+			background-color: #4CD964
+			margin-right: 25px
+
+		#call-reject
+			background-color: #F22613
+			margin-left: 25px
 
 .conversation-footer
 	border-top: 2px solid #939393

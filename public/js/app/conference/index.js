@@ -26,17 +26,10 @@ var iceServers = {
 
 
 $(document).ready(function () {
-    var $registerButton = $("#register");
+    
+    let conference_id = getIDfromURL();
 
-
-    $registerButton.click(function () {
-        $registerButton.prop("disabled", true);
-        $registerButton.hide();
-
-        var room = prompt("Please enter room name");
-
-        register(room);
-    });
+    register(conference_id);
 });
 
 

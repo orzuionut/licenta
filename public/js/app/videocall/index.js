@@ -1,32 +1,24 @@
 'use strict';
 
-// Look after different browser vendors' ways of calling the getUserMedia()
-// API method:
-// Opera --> getUserMedia
-// Chrome --> webkitGetUserMedia
-// Firefox --> mozGetUserMedia
 var webrtcDetectedBrowser = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
-//Clean-up function:
-// collect garbage before unloading browser's window
 window.onbeforeunload = function (e) {
     hangup();
 };
 
-//Data channel information
 var sendChannel, receiveChannel;
 var sendButton = document.getElementById("sendButton");
 var dataChannelSend = document.getElementById("dataChannelSend");
 var dataChannelReceive = document.getElementById("dataChannelReceive");
 
-//HTML5 <video> elements
+
 var localVideo = document.querySelector('#localVideo');
 var remoteVideo = document.querySelector("#remoteVideo");
 
-//Handler associated with Send button
+
 sendButton.onclick = sendData;
 
-//Flags..
+
 var isChannelReady = false;
 var isInitiator = false;
 var isStarted = false;
@@ -39,21 +31,24 @@ var remoteStream;
 var pc;
 
 // PeerConnection ICE protocol configuration (either Firefox or Chrome)
-var pc_config =  {
-    "iceServers":[{
-        "url": "stun:stun.l.google.com:19302"
-    }
-        // {urls: [
-        //     "turn:173.194.72.127:19305?transport=udp",
-        //     "turn:[2404:6800:4008:C01::7F]:19305?transport=udp",
-        //     "turn:173.194.72.127:443?transport=tcp",
-        //     "turn:[2404:6800:4008:C01::7F]:443?transport=tcp"
-        // ],
-        //     username:"CKjCuLwFEgahxNRjuTAYzc/s6OMT",
-        //     credential:"u1SQDR/SQsPQIxXNWQT7czc/G4c="
-        // },
-        // {urls:["stun:stun.l.google.com:19302"]}
-]};
+var iceServers = {
+        iceServers: [
+            {
+                urls: "stun:stun.l.google.com:19302"
+            },
+            {
+                urls: "stun:stun1.l.google.com:19302"
+            },
+            {
+                urls: "stun:stun.voxgratia.org"
+            },
+            {
+                urls: "turn:numb.viagenie.ca",
+                username: "darkstyle6196@gmail.com",
+                credential: "nonney06011996"
+            }
+        ]
+};
 
 // DtlsSrtpKeyAgreement is required for Chrome and Firefox to interoperate.
 // RtpDataChannels is required if we want to make use of the DataChannels API on Firefox.
@@ -64,11 +59,11 @@ var pc_constraints = {
 ]};
 
 var sdpConstraints = webrtcDetectedBrowser === 'firefox' ?
-{'offerToReceiveAudio':true,'offerToReceiveVideo':true } :
-{'mandatory': {'OfferToReceiveAudio':true, 'OfferToReceiveVideo':true }};
+    {'offerToReceiveAudio':true,'offerToReceiveVideo':true } :
+    {'mandatory': {'OfferToReceiveAudio':true, 'OfferToReceiveVideo':true }};
 
-// Let's get started: prompt user for input (room name)
-var room = prompt('Enter room name: ');
+
+var room = getIDfromURL();
 
 //Connect to signaling server
 /*
@@ -89,19 +84,16 @@ if (room !== '') {
     socket.emit('create or join', room);
 }
 
-// Set getUserMedia constraints
 var constraints = {
     video: true,
     audio: true
 };
 
-// Call getUserMedia()
 navigator.getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 console.log('Getting user media with constraints', constraints);
 
 //From this point on, execution proceeds based on asynchronous events...
 
-// getUserMedia() handlers...
 function handleUserMedia(stream) {
     localStream = stream;
     attachMediaStream(localVideo, stream);
@@ -123,27 +115,21 @@ function handleUserMediaError(error) {
 
 // 1. Server-->Client...
 
-// Handle 'created' message coming back from server:
-// this peer is the initiator
 socket.on('created', function (room) {
     console.log('Created room: ' + room);
     isInitiator = true;
 });
 
-// Handle 'full' message coming back from server:
-// this peer arrived too late :-(
 socket.on('full', function (room) {
     console.log('Room ' + room + ' is full');
 });
 
-// Handle 'join' message coming back from server: another peer is joining the channel
 socket.on('join', function (room) {
     console.log('Another peer made a request to join room: ' + room);
     console.log('This peer is the initiator of room ' + room + '!');
     isChannelReady = true;
 });
 
-// Handle 'joined' message coming back from server: this is the second peer joining the channel
 socket.on('joined', function (room) {
     console.log('This peer has joined room ' + room);
     isChannelReady = true;
@@ -183,7 +169,7 @@ socket.on('message', function (message) {
 });
 
 // 2. Client-->Server
-// Send message to the other peer via the signaling server
+
 function sendMessage(message) {
     console.log('Sending message: ', message);
     socket.emit('message', message);
@@ -205,11 +191,11 @@ function checkAndStart() {
 // PeerConnection management...
 function createPeerConnection() {
     try {
-        pc = new RTCPeerConnection(pc_config, pc_constraints);
+        pc = new RTCPeerConnection(iceServers, pc_constraints);
         pc.addStream(localStream);
         pc.onicecandidate = handleIceCandidate;
 
-        console.log('Created RTCPeerConnection with:\n' + ' config: \'' + JSON.stringify(pc_config) + '\';\n' +
+        console.log('Created RTCPeerConnection with:\n' + ' config: \'' + JSON.stringify(iceServers) + '\';\n' +
             ' constraints: \'' + JSON.stringify(pc_constraints) + '\'.');
     } catch (e) {
         console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -383,8 +369,6 @@ function stop() {
     pc = null;
     sendButton.disabled = true;
 }
-
-
 
 
 

@@ -49,7 +49,7 @@ Route.group('auth', function()
 	Route.resource('videocall', 'VideocallController');
 
 	Route.resource('conversation', 'ConversationController');
-	Route.post('conversation/ajax', 'ConversationController.ajax');
+	Route.get('conversation/call/:id', 'ConversationController.call');
 
 }).middleware('auth');
 

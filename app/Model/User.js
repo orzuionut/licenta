@@ -32,16 +32,15 @@ class User extends Lucid {
     	return this.belongsToMany('App/Model/Conversation', 'conversation_user', 'user_id', 'conversation_id');
     }
 
-    isParticipant(conversationID)
+    * hasConversation(conversation_id)
     {
-    	const value = this.conversations().where('conversation_id', conversationID).fetch();
+    	let value = yield this.conversations().where('conversation_id', conversation_id).fetch();
 
-    	if(value)
-    	{
-    		return true;
-    	}
+        // Workaround to send array to view. TODO: fix this
+        const json = JSON.stringify(value)
+        value = JSON.parse(json) 
 
-    	return false;
+    	return value.length > 0;
     }
 
 

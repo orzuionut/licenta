@@ -28,6 +28,13 @@ $(document).ready(function(){
             this.conversationData = conversationData;
         }
 
+        setActionButtons($voice_button, $video_button, $profile_button)
+        {
+            this.$voice_button = $voice_button;
+            this.$video_button = $video_button;
+            this.$profile_button = $profile_button;
+        }
+
         clearInput()
         {
             this.$message_input.val("");
@@ -76,10 +83,10 @@ $(document).ready(function(){
         {
             this.$conversation_box.append($element);
 
-            this.updateScrollUI();
+            this.scrollToBottom();
         }
 
-        updateScrollUI()
+        scrollToBottom()
         {
             this.$conversation_box.scrollTop(this.$conversation_box[0].scrollHeight);
         }
@@ -98,36 +105,42 @@ $(document).ready(function(){
             return id.substring(id.lastIndexOf("-") + 1);
         }
 
-
-    }
-
-    class SocketIO {
-
-        constructor(io)
+        messageSubmitted(message)
         {
-            this.socket = io.connect('http://localhost:8181/chat');
+            let data = {
+                user_id: this.conversationData.user_id,
+                message: message
+            };
+            this.appendMessage(data);
+
+            this.clearInput();
         }
 
-        sendMessage(event, data)
+        clickSubmitButton()
         {
-            // Add the room to the message
-            data.room = this.room;
-
-            this.socket.emit(event, data);
+            this.$submit_button.click();
         }
 
-        setRoom(room)
+        appendIncomingCallAlert()
         {
-            this.room = room;
+            let $incomingCallAlert = $('#conversation-header-alert');
+
+            $incomingCallAlert.css('display', 'flex');
         }
 
+        hideIncomingCallAlert()
+        {
+            let $incomingCallAlert = $('#conversation-header-alert');
+
+            $incomingCallAlert.css('display', 'none');
+        }
     }
 
     function buildConversation()
     {
         let conversationData = new ConversationData();
         let conversationDOM = new ConversationDOM($('.conversation-body'), $('#enter-message'), $('#submit-message'));
-        let socketIO = new SocketIO(io);
+        let socketIO = new SocketIO(io, 'http://localhost:8181/chat');
 
         let data = {};
 
@@ -135,6 +148,8 @@ $(document).ready(function(){
         conversationData.setId(conversation_id);
 
         conversationDOM.setConversationData(conversationData);
+
+        conversationDOM.setActionButtons($('#conversation-voice'), $('#conversation-video'), $('#conversation-profile'));
 
         if(socketIO.socket === undefined)
         {
@@ -165,6 +180,10 @@ $(document).ready(function(){
             conversationDOM.appendMessagesArray(data);
         });
 
+        socketIO.socket.on('call', function(data){
+            conversationDOM.appendIncomingCallAlert();
+        });
+
         // Submit button listener
         // Output the message and then send it to the server to broadcast it to other and save it to DB.
         // TODO: refactor into functions
@@ -172,19 +191,23 @@ $(document).ready(function(){
 
             var message = conversationDOM.$message_input.val();
 
-            conversationDOM.clearInput();
+            conversationDOM.messageSubmitted(message);
 
             data = {
                 user_id: conversationData.user_id,
-                message: message
+                message: message,
+                user_name: user_name,
+                conversation_id: conversationData.id
             };
-            conversationDOM.appendMessage(data);
-
-            data.user_name = user_name;
-            data.conversation_id = conversationData.id;
 
             socketIO.sendMessage('input', data);
 
+        });
+
+        conversationDOM.$message_input.keypress(function(e){
+            if(e.which == 13){
+                conversationDOM.clickSubmitButton();
+            }
         });
 
 
@@ -216,6 +239,26 @@ $(document).ready(function(){
                 socketIO.sendMessage('init', data);        
             }
         });
+
+        conversationDOM.$video_button.click(function(){
+
+            data = {};
+            socketIO.sendMessage('call', data);
+
+
+            window.location.href = "/conversation/call/" + conversationData.id;
+        });
+
+
+        $("#call-answer").click(function(){
+            window.location.href = "/conversation/call/" + conversationData.id;
+        });
+
+
+        $("#call-reject").click(function(){
+            conversationDOM.hideIncomingCallAlert();
+        });
+
     }
 
     

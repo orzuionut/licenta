@@ -22,39 +22,54 @@ class ConversationController {
 
   }
 
-  * ajax(request, response)
+  * call(request, response)
   {
-      const user = request.currentUser;
-
-      const conversationID = request.input('conversationID');
-
-      // console.log(user.isParticipant(conversationID));
-
+      const conversationID = request.param('id');
       const conversation = yield Conversation.find(conversationID);
 
-      //TODO: Refactor this using :conversation:
+      const nrOfParticipantsInConversation = yield conversation.getNrOfParticipants();
 
-      const messages = yield conversation.messages().fetch();
-
-      // Workaround to send array to view. TODO: fix this
-      const json = JSON.stringify(messages)
-      let build_messages = JSON.parse(json)
-
-      for(var i = 0; i < build_messages.length; i = i + 1)
-      {
-        let message_user_id = build_messages[i].user_id;
-
-        let message_user = yield User.find(message_user_id);
-
-        build_messages[i].user_name = message_user.getFullName();
+      if(nrOfParticipantsInConversation > 2) {
+          yield response.redirect('/conference/' + conversationID);              
+      } else {
+          yield response.redirect('/videocall/' + conversationID);
       }
 
-      yield response.json({
-          messages: build_messages,
-          currentUser: user
-      });
-
   }
+
+  // * ajax(request, response)
+  // {
+  //     const user = request.currentUser;
+
+  //     const conversationID = request.input('conversationID');
+
+  //     // console.log(user.isParticipant(conversationID));
+
+  //     const conversation = yield Conversation.find(conversationID);
+
+  //     //TODO: Refactor this using :conversation:
+
+  //     const messages = yield conversation.messages().fetch();
+
+  //     // Workaround to send array to view. TODO: fix this
+  //     const json = JSON.stringify(messages)
+  //     let build_messages = JSON.parse(json)
+
+  //     for(var i = 0; i < build_messages.length; i = i + 1)
+  //     {
+  //       let message_user_id = build_messages[i].user_id;
+
+  //       let message_user = yield User.find(message_user_id);
+
+  //       build_messages[i].user_name = message_user.getFullName();
+  //     }
+
+  //     yield response.json({
+  //         messages: build_messages,
+  //         currentUser: user
+  //     });
+
+  // }
 
   * create(request, response) {
     //

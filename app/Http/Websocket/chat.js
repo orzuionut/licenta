@@ -37,7 +37,11 @@ module.exports = function (io) {
             // TODO: further documentation read
             saveMessage(data);
 
-            sendMessageToParticipants(socket, data.room, data);
+            sendMessageToParticipants(socket, data.room, 'output', data);
+        });
+
+        socket.on('call', function (data){
+            sendMessageToParticipants(socket, data.room, 'call', data);
         });
 
     });
@@ -107,7 +111,7 @@ function sendMessageToUser(socket, room, data)
     socket.emit('init', data);
 }
 
-function sendMessageToParticipants(socket, room, data)
+function sendMessageToParticipants(socket, room, event, data)
 {
-    socket.broadcast.to(room).emit('output', [data]);
+    socket.broadcast.to(room).emit(event, [data]);
 }

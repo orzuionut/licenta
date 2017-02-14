@@ -13,6 +13,16 @@ class Conversation extends Lucid {
 	{
 		return this.hasMany('App/Model/Message');
 	}
+
+	* getNrOfParticipants()
+	{
+		let users = yield this.users().fetch();
+
+		const json = JSON.stringify(users);
+    	users = JSON.parse(json);
+
+    	return users.length;
+	}
 	
 }
 

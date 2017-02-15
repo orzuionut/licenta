@@ -12,27 +12,21 @@ module.exports = function (io) {
 
     io.on('connection', function (socket) {
 
-        socket.on('room', function(data) {
-            socket.join(data.room);
-        });
-
         socket.on('roomChanged', function(data) {
             socket.leave(data.leaveRoom);
-            socket.join(data.room);
         });
 
         socket.on('init', function(data){
+            socket.join(data.room);
 
-            getConversationMessages(data.conversation_id).then(function(messages){
-
+            let conversation_id = data.room;
+            getConversationMessages(conversation_id).then(function(messages){
                 sendMessageToUser(socket, data.room, messages);
             });
 
         });
 
-
         socket.on('input', function (data){
-
             // Wrapping around co, to transform into generator
             // TODO: further documentation read
             saveMessage(data);

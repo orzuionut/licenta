@@ -1,38 +1,140 @@
 $(document).ready(function(){
 
-    class ConversationData{
+    class Conversation {
 
-        setId(conversation_id)
+        constructor(DOM, id, user_id)
         {
-            this.id = conversation_id;
-        }
+            this.DOM = DOM;
 
-        setUserId(user_id)
-        {
+            this.id = id;
             this.user_id = user_id;
         }
 
-    };
+        setID(id)
+        {
+            this.id = id;
+        }
+
+        messageSubmitted(message)
+        {
+            let data = {
+                user_id: this.user_id,
+                message: message
+            };
+
+            this.DOM.body.appendMessage(data, this.user_id);
+
+            this.DOM.footer.clearInput();
+        }
+    }
 
     class ConversationDOM {
 
-        constructor($conversation_box, $message_input, $submit_button)
+        constructor(header, body, footer)
         {
-            this.$conversation_box = $conversation_box;
-            this.$message_input = $message_input;
-            this.$submit_button = $submit_button;
+            this.header = header;
+            this.body = body;
+            this.footer = footer;
+        }
+    }
+
+    class Message {
+
+        constructor(data, type)
+        {
+            return this.create(data.message, type);
         }
 
-        setConversationData(conversationData)
+        create(message, type)
         {
-            this.conversationData = conversationData;
+            return $(`<div class='message-box ${type}'>` + message + "</div>");
         }
 
-        setActionButtons($voice_button, $video_button, $profile_button)
+        static createEmitter(emitter)
+        {
+            return $("<div class='message-emitter'>" + emitter + "</div>");        
+        }
+  
+    }
+
+    class Header {
+
+        constructor($voice_button, $video_button, $profile_button)
         {
             this.$voice_button = $voice_button;
             this.$video_button = $video_button;
             this.$profile_button = $profile_button;
+
+            this.$incomingCallAlert = $('#conversation-header-alert');
+        }
+
+        showIncomingCallAlert()
+        {
+            this.$incomingCallAlert.css('display', 'flex');
+        }
+
+        hideIncomingCallAlert()
+        {
+            this.$incomingCallAlert.css('display', 'none');
+        }
+
+    }
+
+    class Body{
+
+        constructor($box)
+        {
+            this.$box = $box;
+        }
+
+        appendMessagesArray(data, current_user_id)
+        {
+            for(let i = 0; i < data.length; i++)
+            {
+                this.appendMessage(data[i], current_user_id);
+            }
+        }
+
+        appendMessage(data, current_user_id)
+        {
+            let is_current_user = data.user_id === current_user_id;
+            let type = is_current_user ? 'message-user' : 'message-other';
+
+            if(! is_current_user)
+            {
+                let $emitter = Message.createEmitter(data.user_name);
+
+                this.append($emitter); 
+            }
+
+            this.append(new Message(data, type));
+        }
+
+        append($element)
+        {
+            this.$box.append($element);
+
+            this.scrollToBottom();
+        }
+
+        scrollToBottom()
+        {
+            this.$box.scrollTop(this.$box[0].scrollHeight);
+        }
+
+        clear()
+        {
+            this.$box.empty();
+        }
+
+    }
+
+    class Footer{
+
+        constructor($message_input, $submit_button)
+        {
+            this.$message_input = $message_input;
+            this.$submit_button = $submit_button;
         }
 
         clearInput()
@@ -40,229 +142,143 @@ $(document).ready(function(){
             this.$message_input.val("");
         }
 
-        appendMessagesArray(data)
-        {
-            for(var i = 0; i < data.length; i++)
-            {
-                this.appendMessage(data[i]);
-            }
-
-        }
-
-        appendMessage(data)
-        {
-           var $message_box;
-           var $emitter_box;
-
-            if(data.user_id == this.conversationData.user_id)
-            {
-                $message_box = this.createMessageBox('message-user', data.message);
-            
-            } else
-            {
-                $message_box = this.createMessageBox('message-other', data.message);
-
-                $emitter_box = this.createEmitterBox(data.user_name);
-                this.appendToConversationBox($emitter_box);
-            }
-
-            this.appendToConversationBox($message_box);
-        }
-
-        createMessageBox(message_type, message)
-        {
-            return $(`<div class='message-box ${message_type}'>` + message + "</div>");
-        }
-
-        createEmitterBox(emitter)
-        {
-            return $("<div class='message-emitter'>" + emitter + "</div>");        
-        }
-
-        appendToConversationBox($element)
-        {
-            this.$conversation_box.append($element);
-
-            this.scrollToBottom();
-        }
-
-        scrollToBottom()
-        {
-            this.$conversation_box.scrollTop(this.$conversation_box[0].scrollHeight);
-        }
-
-        clear()
-        {
-            this.$conversation_box.empty();
-        }
-
-        getConversationID(conversationDiv)
-        {
-            const element = $(conversationDiv).find("div[id^='conversation-id-']")[0];
-
-            const id = $(element).attr('id');
-
-            return id.substring(id.lastIndexOf("-") + 1);
-        }
-
-        messageSubmitted(message)
-        {
-            let data = {
-                user_id: this.conversationData.user_id,
-                message: message
-            };
-            this.appendMessage(data);
-
-            this.clearInput();
-        }
-
         clickSubmitButton()
         {
             this.$submit_button.click();
         }
 
-        appendIncomingCallAlert()
+        getMessage()
         {
-            let $incomingCallAlert = $('#conversation-header-alert');
-
-            $incomingCallAlert.css('display', 'flex');
-        }
-
-        hideIncomingCallAlert()
-        {
-            let $incomingCallAlert = $('#conversation-header-alert');
-
-            $incomingCallAlert.css('display', 'none');
+            return this.$message_input.val();
         }
     }
 
-    function buildConversation()
+    class ConversationsList {
+
+        constructor($element)
+        {
+            this.item = $element;
+        }
+
+        getItemID(item)
+        {
+            const element = $(item).find("div[id^='conversation-id-']")[0];
+            const id = $(element).attr('id');
+
+            return id.substring(id.lastIndexOf("-") + 1);
+        }
+    }
+
+
+    function build()
     {
-        let conversationData = new ConversationData();
-        let conversationDOM = new ConversationDOM($('.conversation-body'), $('#enter-message'), $('#submit-message'));
-        let socketIO = new SocketIO(io, 'http://localhost:8181/chat');
+        // Side-menu list of conversations
+        let conversations_list = new ConversationsList($(".conversation-item"));
+
+        // Main chat-box
+        let header = new Header($('#conversation-voice'), $('#conversation-video'), $('#conversation-profile'));
+        let body = new Body($('.conversation-body'));
+        let footer = new Footer($('#enter-message'), $('#submit-message'));
+
+        let DOM = new ConversationDOM(header, body, footer);
+  
+        let conversation = new Conversation(DOM, conversation_id, user_id);
 
         let data = {};
 
-        conversationData.setUserId(user_id);
-        conversationData.setId(conversation_id);
-
-        conversationDOM.setConversationData(conversationData);
-
-        conversationDOM.setActionButtons($('#conversation-voice'), $('#conversation-video'), $('#conversation-profile'));
+        let socketIO = new SocketIO(io, 'http://localhost:8181/chat');
 
         if(socketIO.socket === undefined)
         {
             //show modal alert ERROR and EXIT
         }
 
-        socketIO.setRoom(conversationData.id);
+        socketIO.setRoom(conversation.id);
 
-        socketIO.sendMessage('room', data);
-
-
-        // send init message with conversation_id
-        data = {
-            conversation_id: conversationData.id
-        }
         socketIO.sendMessage('init', data);
 
-
-        // SocketIO listeners
-
+        /**
+         *  SocketIO listeners
+         */
         socketIO.socket.on('init', function(data){
-            conversationDOM.appendMessagesArray(data);
+            conversation.DOM.body.appendMessagesArray(data, conversation.user_id);
         });   
-
 
         // Received message from server. Only non-sender type of clients receive this.
         socketIO.socket.on('output', function(data){
-            conversationDOM.appendMessagesArray(data);
+            conversation.DOM.body.appendMessagesArray(data, conversation.user_id);
         });
 
         socketIO.socket.on('call', function(data){
-            conversationDOM.appendIncomingCallAlert();
+            conversation.DOM.header.showIncomingCallAlert();
         });
 
-        // Submit button listener
-        // Output the message and then send it to the server to broadcast it to other and save it to DB.
-        // TODO: refactor into functions
-        conversationDOM.$submit_button.on('click', function(){
+        /**
+         *  DOM listeners
+         */
+        conversation.DOM.footer.$submit_button.on('click', function(){
 
-            var message = conversationDOM.$message_input.val();
-
-            conversationDOM.messageSubmitted(message);
+            let message = conversation.DOM.footer.getMessage();
+            conversation.messageSubmitted(message);
 
             data = {
-                user_id: conversationData.user_id,
+                user_id: conversation.user_id,
                 message: message,
                 user_name: user_name,
-                conversation_id: conversationData.id
+                conversation_id: conversation.id
             };
-
             socketIO.sendMessage('input', data);
-
         });
 
-        conversationDOM.$message_input.keypress(function(e){
+        conversation.DOM.footer.$message_input.keypress(function(e){
             if(e.which == 13){
-                conversationDOM.clickSubmitButton();
+                conversation.DOM.footer.clickSubmitButton();
             }
         });
 
-
         // Match all anchor tags with id like :conversation-id-{number}:
+        conversations_list.item.click(function(){
 
-        $(".conversation-item").click(function(){
-
-            var old_conversation_id = conversationData.id;
-            var new_conversation_id = conversationDOM.getConversationID(this);
+            var old_conversation_id = conversation.id;
+            var new_conversation_id = conversations_list.getItemID(this);
 
             // Conversation changed. Update stuff
             if(old_conversation_id !== new_conversation_id)
             {
-                conversationDOM.clear();
+                conversation.DOM.body.clear();
 
-                conversationData.setId(new_conversation_id);
-                conversationDOM.setConversationData(conversationData);
+                conversation.setID(new_conversation_id);
 
                 socketIO.setRoom(new_conversation_id);
-
 
                 data.leaveRoom = old_conversation_id;
                 socketIO.sendMessage('roomChanged', data);
 
-                // send init message with conversation_id
-                data = {
-                    conversation_id: conversationData.id
-                }
                 socketIO.sendMessage('init', data);        
             }
         });
 
-        conversationDOM.$video_button.click(function(){
-
+        conversation.DOM.header.$video_button.click(function(){
             data = {};
             socketIO.sendMessage('call', data);
 
-
-            window.location.href = "/conversation/call/" + conversationData.id;
+            window.location.href = "/conversation/call/" + conversation.id;
         });
 
 
         $("#call-answer").click(function(){
-            window.location.href = "/conversation/call/" + conversationData.id;
+            window.location.href = "/conversation/call/" + conversation.id;
         });
 
 
         $("#call-reject").click(function(){
-            conversationDOM.hideIncomingCallAlert();
+            conversation.DOM.header.hideIncomingCallAlert();
         });
 
     }
 
     
-    buildConversation();
+    build();
 
 });
 

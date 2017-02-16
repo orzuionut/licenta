@@ -90,7 +90,8 @@ var constraints = {
 };
 
 navigator.getUserMedia(constraints, handleUserMedia, handleUserMediaError);
-console.log('Getting user media with constraints', constraints);
+
+
 
 //From this point on, execution proceeds based on asynchronous events...
 
@@ -102,9 +103,12 @@ function handleUserMedia(stream) {
         message: 'got user media',
         channel: room
     });
+    
     if (isInitiator) {
         checkAndStart();
     }
+
+    console.log(isInitiator);
 }
 
 function handleUserMediaError(error) {
@@ -116,7 +120,6 @@ function handleUserMediaError(error) {
 // 1. Server-->Client...
 
 socket.on('created', function (room) {
-    console.log('Created room: ' + room);
     isInitiator = true;
 });
 
@@ -135,53 +138,60 @@ socket.on('joined', function (room) {
     isChannelReady = true;
 });
 
-// Server-sent log message...
-socket.on('log', function (array) {
-    console.log.apply(console, array);
-});
-
 // Receive message from the other peer via the signaling server
-socket.on('message', function (message) {
-    console.log('Received message: ', message);
-
-    if (message.message == 'got user media') {
-  
+socket.on('message', function (message) 
+{
+    if (message.message == 'got user media') 
+    {
         checkAndStart();
-    } else if (message.sd && message.sd.type === 'offer') {
-        if (!isInitiator && !isStarted) {
+
+    } else if (message.sd && message.sd.type === 'offer')
+    {
+        if (!isInitiator && !isStarted)
+        {
             checkAndStart();
         }
+
         // Check message for this RTCSessionDescription setter
         pc.setRemoteDescription(new RTCSessionDescription(message.sd));
         doAnswer();
-    } else if (message.sd.type === 'answer' && isStarted) {
+
+    } else if (message.sd.type === 'answer' && isStarted)
+    {
         pc.setRemoteDescription(new RTCSessionDescription(message.sd));
-    } else if (message.type === 'candidate' && isStarted) {
+
+    } else if (message.type === 'candidate' && isStarted)
+    {
         var candidate = new RTCIceCandidate({
             sdpMLineIndex: message.label,
             candidate: message.candidate
         });
-        console.log('Adding ice Candidate');
+
         pc.addIceCandidate(candidate);
-    } else if (message.message === 'bye' && isStarted) {
+
+    } else if (message.message === 'bye' && isStarted)
+    {
         handleRemoteHangup();
     }
 });
 
 // 2. Client-->Server
 
-function sendMessage(message) {
-    console.log('Sending message: ', message);
+function sendMessage(message) 
+{
     socket.emit('message', message);
 }
 
 // Channel negotiation trigger function
-function checkAndStart() {
-    if (!isStarted && typeof localStream != 'undefined' && isChannelReady) {
+function checkAndStart() 
+{
+    if (!isStarted && typeof localStream != 'undefined' && isChannelReady)
+    {
         createPeerConnection();
         pc.addStream(localStream);
         isStarted = true;
-        if (isInitiator) {
+        if (isInitiator) 
+        {
             console.log('Calling other peer..');
             doCall();
         }

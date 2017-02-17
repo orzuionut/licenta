@@ -1,7 +1,3 @@
-/**
- * Created by eak on 9/14/15.
- */
-
 function UserRegistry() {
     this.usersById = {};
     this.usersByName = {};

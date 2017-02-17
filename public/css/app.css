@@ -323,6 +323,10 @@ header {
     flex-basis: 10%;
     background-color: #0B93F6; }
 
+#localVideo, #remoteVideo {
+  width: 30%;
+  height: 250px; }
+
 video {
   min-width: 200px;
   display: inline;

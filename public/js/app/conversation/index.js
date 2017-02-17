@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    const ENTER_KEY = 13;
+
     class Conversation {
 
         constructor(DOM, id, user_id)
@@ -65,17 +67,19 @@ $(document).ready(function(){
             this.$video_button = $video_button;
             this.$profile_button = $profile_button;
 
-            this.$incomingCallAlert = $('#conversation-header-alert');
+            this.$incoming_call_alert = $('#conversation-header-alert');
+            this.$answer_call = $("#call-answer");
+            this.$reject_call = $("#call-reject");
         }
 
         showIncomingCallAlert()
         {
-            this.$incomingCallAlert.css('display', 'flex');
+            this.$incoming_call_alert.css('display', 'flex');
         }
 
         hideIncomingCallAlert()
         {
-            this.$incomingCallAlert.css('display', 'none');
+            this.$incoming_call_alert.css('display', 'none');
         }
 
     }
@@ -231,16 +235,15 @@ $(document).ready(function(){
         });
 
         conversation.DOM.footer.$message_input.keypress(function(e){
-            if(e.which == 13){
+            if(e.which == ENTER_KEY){
                 conversation.DOM.footer.clickSubmitButton();
             }
         });
 
         // Match all anchor tags with id like :conversation-id-{number}:
         conversations_list.item.click(function(){
-
-            var old_conversation_id = conversation.id;
-            var new_conversation_id = conversations_list.getItemID(this);
+            let old_conversation_id = conversation.id;
+            let new_conversation_id = conversations_list.getItemID(this);
 
             // Conversation changed. Update stuff
             if(old_conversation_id !== new_conversation_id)
@@ -265,16 +268,13 @@ $(document).ready(function(){
             window.location.href = "/conversation/call/" + conversation.id;
         });
 
-
-        $("#call-answer").click(function(){
+        conversation.DOM.header.$answer_call.click(function(){
             window.location.href = "/conversation/call/" + conversation.id;
         });
 
-
-        $("#call-reject").click(function(){
+        conversation.DOM.header.$reject_call.click(function(){
             conversation.DOM.header.hideIncomingCallAlert();
         });
-
     }
 
     

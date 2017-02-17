@@ -1,6 +1,5 @@
 'use strict'
 
-// 
 const co = use('co');
 
 const User = use('App/Model/User');
@@ -20,15 +19,13 @@ module.exports = function (io) {
             socket.join(data.room);
 
             let conversation_id = data.room;
-            getConversationMessages(conversation_id).then(function(messages){
+            co(getConversationMessages(conversation_id)).then(function(messages){
                 sendMessageToUser(socket, data.room, messages);
             });
 
         });
 
         socket.on('input', function (data){
-            // Wrapping around co, to transform into generator
-            // TODO: further documentation read
             saveMessage(data);
 
             sendMessageToParticipants(socket, data.room, 'output', data);
@@ -42,22 +39,11 @@ module.exports = function (io) {
 }
 
 
-//TODO: fix this mess
-function getConversationMessages(conversation_id)
+function* getConversationMessages(conversation_id)
 {
-     return new Promise(function(resolve, reject) {
+    let messages = yield getMessages(conversation_id); 
 
-         co(function* (){ 
-            let messages = yield getMessages(conversation_id); 
-            return messages;
-         }).then(function(messages){
-            resolve(messages);
-         }, function(error){
-             reject(error);   
-         });
-
-     });
-   
+    return messages;
 }
 
 function* getMessages(conversation_id)

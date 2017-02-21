@@ -3,36 +3,45 @@
 {% block content %}
 
     <div id="mainDiv">
-      <table border="1" width="100%">
-        <tr id="videosContainer">
-          <th>Local video</th>
-          <th>Remote video</th>
-        </tr>
-        <tr>
-          <td>
-            <video id="localVideo" autoplay muted="muted"></video>
-          </td>
-          <td>
-            <video id="remoteVideo" autoplay muted="muted"></video>
-          </td>
-        </tr>
-        <tr>
-          <td align="center">
-            <textarea id="dataChannelSend" rows="4" cols="60" disabled placeholder="This will be enabled once the data channel is up"></textarea>
-          </td>
-          <td align="center">
-            <textarea id="dataChannelReceive" rows="4" cols="60" disabled></textarea>
-          </td>
-        </tr>
-        <tr>
-          <td align="center">
-            <button id="sendButton" disabled>Send</button>
-          </td>
-          <td></td>
-        </tr>
-      </table>
+
+        <table border="1" width="100%">
+
+            <tr id="videosContainer">
+                <th>Local video</th>
+                <th>Remote video</th>
+            </tr>
+
+            <tr>
+                <td>
+                    <video id="localVideo" autoplay muted="muted"></video>
+                </td>
+                <td>
+                    <video id="remoteVideo" autoplay muted="muted"></video>
+                </td>
+            </tr>
+
+            <tr>
+                <td align="center">
+                    <textarea id="dataChannelSend" rows="4" cols="60" disabled
+                              placeholder="This will be enabled once the data channel is up"></textarea>
+                </td>
+                <td align="center">
+                    <textarea id="dataChannelReceive" rows="4" cols="60" disabled></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td align="center">
+                    <button id="sendButton" disabled>Send</button>
+                </td>
+            </tr>
+
+        </table>
+
+        <div id="messagesBox"></div>
+
     </div>
 
-    <script src="/js/app/videocall/index.js"></script>
+    <script src="/js/app/videocall.js"></script>
 
 {% endblock %}

@@ -1,11 +1,11 @@
-'use strict'
+'use strict';
 
 class VideocallController {
 
   * index(request, response) {
     
 
-    yield response.sendView('pages/videocall/index')
+    yield response.sendView('pages/videocall/index');
   }
 
   * create(request, response) {
@@ -49,4 +49,4 @@ class VideocallController {
 
 }
 
-module.exports = VideocallController
+module.exports = VideocallController;

@@ -3,3 +3,5 @@ storage
 !.gitkeep
 .env
 npm-debug.log
+.idea
+.vagrant

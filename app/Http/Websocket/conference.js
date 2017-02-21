@@ -48,9 +48,7 @@ module.exports = function (io) {
 
             switch (message.id) {
                 case 'joinRoom':
-                    console.log("SERVER:" + socket.id + ' joinRoom : ' + message.roomName);
-
-                    joinRoom(socket, message.roomName, function () {
+                    joinRoom(socket, message.room, function () {
                         console.log("SERVER:" + "ERROR HAPPENED");
                     });
                     break;

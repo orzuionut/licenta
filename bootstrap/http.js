@@ -99,7 +99,7 @@ module.exports = function (callback) {
       | We are all set to fire the Http Server and start receiving new requests.
       |
       */
-      const Server = use('Adonis/Src/Server')
+      const Server = use('Adonis/Src/Server');
       const io = use('socket.io')(Server.getInstance());
       io.listen(8181);
 
@@ -107,10 +107,10 @@ module.exports = function (callback) {
       use('App/Http/Websocket/videocall')(io.of('/videocall'));
       use('App/Http/Websocket/chat')(io.of('/chat'));
 
-      Server.listen(Env.get('HOST'), Env.get('PORT'))
+      Server.listen(Env.get('HOST'), Env.get('PORT'));
       if (typeof (callback) === 'function') {
         callback()
       }
     })
     .catch((error) => console.error(error.stack))
-}
+};

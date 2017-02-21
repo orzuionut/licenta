@@ -19,3 +19,5 @@ class SocketIO {
     }
 
 }
+
+export { SocketIO }

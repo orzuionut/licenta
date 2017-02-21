@@ -1,5 +1,10 @@
 $(document).ready(function(){
 
+	class Videocall
+	{
+		
+	}
+
 	class VideocallDOM
 	{
 		constructor()
@@ -55,6 +60,38 @@ $(document).ready(function(){
 		        pc.ondatachannel = gotReceiveChannel;
 		    }
 		}
+
+		makeCall()
+		{
+			this.pc.createOffer(setLocalAndSendMessage, onSignalingError, sdpConstraints);
+		}
+
+		// Success handler for both createOffer() and createAnswer()
+	    setLocalAndSendMessage(sessionDescription) {
+	        this.pc.setLocalDescription(sessionDescription);
+	        sendMessage({
+	            sd: sessionDescription,
+	            channel: room
+	        });
+	    }
+
+	    // Channel negotiation trigger function
+	    checkAndStart() 
+	    {
+	        if (!isStarted && typeof localStream != 'undefined' && isChannelReady)
+	        {
+	            createPeerConnection();
+	            pc.addStream(localStream);
+
+	            isStarted = true;
+
+	            if (isInitiator) 
+	            {
+	                doCall();
+	            }
+	        }
+	    }
+
 	}
 
 	class UserMedia

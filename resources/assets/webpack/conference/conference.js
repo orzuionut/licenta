@@ -1,5 +1,5 @@
 import { ConferenceDOM } from './dom';
-import { Config } from './_config';
+import { Config } from './../_config';
 import { Participant } from './participants';
 import { SocketIO } from '../modules/socket';
 

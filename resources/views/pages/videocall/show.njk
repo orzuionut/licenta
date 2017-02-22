@@ -13,32 +13,22 @@
 
             <tr>
                 <td>
-                    <video id="localVideo" autoplay muted="muted"></video>
+                    <video id="localVideo" autoplay muted></video>
                 </td>
                 <td>
-                    <video id="remoteVideo" autoplay muted="muted"></video>
-                </td>
-            </tr>
-
-            <tr>
-                <td align="center">
-                    <textarea id="dataChannelSend" rows="4" cols="60" disabled
-                              placeholder="This will be enabled once the data channel is up"></textarea>
-                </td>
-                <td align="center">
-                    <textarea id="dataChannelReceive" rows="4" cols="60" disabled></textarea>
-                </td>
-            </tr>
-
-            <tr>
-                <td align="center">
-                    <button id="sendButton" disabled>Send</button>
+                    <video id="remoteVideo" autoplay muted></video>
                 </td>
             </tr>
 
         </table>
 
-        <div id="videocall-conv"></div>
+        <div id="videocall_form">
+            <input type="file" id="dataChannelSend" name="files[]">
+
+            <button id="send-button">Send</button>
+        </div>
+
+        <div id="files-container"></div>
 
     </div>
 

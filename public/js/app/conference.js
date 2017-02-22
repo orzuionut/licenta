@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -118,15 +118,68 @@ exports.SocketIO = SocketIO;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Config = function () {
+    function Config() {
+        _classCallCheck(this, Config);
+    }
+
+    _createClass(Config, null, [{
+        key: "getIceServers",
+        value: function getIceServers() {
+            return {
+                iceServers: [{
+                    urls: "stun:stun.l.google.com:19302"
+                }, {
+                    urls: "stun:stun1.l.google.com:19302"
+                }, {
+                    urls: "stun:stun.voxgratia.org"
+                }, {
+                    urls: "turn:numb.viagenie.ca",
+                    username: "darkstyle6196@gmail.com",
+                    credential: "nonney06011996"
+                }]
+            };
+        }
+    }, {
+        key: "getPeerConnectionConstraints",
+        value: function getPeerConnectionConstraints() {
+            return {
+                optional: [{
+                    DtlsSrtpKeyAgreement: true
+                }]
+            };
+        }
+    }]);
+
+    return Config;
+}();
+
+exports.Config = Config;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.Conference = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(9);
+var _dom = __webpack_require__(10);
 
-var _config = __webpack_require__(8);
+var _config = __webpack_require__(1);
 
-var _participants = __webpack_require__(10);
+var _participants = __webpack_require__(11);
 
 var _socket = __webpack_require__(0);
 
@@ -236,10 +289,6 @@ var Conference = function () {
                 // Generate the SDP offer
                 this.generateOffer(localParticipant.offerToReceiveVideo.bind(localParticipant));
             });
-            // }
-
-            // get access to video from all the participants
-            console.log(message.data);
 
             // @message.data => existing Participants in the room
             for (var i in message.data) {
@@ -254,7 +303,6 @@ var Conference = function () {
 
             var video = _dom.ConferenceDOM.createVideo(participant);
 
-            // bind function so that calling 'this' in that function will receive the current instance
             var options = {
                 remoteVideo: video,
                 onicecandidate: participant.onIceCandidate.bind(participant),
@@ -266,7 +314,6 @@ var Conference = function () {
                     return console.error(error);
                 }
 
-                // Bind "this" keyword to \participant\
                 this.generateOffer(participant.offerToReceiveVideo.bind(participant));
             });
         }
@@ -332,57 +379,14 @@ var Conference = function () {
 exports.Conference = Conference;
 
 /***/ }),
-/* 2 */,
 /* 3 */,
 /* 4 */,
 /* 5 */,
 /* 6 */,
 /* 7 */,
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Config = function () {
-    function Config() {
-        _classCallCheck(this, Config);
-    }
-
-    _createClass(Config, null, [{
-        key: "getIceServers",
-        value: function getIceServers() {
-            return {
-                iceServers: [{
-                    urls: "stun:stun.l.google.com:19302"
-                }, {
-                    urls: "stun:stun1.l.google.com:19302"
-                }, {
-                    urls: "stun:stun.voxgratia.org"
-                }, {
-                    urls: "turn:numb.viagenie.ca",
-                    username: "darkstyle6196@gmail.com",
-                    credential: "nonney06011996"
-                }]
-            };
-        }
-    }]);
-
-    return Config;
-}();
-
-exports.Config = Config;
-
-/***/ }),
-/* 9 */
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -419,7 +423,7 @@ var ConferenceDOM = function () {
 exports.ConferenceDOM = ConferenceDOM;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -488,14 +492,16 @@ var Participant = function () {
 exports.Participant = Participant;
 
 /***/ }),
-/* 11 */,
-/* 12 */
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _conference = __webpack_require__(1);
+var _conference = __webpack_require__(2);
 
 $(document).ready(function () {
     var conference = new _conference.Conference();

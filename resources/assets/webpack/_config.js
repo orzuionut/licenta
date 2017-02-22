@@ -21,6 +21,17 @@ class Config
             ]
         };
     }
+    
+    static getPeerConnectionConstraints()
+    {
+        return {
+            optional: [
+                {
+                    DtlsSrtpKeyAgreement: true
+                }
+            ]
+        };
+    }
 }
 
 export { Config }

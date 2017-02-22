@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -110,7 +110,8 @@ exports.SocketIO = SocketIO;
 
 /***/ }),
 /* 1 */,
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -123,7 +124,7 @@ exports.Body = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _message = __webpack_require__(11);
+var _message = __webpack_require__(12);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -180,7 +181,7 @@ var Body = function () {
 exports.Body = Body;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -229,7 +230,7 @@ var Conversation = function () {
 exports.Conversation = Conversation;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -266,7 +267,7 @@ var ConversationsList = function () {
 exports.ConversationsList = ConversationsList;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -289,7 +290,7 @@ var ConversationDOM = function ConversationDOM(header, body, footer) {
 exports.ConversationDOM = ConversationDOM;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -334,7 +335,7 @@ var Footer = function () {
 exports.Footer = Footer;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -379,10 +380,10 @@ var Header = function () {
 exports.Header = Header;
 
 /***/ }),
-/* 8 */,
 /* 9 */,
 /* 10 */,
-/* 11 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -421,24 +422,26 @@ var Message = function () {
 exports.Message = Message;
 
 /***/ }),
-/* 12 */,
-/* 13 */
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _conversation = __webpack_require__(3);
+var _conversation = __webpack_require__(4);
 
-var _conversations_list = __webpack_require__(4);
+var _conversations_list = __webpack_require__(5);
 
-var _dom = __webpack_require__(5);
+var _dom = __webpack_require__(6);
 
-var _header = __webpack_require__(7);
+var _header = __webpack_require__(8);
 
-var _body = __webpack_require__(2);
+var _body = __webpack_require__(3);
 
-var _footer = __webpack_require__(6);
+var _footer = __webpack_require__(7);
 
 var _socket = __webpack_require__(0);
 

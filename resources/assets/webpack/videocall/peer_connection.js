@@ -64,12 +64,15 @@ class PeerConnection
             alert('Failed to create data channel. ');
         }
 
+        this.sendChannel.binaryType = 'arraybuffer';
+        
         this.setDataChannelHandlers(this.sendChannel);
     }
 
     gotReceiveChannel(event)
     {
         this.receiveChannel = event.channel;
+        this.receiveChannel.binaryType = 'arraybuffer';
 
         this.setDataChannelHandlers(this.receiveChannel);
     }

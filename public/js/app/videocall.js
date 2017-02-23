@@ -225,12 +225,15 @@ var PeerConnection = function () {
                 alert('Failed to create data channel. ');
             }
 
+            this.sendChannel.binaryType = 'arraybuffer';
+
             this.setDataChannelHandlers(this.sendChannel);
         }
     }, {
         key: 'gotReceiveChannel',
         value: function gotReceiveChannel(event) {
             this.receiveChannel = event.channel;
+            this.receiveChannel.binaryType = 'arraybuffer';
 
             this.setDataChannelHandlers(this.receiveChannel);
         }
@@ -413,6 +416,9 @@ var Videocall = function () {
         this.room = getIDfromURL();
 
         this.socket = io.connect('http://localhost:8181/videocall');
+
+        //////////////////////////////////////////
+        this.arrayToStoreChunks = [];
     }
 
     _createClass(Videocall, [{
@@ -508,9 +514,31 @@ var Videocall = function () {
     }, {
         key: 'handleDataChannelMessage',
         value: function handleDataChannelMessage(message, event) {
-            var data = $('<div>' + event.data + '\n' + '</div>');
+            var data = event.data;
 
-            this.DOM.messagesBox.append(data);
+            if (typeof data !== 'string') {
+                this.arrayToStoreChunks.push(data);
+            } else {
+                data = JSON.parse(data);
+
+                this.saveToDisk(this.arrayToStoreChunks, data.fileName);
+
+                this.arrayToStoreChunks = [];
+            }
+        }
+    }, {
+        key: 'saveToDisk',
+        value: function saveToDisk(array, fileName) {
+            var received = new window.Blob(array);
+
+            var $fileLink = $('<a/>', {
+                text: fileName,
+                href: URL.createObjectURL(received),
+                target: '_blank',
+                download: fileName
+            });
+
+            this.DOM.$filesContainer.append($fileLink);
         }
     }, {
         key: 'handleDataChannelClose',
@@ -562,15 +590,54 @@ var Videocall = function () {
     }, {
         key: 'sendData',
         value: function sendData() {
-            var file = this.DOM.$dataChannelSend[0].files;
+            this.file = this.getFileFromInput();
 
-            console.log('FILES NOW: ', file);
+            this.chunkSize = 16384;
+            this.sliceFile(0);
 
             // if(isInitiator){
             //     sendChannel.send(data);
             // } else {
             //     receiveChannel.send(data);
             // }
+        }
+    }, {
+        key: 'sliceFile',
+        value: function sliceFile(offset) {
+            this.offset = offset;
+
+            var reader = new window.FileReader();
+
+            var slice = this.file.slice(offset, offset + this.chunkSize);
+            reader.readAsArrayBuffer(slice);
+
+            reader.onload = this.onReadAsArrayBuffer.bind(this);
+        }
+    }, {
+        key: 'onReadAsArrayBuffer',
+        value: function onReadAsArrayBuffer(event) {
+            var data = event.target.result;
+
+            this.send(data);
+
+            if (this.file.size > this.offset + data.byteLength) {
+                window.setTimeout(this.sliceFile.bind(this), 0, this.offset + this.chunkSize);
+            } else {
+                var _data = {};
+                _data.fileName = this.file.name;
+
+                this.send(JSON.stringify(_data));
+            }
+        }
+    }, {
+        key: 'send',
+        value: function send(data) {
+            this.peerConnection.sendChannel.send(data);
+        }
+    }, {
+        key: 'getFileFromInput',
+        value: function getFileFromInput() {
+            return this.DOM.$dataChannelSend[0].files[0];
         }
     }, {
         key: 'hangup',

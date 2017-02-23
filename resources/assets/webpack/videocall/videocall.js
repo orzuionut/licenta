@@ -31,6 +31,9 @@ class Videocall {
         this.room = getIDfromURL();
 
         this.socket = io.connect('http://localhost:8181/videocall');
+
+        //////////////////////////////////////////
+        this.arrayToStoreChunks = [];
     }
 
     build()
@@ -142,9 +145,34 @@ class Videocall {
 
     handleDataChannelMessage(message, event)
     {
-        let data = $('<div>' + event.data + '\n' + '</div>');
+        let data = event.data;
 
-        this.DOM.messagesBox.append(data);
+        if (typeof data !== 'string' )
+        {
+            this.arrayToStoreChunks.push(data);
+        }
+        else
+        {
+            data = JSON.parse(data);
+
+            this.saveToDisk(this.arrayToStoreChunks, data.fileName);
+
+            this.arrayToStoreChunks = [];
+        }
+    }
+
+    saveToDisk(array, fileName)
+    {
+        let received = new window.Blob(array);
+
+        let $fileLink = $('<a/>', {
+            text: fileName,
+            href: URL.createObjectURL(received),
+            target: '_blank',
+            download: fileName
+        });
+
+        this.DOM.$filesContainer.append($fileLink);
     }
 
     handleDataChannelClose(message)
@@ -197,15 +225,58 @@ class Videocall {
 
     sendData()
     {
-        let file = this.DOM.$dataChannelSend[0].files;
+        this.file = this.getFileFromInput();
 
-        
+        this.chunkSize = 16384;
+        this.sliceFile(0);
+
 
         // if(isInitiator){
         //     sendChannel.send(data);
         // } else {
         //     receiveChannel.send(data);
         // }
+    }
+
+    sliceFile(offset)
+    {
+        this.offset = offset;
+
+        let reader = new window.FileReader();
+
+        let slice = this.file.slice(offset, offset + this.chunkSize);
+        reader.readAsArrayBuffer(slice);
+
+        reader.onload = this.onReadAsArrayBuffer.bind(this);
+    }
+
+    onReadAsArrayBuffer(event)
+    {
+        let data = event.target.result;
+
+        this.send(data);
+
+        if (this.file.size > this.offset + data.byteLength)
+        {
+            window.setTimeout(this.sliceFile.bind(this), 0, this.offset + this.chunkSize);
+        }
+        else
+        {
+            let data = {};
+            data.fileName = this.file.name;
+
+            this.send(JSON.stringify(data));
+        }
+    }
+
+    send(data)
+    {
+        this.peerConnection.sendChannel.send(data);
+    }
+
+    getFileFromInput()
+    {
+        return this.DOM.$dataChannelSend[0].files[0];
     }
 
     hangup()
@@ -243,6 +314,7 @@ class Videocall {
         this.pc = null;
         this.DOM.sendButton.disabled = true;
     }
+
 }
 
 export {Videocall}

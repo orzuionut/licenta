@@ -13,7 +13,7 @@ $(document).ready(function(){
 
     const ENTER_KEY = 13;
 
-    
+
     function build()
     {
         // Side-menu list of conversations
@@ -25,7 +25,7 @@ $(document).ready(function(){
         let footer = new Footer($('#enter-message'), $('#submit-message'));
 
         let DOM = new ConversationDOM(header, body, footer);
-  
+
         let conversation = new Conversation(DOM, conversation_id, user_id);
 
         let data = {};
@@ -46,7 +46,7 @@ $(document).ready(function(){
          */
         socketIO.socket.on('init', function(data){
             conversation.DOM.body.appendMessagesArray(data, conversation.user_id);
-        });   
+        });
 
         // Received message from server. Only non-sender type of clients receive this.
         socketIO.socket.on('output', function(data){
@@ -97,7 +97,7 @@ $(document).ready(function(){
                 data.leaveRoom = old_conversation_id;
                 socketIO.sendMessage('roomChanged', data);
 
-                socketIO.sendMessage('init', data);        
+                socketIO.sendMessage('init', data);
             }
         });
 

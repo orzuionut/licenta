@@ -15,7 +15,11 @@
 | Event.when('login', 'User.login')
 |
 */
-const Event = use('Event')
+const Event = use('Event');
 
-Event.when('Http.error.*', 'Http.handleError')
-Event.when('Http.start', 'Http.onStart')
+Event.when('file.upload', 'FileUpload.store');
+Event.when('file.uploaded', 'FileUpload.insert');
+Event.when('file.uploaded', 'FileUpload.addReceivers');
+
+Event.when('Http.error.*', 'Http.handleError');
+Event.when('Http.start', 'Http.onStart');

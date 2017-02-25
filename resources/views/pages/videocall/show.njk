@@ -10,16 +10,26 @@
         </section>
 
         <section id="conversation-container">
+            {% include "partials/conversation.njk" %}
+
             <input type="file" id="dataChannelSend" name="files[]">
 
             <button id="send-button">Send</button>
 
-            <div id="files-container"></div>
-        </section>
+            <div id="files-container card">
 
+                {% for file in files %}
+                    <div class="row single-file">
+                        {{ file.name }}
+                    </div>
+                {% endfor %}
+
+            </div>
+        </section>
 
     </div>
 
+    <script> var user_id = {{ currentUser.id }}; </script>
     <script src="/js/app/videocall.js"></script>
 
 {% endblock %}

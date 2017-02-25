@@ -22,7 +22,7 @@ Http.handleError = function * (error, request, response) {
     const type = request.accepts('json', 'html')
     const formatMethod = type === 'json' ? 'toJSON' : 'toHTML'
     const formattedErrors = yield youch[formatMethod]()
-    response.status(status).sendThroughDataChannel(formattedErrors)
+    response.status(status).send(formattedErrors)
     return
   }
 

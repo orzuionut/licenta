@@ -42,13 +42,20 @@ class Videocall {
         this.lastPositionSavedInArray = 0;
         this.chunkSizeLimit = 992000; // save chunks of ~ 1 MB to DB (62 slices of 16KB received)
         this.uuid = this.guid();
+
+        /////////////////////////////////////////////////
+        this.bindDOMListeners();
     }
 
     build()
     {
         if (this.room !== '')
         {
-            this.socket.emit('create or join', this.room);
+            let data = {
+                room: this.room,
+                user_id: user_id
+            };
+            this.socket.emit('create or join', data);
         }
 
         var constraints = {
@@ -127,6 +134,11 @@ class Videocall {
         PubSub.subscribe(HANDLE_DATA_CHANNEL_CLOSE, this.handleDataChannelClose.bind(this));
     }
 
+    bindDOMListeners()
+    {
+        this.DOM.$files.on('click', this, this.handleFileDownloadResume);
+    }
+
     handleRemoteStreamAdded(message, event) {
         attachMediaStream(this.DOM.remoteVideo, event.stream);
 
@@ -155,7 +167,7 @@ class Videocall {
 
             this.temporaryDataSize += data.byteLength;
 
-            if(this.temporaryDataSize == this.chunkSizeLimit)
+            if (this.temporaryDataSize == this.chunkSizeLimit)
             {
                 let temporaryDataArray = this.arrayToStoreChunks.slice(this.lastPositionSavedInArray);
 
@@ -222,6 +234,12 @@ class Videocall {
     sendMessage(message)
     {
         this.socket.emit('message', message);
+    }
+
+    // TODO: refactor
+    sendMessageWithType(type, message)
+    {
+        this.socket.emit(type, message);
     }
 
     // Channel negotiation trigger function
@@ -296,7 +314,7 @@ class Videocall {
         }
         else
         {
-            let data = { fileName: this.file.name };
+            let data = {fileName: this.file.name};
             this.sendThroughDataChannel(JSON.stringify(data));
 
             delete this.reader;
@@ -305,7 +323,7 @@ class Videocall {
 
     sendThroughDataChannel(data)
     {
-        if(this.channelOpen)
+        if (this.channelOpen)
         {
             try
             {
@@ -357,12 +375,34 @@ class Videocall {
 
             let remainingSlicesFromFile = this.file.slice(message.receivedDataSize);
 
-            
+            // Store file in server for later retrieval
+            let fileToStore = this.blobToFile(remainingSlicesFromFile, this.file.name);
+
+            this.storeFile(fileToStore);
         }
 
         this.stop();
 
         this.isInitiator = false;
+    }
+
+    storeFile(file)
+    {
+        let data = {
+            user_id: user_id,
+            file: file,
+            fileName: this.file.name,
+            hash: this.uuid
+        };
+        
+        this.sendMessageWithType('store file', data);
+    }
+
+    blobToFile(blob, fileName)
+    {
+        blob.lastModifiedDate = new Date();
+        blob.name = fileName;
+        return blob;
     }
 
     stop()
@@ -382,6 +422,14 @@ class Videocall {
         }
         this.pc = null;
         // this.DOM.sendButton.disabled = true;
+    }
+
+    handleFileDownloadResume(videocall)
+    {
+        // this is bind to DOM element
+        let file_name = this.text();
+
+        console.log(file_name);
     }
 
     guid()

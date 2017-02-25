@@ -190,13 +190,20 @@ var Videocall = function () {
         this.lastPositionSavedInArray = 0;
         this.chunkSizeLimit = 992000; // save chunks of ~ 1 MB to DB (62 slices of 16KB received)
         this.uuid = this.guid();
+
+        /////////////////////////////////////////////////
+        this.bindDOMListeners();
     }
 
     _createClass(Videocall, [{
         key: 'build',
         value: function build() {
             if (this.room !== '') {
-                this.socket.emit('create or join', this.room);
+                var data = {
+                    room: this.room,
+                    user_id: user_id
+                };
+                this.socket.emit('create or join', data);
             }
 
             var constraints = {
@@ -262,6 +269,11 @@ var Videocall = function () {
             PubSub.subscribe(HANDLE_DATA_CHANNEL_MESSAGE, this.handleDataChannelMessage.bind(this));
             PubSub.subscribe(HANDLE_DATA_CHANNEL_OPEN, this.handleDataChannelOpen.bind(this));
             PubSub.subscribe(HANDLE_DATA_CHANNEL_CLOSE, this.handleDataChannelClose.bind(this));
+        }
+    }, {
+        key: 'bindDOMListeners',
+        value: function bindDOMListeners() {
+            this.DOM.$files.on('click', this, this.handleFileDownloadResume);
         }
     }, {
         key: 'handleRemoteStreamAdded',
@@ -354,6 +366,14 @@ var Videocall = function () {
             this.socket.emit('message', message);
         }
 
+        // TODO: refactor
+
+    }, {
+        key: 'sendMessageWithType',
+        value: function sendMessageWithType(type, message) {
+            this.socket.emit(type, message);
+        }
+
         // Channel negotiation trigger function
 
     }, {
@@ -406,7 +426,7 @@ var Videocall = function () {
                 var slice = this.file.slice(offset, offset + this.chunkSize);
                 this.reader.readAsArrayBuffer(slice);
             } else {
-                console.log("Exception.. channel closed.." + this.offset + " sent from " + this.file.size + " total.");
+                console.log("Exception.. channel closed..");
             }
         }
     }, {
@@ -419,12 +439,10 @@ var Videocall = function () {
             if (this.file.size > this.offset + data.byteLength) {
                 window.setTimeout(this.sliceFile.bind(this), 0, this.offset + this.chunkSize);
             } else {
-                var _data = {};
-                _data.fileName = this.file.name;
+                var _data = { fileName: this.file.name };
+                this.sendThroughDataChannel(JSON.stringify(_data));
 
                 delete this.reader;
-
-                this.sendThroughDataChannel(JSON.stringify(_data));
             }
         }
     }, {
@@ -470,11 +488,37 @@ var Videocall = function () {
             if (message.receivedDataSize) {
                 console.log("I have sent " + message.receivedDataSize + " to other peer");
                 console.log("Also the saved chunks of files are saved with hash: " + message.hash);
+
+                var remainingSlicesFromFile = this.file.slice(message.receivedDataSize);
+
+                // Store file in server for later retrieval
+                var fileToStore = this.blobToFile(remainingSlicesFromFile, this.file.name);
+
+                this.storeFile(fileToStore);
             }
 
             this.stop();
 
             this.isInitiator = false;
+        }
+    }, {
+        key: 'storeFile',
+        value: function storeFile(file) {
+            var data = {
+                user_id: user_id,
+                file: file,
+                fileName: this.file.name,
+                hash: this.uuid
+            };
+
+            this.sendMessageWithType('store file', data);
+        }
+    }, {
+        key: 'blobToFile',
+        value: function blobToFile(blob, fileName) {
+            blob.lastModifiedDate = new Date();
+            blob.name = fileName;
+            return blob;
         }
     }, {
         key: 'stop',
@@ -491,6 +535,14 @@ var Videocall = function () {
             }
             this.pc = null;
             // this.DOM.sendButton.disabled = true;
+        }
+    }, {
+        key: 'handleFileDownloadResume',
+        value: function handleFileDownloadResume(videocall) {
+            // this is bind to DOM element
+            var file_name = this.text();
+
+            console.log(file_name);
         }
     }, {
         key: 'guid',
@@ -607,6 +659,8 @@ var VideocallDOM = function VideocallDOM() {
     this.$dataChannelSend = $('#dataChannelSend');
     this.$sendButton = $('#send-button');
     this.$filesContainer = $('#files-container');
+
+    this.$files = $('.single-file');
 };
 
 exports.VideocallDOM = VideocallDOM;

@@ -1444,7 +1444,7 @@ var edgeShim = {
         if (transceiver.recvEncodingParameters.length) {
           params.rtcp.ssrc = transceiver.recvEncodingParameters[0].ssrc;
         }
-        transceiver.rtpSender.sendThroughDataChannel(params);
+        transceiver.rtpSender.send(params);
       }
       if (recv && transceiver.rtpReceiver) {
         // remove RTX field in Edge 14942

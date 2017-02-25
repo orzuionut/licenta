@@ -8,6 +8,8 @@ class VideocallDOM {
         this.$dataChannelSend = $('#dataChannelSend');
         this.$sendButton = $('#send-button');
         this.$filesContainer = $('#files-container');
+
+        this.$files = $('.single-file');
     }
 
 }

@@ -26,68 +26,8 @@
 
         </div>
 
-       
-        <div class="conversation-wrapper card-panel">
 
-              <div class="conversation-header">
-
-                <div id="conversation-header-main">
-
-                  <div id="conversation-head"> 
-
-                    <span id="conversation-name"> --Conversation name here-- </span>
-
-                    <span id="conversation-status">
-                       <i class="fa fa-circle" aria-hidden="true"></i>
-                    </span>
-
-                  </div>
-
-                  <div id="conversation-buttons">
-
-                    <div id="conversation-voice"> 
-                      <i class="material-icons">call</i>
-                    </div>
-
-                    <div id="conversation-video">
-                      <i class="material-icons">video_call</i>
-                    </div>
-
-                    <div id="conversation-profile">
-                      <i class="material-icons">account_circle</i>
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <div id="conversation-header-alert">
-
-                    <div id="alert-call"> Ongoing call.. </div>
-
-                    <div id="call-answer"> <i class="fa fa-phone" aria-hidden="true"></i> </div>
-
-                    <i id="call-reject" class="material-icons">call_end</i>
-
-                </div>
-
-              </div>
-
-
-              <div class="conversation-body ">  </div>
-
-
-              <div class="conversation-footer card-panel"> 
-
-                <textarea id="enter-message" type="text" placeholder="Enter your message.."></textarea>
-
-                <button id="submit-message" class="btn waves-effect waves-light center-align" type="submit" name="action">
-                    <i class="material-icons">send</i>
-                </button>
-
-              </div>
-
-        </div>
+        {% include "partials/conversation.njk" %}
 
 
     </div>

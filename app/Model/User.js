@@ -43,6 +43,11 @@ class User extends Lucid {
     	return value.length > 0;
     }
 
+	filesToReceive()
+	{
+		return this.belongsToMany('App/Model/File', 'file_receivers', 'user_id', 'file_id');
+	}
+
 
     getFullName()
     {

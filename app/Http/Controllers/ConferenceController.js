@@ -41,7 +41,7 @@ class ConferenceController {
 
       } else
       {
-         response.sendThroughDataChannel('Your are not allowed here. Get out! Redirect later to conversation');
+         response.send('Your are not allowed here. Get out! Redirect later to conversation');
       }
 
   }

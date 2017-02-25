@@ -32,7 +32,6 @@ Route.group('guest', function ()
  *	Authentification required
  *
  */
-
 Route.group('auth', function()
 {	
 	Route.on('home').render('pages/homepage');
@@ -50,6 +49,8 @@ Route.group('auth', function()
 
 	Route.resource('conversation', 'ConversationController');
 	Route.get('conversation/call/:id', 'ConversationController.call');
+
+	Route.resource('files', 'FileController');
 
 }).middleware('auth');
 

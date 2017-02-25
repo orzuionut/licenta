@@ -36,7 +36,7 @@ class User extends Lucid {
     {
     	let value = yield this.conversations().where('conversation_id', conversation_id).fetch();
 
-        // Workaround to send array to view. TODO: fix this
+        // Workaround to sendThroughDataChannel array to view. TODO: fix this
         const json = JSON.stringify(value)
         value = JSON.parse(json) 
 

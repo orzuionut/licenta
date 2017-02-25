@@ -52,7 +52,7 @@ function* getMessages(conversation_id)
 
     const messages = yield conversation.messages().fetch();
 
-    // Workaround to send array to view. TODO: fix this
+    // Workaround to sendThroughDataChannel array to view. TODO: fix this
     const json = JSON.stringify(messages)
     let build_messages = JSON.parse(json)
 

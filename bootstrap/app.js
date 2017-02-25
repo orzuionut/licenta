@@ -32,9 +32,10 @@ const providers = [
   'adonis-websocket/providers/WsProvider',
 
   'adonis-validation-provider/providers/ValidatorProvider',
+  'adonis-storage/providers/StorageProvider',
 
   'adonis-mongorito/providers/MongoritoProvider'
-]
+];
 
 /*
 |--------------------------------------------------------------------------
@@ -84,9 +85,10 @@ const aliases = {
   Ws: 'Adonis/Addons/Ws',
 
   Validator: 'Adonis/Addons/Validator',
+  Storage: 'Adonis/Addons/Storage',
 
   MongoritoModel: 'Adonis/Addons/MongoritoModel'
-}
+};
 
 /*
 |--------------------------------------------------------------------------

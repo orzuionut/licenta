@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 class ConferenceController {
 
@@ -8,7 +8,7 @@ class ConferenceController {
 
       // let conferences = yield user.conferences().fetch();
 
-      // // Workaround to send array to view. TODO: fix this
+      // // Workaround to sendThroughDataChannel array to view. TODO: fix this
       // const json = JSON.stringify(conferences)
       // conferences = JSON.parse(json) 
 
@@ -41,7 +41,7 @@ class ConferenceController {
 
       } else
       {
-         response.send('Your are not allowed here. Get out! Redirect later to conversation');
+         response.sendThroughDataChannel('Your are not allowed here. Get out! Redirect later to conversation');
       }
 
   }
@@ -60,4 +60,4 @@ class ConferenceController {
 
 }
 
-module.exports = ConferenceController
+module.exports = ConferenceController;

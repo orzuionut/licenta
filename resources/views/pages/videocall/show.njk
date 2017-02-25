@@ -2,34 +2,21 @@
 
 {% block content %}
 
-    <div id="mainDiv">
+    <div id="videocall-container">
 
-        <table border="1" width="100%">
+        <section id="videos-container">
+            <video id="localVideo" class="videocallLocal" autoplay muted></video>
+            <video id="remoteVideo" class="videocallRemote" autoplay muted></video>
+        </section>
 
-            <tr id="videosContainer">
-                <th>Local video</th>
-                <th>Remote video</th>
-            </tr>
-
-            <tr>
-                <td>
-                    <video id="localVideo" autoplay muted></video>
-                </td>
-                <td>
-                    <video id="remoteVideo" autoplay muted></video>
-                </td>
-            </tr>
-
-        </table>
-
-        <section>
+        <section id="conversation-container">
             <input type="file" id="dataChannelSend" name="files[]">
 
             <button id="send-button">Send</button>
+
+            <div id="files-container"></div>
         </section>
 
-
-        <div id="files-container"></div>
 
     </div>
 

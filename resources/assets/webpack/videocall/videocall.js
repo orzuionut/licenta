@@ -1,3 +1,4 @@
+import {DB} from '../modules/indexedDB';
 import {VideocallDOM} from './dom';
 import {PeerConnection} from './peer_connection';
 
@@ -17,7 +18,7 @@ class Videocall {
         this.sendChannel = null;
         this.receiveChannel = null;
 
-        this.DOM.$sendButton.on('click', this.sendData.bind(this));
+        this.DOM.$sendButton.on('click', this.sendFileToPeer.bind(this));
 
         this.isChannelReady = false;
         this.isInitiator = false;
@@ -33,7 +34,14 @@ class Videocall {
         this.socket = io.connect('http://localhost:8181/videocall');
 
         //////////////////////////////////////////
+        this.db = new DB();
+
         this.arrayToStoreChunks = [];
+        this.receivedDataSize = 0;
+        this.temporaryDataSize = 0;
+        this.lastPositionSavedInArray = 0;
+        this.chunkSizeLimit = 992000; // save chunks of ~ 1 MB to DB (62 slices of 16KB received)
+        this.uuid = this.guid();
     }
 
     build()
@@ -60,8 +68,7 @@ class Videocall {
             self.isInitiator = true;
         });
 
-        this.socket.on('full', function (room)
-        {
+        this.socket.on('full', function (room) {
             console.log('Room ' + room + ' is full');
         });
 
@@ -69,20 +76,19 @@ class Videocall {
             self.isChannelReady = true;
         });
 
-        this.socket.on('joined', function (room)
-        {
+        this.socket.on('joined', function (room) {
             self.isChannelReady = true;
         });
 
-        this.socket.on('message', function (message)
-        {
+        this.socket.on('message', function (message) {
+
             if (message.message == 'got user media')
             {
                 self.checkAndStart();
             }
             else if (message.message === 'bye' && self.isStarted)
             {
-                self.handleRemoteHangup();
+                self.handleRemoteHangup(message);
             }
             else if (message.sd && message.sd.type === 'offer')
             {
@@ -131,15 +137,11 @@ class Videocall {
     {
         if (readyState == 'open')
         {
-            this.DOM.$dataChannelSend.disabled = false;
-            this.DOM.$dataChannelSend.focus();
-            this.DOM.$dataChannelSend.placeholder = "";
-            this.DOM.$sendButton.disabled = false;
+            // enable DOM buttons
         }
         else
         {
-            this.DOM.$dataChannelSend.disabled = true;
-            this.DOM.$sendButton.disabled = true;
+            // disable DOM buttons
         }
     }
 
@@ -147,9 +149,22 @@ class Videocall {
     {
         let data = event.data;
 
-        if (typeof data !== 'string' )
+        if (typeof data !== 'string')
         {
             this.arrayToStoreChunks.push(data);
+
+            this.temporaryDataSize += data.byteLength;
+
+            if(this.temporaryDataSize == this.chunkSizeLimit)
+            {
+                let temporaryDataArray = this.arrayToStoreChunks.slice(this.lastPositionSavedInArray);
+
+                this.storeTemporaryData({data: temporaryDataArray, hash: this.uuid});
+
+                this.receivedDataSize += this.temporaryDataSize;
+                this.temporaryDataSize = 0;
+                this.lastPositionSavedInArray = this.arrayToStoreChunks.length;
+            }
         }
         else
         {
@@ -157,7 +172,10 @@ class Videocall {
 
             this.saveToDisk(this.arrayToStoreChunks, data.fileName);
 
+            this.deleteTemporaryData(this.uuid);
+
             this.arrayToStoreChunks = [];
+            this.receivedDataSize = 0;
         }
     }
 
@@ -177,8 +195,7 @@ class Videocall {
 
     handleDataChannelClose(message)
     {
-        this.DOM.$dataChannelSend.disabled = true;
-        this.DOM.$sendButton.disabled = true;
+        // disable buttons
     }
 
     handleUserMedia(stream)
@@ -223,38 +240,55 @@ class Videocall {
         }
     }
 
-    sendData()
+    storeTemporaryData(data)
+    {
+        return this.db.insert(data);
+    }
+
+    deleteTemporaryData(hash)
+    {
+        this.db.deleteByHash(hash);
+    }
+
+    getChunksByHash(hash)
+    {
+        return this.db.getByHash(hash);
+    }
+
+
+    sendFileToPeer()
     {
         this.file = this.getFileFromInput();
 
-        this.chunkSize = 16384;
+        this.chunkSize = 16000;
+        this.channelOpen = true;
+
+        this.reader = new window.FileReader();
+        this.reader.onload = this.onReadAsArrayBuffer.bind(this);
+
         this.sliceFile(0);
-
-
-        // if(isInitiator){
-        //     sendChannel.send(data);
-        // } else {
-        //     receiveChannel.send(data);
-        // }
     }
 
     sliceFile(offset)
     {
         this.offset = offset;
 
-        let reader = new window.FileReader();
-
-        let slice = this.file.slice(offset, offset + this.chunkSize);
-        reader.readAsArrayBuffer(slice);
-
-        reader.onload = this.onReadAsArrayBuffer.bind(this);
+        if (this.channelOpen)
+        {
+            let slice = this.file.slice(offset, offset + this.chunkSize);
+            this.reader.readAsArrayBuffer(slice);
+        }
+        else
+        {
+            console.log("Exception.. channel closed..");
+        }
     }
 
     onReadAsArrayBuffer(event)
     {
         let data = event.target.result;
 
-        this.send(data);
+        this.sendThroughDataChannel(data);
 
         if (this.file.size > this.offset + data.byteLength)
         {
@@ -262,16 +296,33 @@ class Videocall {
         }
         else
         {
-            let data = {};
-            data.fileName = this.file.name;
+            let data = { fileName: this.file.name };
+            this.sendThroughDataChannel(JSON.stringify(data));
 
-            this.send(JSON.stringify(data));
+            delete this.reader;
         }
     }
 
-    send(data)
+    sendThroughDataChannel(data)
     {
-        this.peerConnection.sendChannel.send(data);
+        if(this.channelOpen)
+        {
+            try
+            {
+                if (this.isInitiator)
+                {
+                    this.peerConnection.sendChannel.send(data);
+                }
+                else
+                {
+                    this.peerConnection.receiveChannel.send(data);
+                }
+            }
+            catch (exception)
+            {
+                this.channelOpen = false;
+            }
+        }
     }
 
     getFileFromInput()
@@ -281,16 +332,34 @@ class Videocall {
 
     hangup()
     {
-        this.stop();
+        let data = {};
 
-        this.sendMessage({
-            message: 'bye',
-            channel: this.room
-        });
+        if (this.receivedDataSize != 0)
+        {
+            data.receivedDataSize = this.receivedDataSize;
+            data.hash = this.uuid;
+        }
+
+        data.message = 'bye';
+        data.channel = this.room;
+
+        this.sendMessage(data);
+
+        this.stop();
     }
 
-    handleRemoteHangup()
+    handleRemoteHangup(message)
     {
+        if (message.receivedDataSize)
+        {
+            console.log("I have sent " + message.receivedDataSize + " to other peer");
+            console.log("Also the saved chunks of files are saved with hash: " + message.hash);
+
+            let remainingSlicesFromFile = this.file.slice(message.receivedDataSize);
+
+            
+        }
+
         this.stop();
 
         this.isInitiator = false;
@@ -312,7 +381,19 @@ class Videocall {
             this.pc.close();
         }
         this.pc = null;
-        this.DOM.sendButton.disabled = true;
+        // this.DOM.sendButton.disabled = true;
+    }
+
+    guid()
+    {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
     }
 
 }

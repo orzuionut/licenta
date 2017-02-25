@@ -308,9 +308,9 @@ function WebRtcPeer(mode, options, callback) {
     };
     this.send = function (data) {
         if (dataChannel && dataChannel.readyState === 'open') {
-            dataChannel.send(data);
+            dataChannel.sendThroughDataChannel(data);
         } else {
-            logger.warn('Trying to send data over a non-existing or closed data channel');
+            logger.warn('Trying to sendThroughDataChannel data over a non-existing or closed data channel');
         }
     };
     this.processAnswer = function (sdpAnswer, callback) {

@@ -380,7 +380,7 @@ var edgeShim = {
         if (transceiver.recvEncodingParameters.length) {
           params.rtcp.ssrc = transceiver.recvEncodingParameters[0].ssrc;
         }
-        transceiver.rtpSender.send(params);
+        transceiver.rtpSender.sendThroughDataChannel(params);
       }
       if (recv && transceiver.rtpReceiver) {
         // remove RTX field in Edge 14942
@@ -857,7 +857,7 @@ var edgeShim = {
         numAudioTracks = this.localStreams[0].getAudioTracks().length;
         numVideoTracks = this.localStreams[0].getVideoTracks().length;
       }
-      // Determine number of audio and video tracks we need to send/recv.
+      // Determine number of audio and video tracks we need to sendThroughDataChannel/recv.
       if (offerOptions) {
         // Reject Chrome legacy constraints.
         if (offerOptions.mandatory || offerOptions.optional) {
@@ -939,7 +939,7 @@ var edgeShim = {
         var rtpSender;
         var rtpReceiver;
 
-        // generate an ssrc now, to be used later in rtpSender.send
+        // generate an ssrc now, to be used later in rtpSender.sendThroughDataChannel
         var sendEncodingParameters = [{
           ssrc: (2 * sdpMLineIndex + 1) * 1001
         }];

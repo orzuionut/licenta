@@ -30,7 +30,7 @@ class VideocallController {
 
       } else
       {
-         response.send('Your are not allowed here. Get out! Redirect later to conversation');
+         response.sendThroughDataChannel('Your are not allowed here. Get out! Redirect later to conversation');
       }
 
   }

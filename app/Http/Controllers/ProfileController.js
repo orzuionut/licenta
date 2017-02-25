@@ -10,7 +10,7 @@ class ProfileController {
 
       let user = yield User.query().where('id', id).fetch()
 
-      // Workaround to send array to view. TODO: fix this
+      // Workaround to sendThroughDataChannel array to view. TODO: fix this
       const json_user = JSON.stringify(user)
       user = JSON.parse(json_user) 
 

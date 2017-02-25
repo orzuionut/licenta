@@ -88,7 +88,7 @@ class Conference {
             video: true
         };
 
-        // create video for current user to send to server
+        // create video for current user to sendThroughDataChannel to server
         var localParticipant = new Participant(this.sessionId, this.socketIO.socket);
 
         this.participants[this.sessionId] = localParticipant;

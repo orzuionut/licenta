@@ -7,60 +7,63 @@ const Message = use('App/Model/Message');
 
 class ConversationController {
 
-  * index(request, response) 
-  {
-    const user = request.currentUser;
+    * index(request, response)
+    {
+        const user = request.currentUser;
 
-    let conversations = yield user.conversations().fetch();
+        let conversations = yield user.conversations().fetch();
 
-    // Workaround to sendThroughDataChannel array to view. TODO: fix this
-    const json = JSON.stringify(conversations);
-    conversations = JSON.parse(json) ;
+        // Workaround to send array to view. TODO: fix this
+        const json = JSON.stringify(conversations);
+        conversations = JSON.parse(json);
 
 
-    yield response.sendView('pages/conversation/index', { conversations: conversations })
+        yield response.sendView('pages/conversation/index', {conversations: conversations})
 
-  }
+    }
 
-  * call(request, response)
-  {
-      const conversationID = request.param('id');
-      const conversation = yield Conversation.find(conversationID);
+    * call(request, response)
+    {
+        const conversationID = request.param('id');
+        const conversation = yield Conversation.find(conversationID);
 
-      const nrOfParticipantsInConversation = yield conversation.getNrOfParticipants();
+        const nrOfParticipantsInConversation = yield conversation.getNrOfParticipants();
 
-      if(nrOfParticipantsInConversation > 2) {
-          yield response.redirect('/conference/' + conversationID);              
-      } else {
-          yield response.redirect('/videocall/' + conversationID);
-      }
+        if (nrOfParticipantsInConversation > 2)
+        {
+            yield response.redirect('/conference/' + conversationID);
+        }
+        else
+        {
+            yield response.redirect('/videocall/' + conversationID);
+        }
 
-  }
+    }
 
-  * create(request, response) {
-    //
-  }
+    * create(request, response) {
+        //
+    }
 
-  * store(request, response) 
-  {
-      
-  }
+    * store(request, response)
+    {
 
-  * show(request, response) {
-    //
-  }
+    }
 
-  * edit(request, response) {
-    //
-  }
+    * show(request, response) {
+        //
+    }
 
-  * update(request, response) {
-    //
-  }
+    * edit(request, response) {
+        //
+    }
 
-  * destroy(request, response) {
-    //
-  }
+    * update(request, response) {
+        //
+    }
+
+    * destroy(request, response) {
+        //
+    }
 
 
 }

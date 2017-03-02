@@ -1,13 +1,8 @@
 .conversations-content
 	display: flex
-	min-height: 90vh
-	
+	max-height: 90vh
 
-.conversation-wrapper
-	flex-basis: 75%
-	flex-grow: 3
-	flex-shrink: 1
-
+.conversation-wrapper, .conversation-files-wrapper
 	// Used for inner content scrolling when overflow
 	display: flex
 	flex-direction: column
@@ -15,7 +10,7 @@
 	margin-right: 2%
 	margin-left: 2%
 
-	max-height: 90vh
+	height: 88vh
 	overflow: auto
 	padding: 0
 
@@ -25,12 +20,14 @@
 
 	.conversation-header
 		border-bottom: 2px solid #939393
-		margin-bottom: 60px
 
-	.conversation-body
+	.conversation-body, .conversation-files-body
 		flex: 1
 
 		overflow: auto
+		overflow-x: hidden
+
+		margin-top: 20px
 
 		// Display messages to left and right
 		display: flex
@@ -42,20 +39,16 @@
 
 
 	.conversation-footer
-		margin-top: 60px
+		margin-top: 20px
 
 
 .conversations-list
-	flex-basis: 25%
-	flex-grow: 1
-	flex-shrink: 3
-
 	order: -1
 
 	// Used for scrolling items when overflowing
 	display: flex
 	flex-direction: column
-	max-height: 90vh
+	height: 88vh
 	overflow: auto
 
 	margin-left: 2%

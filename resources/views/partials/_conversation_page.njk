@@ -1,4 +1,10 @@
-<div class="conversation-wrapper card-panel">
+{% extends 'partials/__conversation_without_header.njk' %}
+
+{% block conversation_wrapper_class %}
+    col-flex-3-4
+{% endblock %}
+
+{% block header %}
 
     <div class="conversation-header">
 
@@ -8,9 +14,9 @@
 
                 <span id="conversation-name"> --Conversation name here-- </span>
 
-                    <span id="conversation-status">
-                       <i class="fa fa-circle" aria-hidden="true"></i>
-                    </span>
+            <span id="conversation-status">
+               <i class="fa fa-circle" aria-hidden="true"></i>
+            </span>
 
             </div>
 
@@ -34,9 +40,9 @@
 
         <div id="conversation-header-alert">
 
-            <div id="alert-call"> Ongoing call.. </div>
+            <div id="alert-call"> Ongoing call..</div>
 
-            <div id="call-answer"> <i class="fa fa-phone" aria-hidden="true"></i> </div>
+            <div id="call-answer"><i class="fa fa-phone" aria-hidden="true"></i></div>
 
             <i id="call-reject" class="material-icons">call_end</i>
 
@@ -44,18 +50,4 @@
 
     </div>
 
-
-    <div class="conversation-body ">  </div>
-
-
-    <div class="conversation-footer card-panel">
-
-        <textarea id="enter-message" type="text" placeholder="Enter your message.."></textarea>
-
-        <button id="submit-message" class="btn waves-effect waves-light center-align" type="submit" name="action">
-            <i class="material-icons">send</i>
-        </button>
-
-    </div>
-
-</div>
+{% endblock %}

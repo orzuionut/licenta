@@ -5,31 +5,48 @@
     <div id="videocall-container">
 
         <section id="videos-container">
-            <video id="localVideo" class="videocallLocal" autoplay muted></video>
-            <video id="remoteVideo" class="videocallRemote" autoplay muted></video>
+            <div id="videos-wrapper" class="card-panel">
+                <video id="localVideo" class="videocallLocal video-fullscreen" autoplay muted></video>
+                <video id="remoteVideo" class="videocallRemote video-hidden" autoplay muted></video>
+            </div>
         </section>
 
-        <section id="conversation-container">
-            {% include "partials/conversation.njk" %}
+        <section id="conversation-container" class="col-flex-1-4">
 
-            <input type="file" id="dataChannelSend" name="files[]">
+            {% include "partials/_conversation_videocall_messages.njk" %}
 
-            <button id="send-button">Send</button>
+            <div class="conversation-files-wrapper card-panel">
 
-            <div id="files-container card">
+                <div class="conversation-header">
+                    <button id="hide-files-btn">
+                        <i class="material-icons">keyboard_backspace</i>
+                    </button>
+                </div>
 
-                {% for file in files %}
-                    <div class="row single-file">
-                        {{ file.name }}
-                    </div>
-                {% endfor %}
+                <div id="files-container" class="conversation-files-body">
+
+                    {% for file in files %}
+                        {#<div class="message-emitter">{{ file.user_sender_id }}</div>#}
+                        <div class="single-file file-bubble file-bubble-resume" data-id="{{ file.id }}">
+                            {{ file.name }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                {% include "partials/_conversation_videocall_files_container.njk" %}
 
             </div>
+
         </section>
 
     </div>
 
-    <script> var user_id = {{ currentUser.id }}; </script>
+    <script>
+        var user_id = {{ currentUser.id }};
+        var conversation_id = 1;
+        var user_name = "{{ currentUser.getFullName() }}";
+    </script>
     <script src="/js/app/videocall.js"></script>
 
 {% endblock %}

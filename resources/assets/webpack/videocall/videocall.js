@@ -2,6 +2,8 @@ import {DB} from '../modules/indexedDB';
 import {VideocallDOM} from './dom';
 import {PeerConnection} from './peer_connection';
 
+import {Helper} from '../helpers/helper';
+
 class Videocall {
     constructor()
     {
@@ -19,6 +21,7 @@ class Videocall {
         this.receiveChannel = null;
 
         this.DOM.$sendButton.on('click', this.sendFileToPeer.bind(this));
+
 
         this.isChannelReady = false;
         this.isInitiator = false;
@@ -41,7 +44,7 @@ class Videocall {
         this.temporaryDataSize = 0;
         this.lastPositionSavedInArray = 0;
         this.chunkSizeLimit = 992000; // save chunks of ~ 1 MB to DB (62 slices of 16KB received)
-        this.uuid = this.guid();
+        this.uuid = Helper.guid();
 
         /////////////////////////////////////////////////
         this.bindDOMListeners();
@@ -70,21 +73,24 @@ class Videocall {
     {
         let self = this;
 
-        this.socket.on('created', function (room)
+        this.socket.on('created', function (room) { self.isInitiator = true; });
+
+        this.socket.on('full', function (room) { console.log('Room ' + room + ' is full'); });
+
+        // Other peer joined
+        this.socket.on('join', function (room) 
         {
-            self.isInitiator = true;
-        });
-
-        this.socket.on('full', function (room) {
-            console.log('Room ' + room + ' is full');
-        });
-
-        this.socket.on('join', function (room) {
             self.isChannelReady = true;
+            
+            self.DOM.updateVideoElementsCallRunning();
         });
 
-        this.socket.on('joined', function (room) {
+        // This peer joined
+        this.socket.on('joined', function (room) 
+        {
             self.isChannelReady = true;
+
+            self.DOM.updateVideoElementsCallRunning();
         });
 
         this.socket.on('message', function (message) {
@@ -117,6 +123,9 @@ class Videocall {
                 self.peerConnection.addIceCandidate(message.label, message.candidate);
             }
         });
+
+        this.socket.on('download file', this.handleFileDownload.bind(this));
+        this.socket.on('download finished', this.handleFileDownloadFinished.bind(this));
     }
 
     bindListeners()
@@ -136,7 +145,13 @@ class Videocall {
 
     bindDOMListeners()
     {
-        this.DOM.$files.on('click', this, this.handleFileDownloadResume);
+        let self = this;
+        this.DOM.$files.on('click', this.target, self.handleFileDownloadResume.bind(self));
+        
+        this.DOM.$showFilesButton.on('click', self.DOM.handleShowFilesButtonClicked.bind(self.DOM));
+        this.DOM.$hideFilesButton.on('click', self.DOM.handleHideFilesButtonClicked.bind(self.DOM));
+
+        this.DOM.$inputFile.on('change', this, self.DOM.handleFileInputChanged.bind(self.DOM));
     }
 
     handleRemoteStreamAdded(message, event) {
@@ -199,10 +214,13 @@ class Videocall {
             text: fileName,
             href: URL.createObjectURL(received),
             target: '_blank',
-            download: fileName
+            download: fileName,
+            class: 'single-file file-bubble file-bubble-download'
         });
 
-        this.DOM.$filesContainer.append($fileLink);
+        var $el = $('#files-container');
+
+        $el.append($fileLink);
     }
 
     handleDataChannelClose(message)
@@ -276,6 +294,8 @@ class Videocall {
 
     sendFileToPeer()
     {
+        Materialize.toast('Sending file to the other peer..', 4000);
+
         this.file = this.getFileFromInput();
 
         this.chunkSize = 16000;
@@ -310,7 +330,7 @@ class Videocall {
 
         if (this.file.size > this.offset + data.byteLength)
         {
-            window.setTimeout(this.sliceFile.bind(this), 0, this.offset + this.chunkSize);
+            window.setTimeout(this.sliceFile.bind(this), 100, this.offset + this.chunkSize);
         }
         else
         {
@@ -370,31 +390,35 @@ class Videocall {
     {
         if (message.receivedDataSize)
         {
+            Materialize.toast("Please wait while the rest of the file is uploaded to the server..", 4000);
+            
             console.log("I have sent " + message.receivedDataSize + " to other peer");
             console.log("Also the saved chunks of files are saved with hash: " + message.hash);
 
             let remainingSlicesFromFile = this.file.slice(message.receivedDataSize);
 
-            // Store file in server for later retrieval
             let fileToStore = this.blobToFile(remainingSlicesFromFile, this.file.name);
 
-            this.storeFile(fileToStore);
+            this.storeFile(fileToStore, message.hash);
         }
 
         this.stop();
 
         this.isInitiator = false;
+
+        this.DOM.updateVideoElementsCallStopped();
+        this.DOM.showFlashMessageCallStopped();
     }
 
-    storeFile(file)
+    storeFile(file, hash)
     {
         let data = {
             user_id: user_id,
             file: file,
             fileName: this.file.name,
-            hash: this.uuid
+            hash: hash
         };
-        
+
         this.sendMessageWithType('store file', data);
     }
 
@@ -424,24 +448,53 @@ class Videocall {
         // this.DOM.sendButton.disabled = true;
     }
 
-    handleFileDownloadResume(videocall)
+    handleFileDownloadResume(file)
     {
         // this is bind to DOM element
-        let file_name = this.text();
+        this.file_id = $(file.target).attr('data-id');
+        this.file_name = $(file.target).text();
 
-        console.log(file_name);
+        this.getChunksByHash(this.file_id)
+            .then(this.handleChunksFetchSuccess.bind(this))
+            .catch(this.handleChunksFetchError);
     }
 
-    guid()
+    handleChunksFetchSuccess(chunksStored)
     {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
+
+        this.arrayChunks = this.getArrayChunksFromObject(chunksStored);
+
+        /////////////////////////////////////////////////////////////////
+        let data = {
+            user_id: user_id,
+            file_id: this.file_id
+        };
+
+        this.sendMessageWithType('download file', data);
+    }
+
+    handleFileDownload(data)
+    {
+        console.log("GOT DATA");
+        this.arrayChunks.push(data.chunk);
+    }
+
+    handleFileDownloadFinished(data)
+    {
+        this.saveToDisk(this.arrayChunks, this.file_name);
+    }
+
+    // chunksObjects contains multiple objects that each contain data equal to an Array[62]
+    getArrayChunksFromObject(chunksObjects)
+    {
+        var chunksArray = [];
+
+        for (let i = 0; i < chunksObjects.length; i++)
+        {
+            chunksArray.push(...chunksObjects[i].data);
         }
 
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
+        return chunksArray;
     }
 
 }

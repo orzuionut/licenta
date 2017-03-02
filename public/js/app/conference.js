@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -109,7 +109,8 @@ var SocketIO = function () {
 exports.SocketIO = SocketIO;
 
 /***/ }),
-/* 1 */
+/* 1 */,
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -162,7 +163,14 @@ var Config = function () {
 exports.Config = Config;
 
 /***/ }),
-/* 2 */
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -175,11 +183,11 @@ exports.Conference = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(10);
+var _dom = __webpack_require__(12);
 
-var _config = __webpack_require__(1);
+var _config = __webpack_require__(2);
 
-var _participants = __webpack_require__(11);
+var _participants = __webpack_require__(13);
 
 var _socket = __webpack_require__(0);
 
@@ -379,14 +387,8 @@ var Conference = function () {
 exports.Conference = Conference;
 
 /***/ }),
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -423,7 +425,7 @@ var ConferenceDOM = function () {
 exports.ConferenceDOM = ConferenceDOM;
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -492,17 +494,17 @@ var Participant = function () {
 exports.Participant = Participant;
 
 /***/ }),
-/* 12 */,
-/* 13 */,
 /* 14 */,
 /* 15 */,
-/* 16 */
+/* 16 */,
+/* 17 */,
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _conference = __webpack_require__(2);
+var _conference = __webpack_require__(10);
 
 $(document).ready(function () {
     var conference = new _conference.Conference();

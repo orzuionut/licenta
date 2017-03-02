@@ -51,6 +51,7 @@ Route.group('auth', function()
 	Route.get('conversation/call/:id', 'ConversationController.call');
 
 	Route.resource('files', 'FileController');
+	Route.post('downloadFile', 'FileController.downloadFile');
 
 }).middleware('auth');
 

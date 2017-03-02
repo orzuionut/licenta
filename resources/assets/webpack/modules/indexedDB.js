@@ -2,9 +2,9 @@ class DB
 {
     constructor()
     {
-        this.db = new Dexie("files");
+        this.db = new Dexie("instant2");
         this.db.version(1).stores({
-            files: '++id,data,hash'
+            files: '++id,data,*hash'
         });
 
         this.db.open();

@@ -1,16 +1,91 @@
 #videocall-container
 	display: flex
-	align-items: center
-
 
 	#videos-container
-		flex-basis: 70%
+		max-height: 90vh
 
-		.videocallLocal, .videocallRemote
-			max-width: 20%
+		#videos-wrapper
+			//margin-right: 2%
+			height: 88vh
+			padding: 0
+			position: relative
+			text-align: center
+
+			video
+				margin: 0 !important
+				border-radius: 0
+
+			.video-fullscreen
+				height: 88vh
+				margin: 0 auto
+
+			.video-small
+				width: 20vh
+				position: absolute
+				top: 20px
+				right: 20px
+
+			.video-hidden
+				display: none
 
 
-	#conversation-container
-		flex-basis: 30%
-		background: white
+#conversation-container
+	max-height: 90vh
+
+	.conversation-files-wrapper
+		display: none
+
+	.single-file
+		cursor: pointer
+
+	.message-box
+		font-size: 15px
+
+	#file-upload-container
+		display: flex
+
+		#dataChannelSend
+			width: 0.1px
+			height: 0.1px
+			opacity: 0
+			overflow: hidden
+			position: absolute
+			z-index: -1
+
+			& + label
+				margin-right: auto
+				height: 36px
+
+				max-width: 200px
+				overflow: hidden
+
+				font-size: 1.25em
+				font-weight: 700
+				text-overflow: ellipsis
+				white-space: nowrap
+
+				padding: 0.625rem 1.25rem
+				color: $flat-blue
+				border: 2px solid currentColor
+				display: inline-block
+				cursor: pointer
+
+			& + label svg
+				width: 1em
+				height: 1em
+				vertical-align: middle
+				fill: currentColor
+				margin-top: -0.25em
+				margin-right: 0.25em
+
+			&:focus + label
+				outline: 1px dotted #000
+
+			&:focus + label, & + label:hover
+				color: #8E8E93
+
+		.btn
+			background-color: $flat-blue
+
+
 

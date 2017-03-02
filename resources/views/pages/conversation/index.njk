@@ -4,21 +4,21 @@
 
     {{ csrfField }}
 
-    
+
     <div class="conversations-content">
 
 
-        <div class="conversations-list card-panel">
+        <div class="conversations-list col-flex-1-4 card-panel">
 
             {% for conversation in conversations %}
 
                 <div class="conversation-item row">
 
-                  <div class="card-panel">
+                    <div class="card-panel">
 
-                     <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
+                        <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
 
-                 </div>
+                    </div>
 
                 </div>
 
@@ -27,16 +27,16 @@
         </div>
 
 
-        {% include "partials/conversation.njk" %}
+        {% include "partials/_conversation_page.njk" %}
 
 
     </div>
 
-    <script> 
+    <script>
 
-      let user_id = {{ currentUser.id }}; 
-      let user_name = "{{ currentUser.getFullName() }}";
-      let conversation_id = {{ conversations[0].id }};
+        let user_id = {{ currentUser.id }};
+        let user_name = "{{ currentUser.getFullName() }}";
+        let conversation_id = {{ conversations[0].id }};
 
     </script>
 

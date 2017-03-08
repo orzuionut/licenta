@@ -13,7 +13,7 @@
 
         <section id="conversation-container" class="col-flex-1-4">
 
-            {% include "partials/_conversation_videocall_messages.njk" %}
+            {% include "partials/_conversation_header_files.njk" %}
 
             <div class="conversation-files-wrapper card-panel">
 
@@ -47,6 +47,7 @@
         var conversation_id = 1;
         var user_name = "{{ currentUser.getFullName() }}";
     </script>
+
     <script src="/js/app/videocall.js"></script>
 
 {% endblock %}

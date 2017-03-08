@@ -74,6 +74,52 @@
 
 
 Object.defineProperty(exports, "__esModule", {
+        value: true
+});
+exports.ConversationBuilder = undefined;
+
+var _conversation = __webpack_require__(2);
+
+var _conversations_list = __webpack_require__(3);
+
+var _dom = __webpack_require__(5);
+
+var _header = __webpack_require__(7);
+
+var _body = __webpack_require__(4);
+
+var _footer = __webpack_require__(6);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationBuilder = function ConversationBuilder() {
+        _classCallCheck(this, ConversationBuilder);
+
+        // Side-menu list of conversations
+        var conversations_list = new _conversations_list.ConversationsList($(".conversation-item"));
+
+        // Main chat-box
+        var header = new _header.Header($('#conversation-voice'), $('#conversation-video'), $('#conversation-profile'));
+        var body = new _body.Body($('.conversation-body'));
+        var footer = new _footer.Footer($('#enter-message'), $('#submit-message'));
+
+        var DOM = new _dom.ConversationDOM(header, body, footer);
+
+        var conversation = new _conversation.Conversation(DOM, conversation_id, user_id);
+
+        conversation.init();
+};
+
+exports.ConversationBuilder = ConversationBuilder;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
@@ -109,8 +155,420 @@ var SocketIO = function () {
 exports.SocketIO = SocketIO;
 
 /***/ }),
-/* 1 */,
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Conversation = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _socket = __webpack_require__(1);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Conversation = function () {
+    function Conversation(DOM, id, user_id) {
+        _classCallCheck(this, Conversation);
+
+        this.DOM = DOM;
+
+        this.id = id;
+        this.user_id = user_id;
+    }
+
+    _createClass(Conversation, [{
+        key: 'init',
+        value: function init() {
+            var self = this;
+
+            self.ENTER_KEY = 13;
+
+            var data = {};
+
+            self.socketIO = new _socket.SocketIO(io, 'http://localhost:8181/chat');
+
+            if (self.socketIO.socket === undefined) {
+                //show modal alert ERROR and EXIT
+            }
+
+            self.socketIO.setRoom(self.id);
+
+            self.socketIO.sendMessage('init', data);
+
+            self.bindSocketListeners();
+            self.bindDOMListeners();
+
+            // // Match all anchor tags with id like :conversation-id-{number}:
+            // conversations_list.item.click(function () {
+            //     let old_conversation_id = conversation.id;
+            //     let new_conversation_id = conversations_list.getItemID(this);
+            //
+            //     // Conversation changed. Update stuff
+            //     if (old_conversation_id !== new_conversation_id)
+            //     {
+            //         conversation.DOM.body.clear();
+            //
+            //         conversation.setID(new_conversation_id);
+            //
+            //         socketIO.setRoom(new_conversation_id);
+            //
+            //         data.leaveRoom = old_conversation_id;
+            //         socketIO.sendMessage('roomChanged', data);
+            //
+            //         socketIO.sendMessage('init', data);
+            //     }
+            // });
+
+            // conversation.DOM.header.$video_button.click(function () {
+            //     data = {};
+            //     socketIO.sendMessage('call', data);
+            //
+            //     window.location.href = "/conversation/call/" + conversation.id;
+            // });
+            //
+            // conversation.DOM.header.$answer_call.click(function () {
+            //     window.location.href = "/conversation/call/" + conversation.id;
+            // });
+            //
+            // conversation.DOM.header.$reject_call.click(function () {
+            //     conversation.DOM.header.hideIncomingCallAlert();
+            // });
+        }
+    }, {
+        key: 'bindSocketListeners',
+        value: function bindSocketListeners() {
+            var self = this;
+
+            self.socketIO.socket.on('init', function (data) {
+                self.DOM.body.appendMessagesArray(data, self.user_id);
+            });
+
+            // Received message from server. Only non-sender type of clients receive this.
+            self.socketIO.socket.on('output', function (data) {
+                self.DOM.body.appendMessagesArray(data, self.user_id);
+            });
+
+            self.socketIO.socket.on('call', function (data) {
+                self.DOM.header.showIncomingCallAlert();
+            });
+        }
+    }, {
+        key: 'bindDOMListeners',
+        value: function bindDOMListeners() {
+            var self = this;
+            var data = {};
+
+            self.DOM.footer.$submit_button.on('click', function () {
+
+                var message = self.DOM.footer.getMessage();
+                self.messageSubmitted(message);
+
+                data = {
+                    user_id: self.user_id,
+                    message: message,
+                    user_name: user_name,
+                    conversation_id: self.id
+                };
+                self.socketIO.sendMessage('input', data);
+            });
+
+            self.DOM.footer.$message_input.keypress(function (e) {
+                if (e.which == self.ENTER_KEY) {
+                    self.DOM.footer.clickSubmitButton();
+                }
+            });
+        }
+    }, {
+        key: 'setID',
+        value: function setID(id) {
+            this.id = id;
+        }
+    }, {
+        key: 'messageSubmitted',
+        value: function messageSubmitted(message) {
+            var data = {
+                user_id: this.user_id,
+                message: message
+            };
+
+            this.DOM.body.appendMessage(data, this.user_id);
+
+            this.DOM.footer.clearInput();
+        }
+    }]);
+
+    return Conversation;
+}();
+
+exports.Conversation = Conversation;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationsList = function () {
+    function ConversationsList($element) {
+        _classCallCheck(this, ConversationsList);
+
+        this.item = $element;
+    }
+
+    _createClass(ConversationsList, [{
+        key: "getItemID",
+        value: function getItemID(item) {
+            var element = $(item).find("div[id^='conversation-id-']")[0];
+            var id = $(element).attr('id');
+
+            return id.substring(id.lastIndexOf("-") + 1);
+        }
+    }]);
+
+    return ConversationsList;
+}();
+
+exports.ConversationsList = ConversationsList;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Body = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _message = __webpack_require__(8);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Body = function () {
+    function Body($box) {
+        _classCallCheck(this, Body);
+
+        this.$box = $box;
+    }
+
+    _createClass(Body, [{
+        key: 'appendMessagesArray',
+        value: function appendMessagesArray(data, current_user_id) {
+            for (var i = 0; i < data.length; i++) {
+                this.appendMessage(data[i], current_user_id);
+            }
+        }
+    }, {
+        key: 'appendMessage',
+        value: function appendMessage(data, current_user_id) {
+            var is_current_user = data.user_id === current_user_id;
+            var type = is_current_user ? 'message-user' : 'message-other';
+
+            if (!is_current_user) {
+                var $emitter = _message.Message.createEmitter(data.user_name);
+
+                this.append($emitter);
+            }
+
+            this.append(new _message.Message(data, type));
+        }
+    }, {
+        key: 'append',
+        value: function append($element) {
+            this.$box.append($element);
+
+            this.scrollToBottom();
+        }
+    }, {
+        key: 'scrollToBottom',
+        value: function scrollToBottom() {
+            this.$box.scrollTop(this.$box[0].scrollHeight);
+        }
+    }, {
+        key: 'clear',
+        value: function clear() {
+            this.$box.empty();
+        }
+    }]);
+
+    return Body;
+}();
+
+exports.Body = Body;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationDOM = function ConversationDOM(header, body, footer) {
+    _classCallCheck(this, ConversationDOM);
+
+    this.header = header;
+    this.body = body;
+    this.footer = footer;
+};
+
+exports.ConversationDOM = ConversationDOM;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Footer = function () {
+    function Footer($message_input, $submit_button) {
+        _classCallCheck(this, Footer);
+
+        this.$message_input = $message_input;
+        this.$submit_button = $submit_button;
+    }
+
+    _createClass(Footer, [{
+        key: "clearInput",
+        value: function clearInput() {
+            this.$message_input.val("");
+        }
+    }, {
+        key: "clickSubmitButton",
+        value: function clickSubmitButton() {
+            this.$submit_button.click();
+        }
+    }, {
+        key: "getMessage",
+        value: function getMessage() {
+            return this.$message_input.val();
+        }
+    }]);
+
+    return Footer;
+}();
+
+exports.Footer = Footer;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Header = function () {
+    function Header($voice_button, $video_button, $profile_button) {
+        _classCallCheck(this, Header);
+
+        this.$voice_button = $voice_button;
+        this.$video_button = $video_button;
+        this.$profile_button = $profile_button;
+
+        this.$incoming_call_alert = $('#conversation-header-alert');
+        this.$answer_call = $("#call-answer");
+        this.$reject_call = $("#call-reject");
+    }
+
+    _createClass(Header, [{
+        key: "showIncomingCallAlert",
+        value: function showIncomingCallAlert() {
+            this.$incoming_call_alert.css('display', 'flex');
+        }
+    }, {
+        key: "hideIncomingCallAlert",
+        value: function hideIncomingCallAlert() {
+            this.$incoming_call_alert.css('display', 'none');
+        }
+    }]);
+
+    return Header;
+}();
+
+exports.Header = Header;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Message = function () {
+    function Message(data, type) {
+        _classCallCheck(this, Message);
+
+        return this.create(data.message, type);
+    }
+
+    _createClass(Message, [{
+        key: "create",
+        value: function create(message, type) {
+            return $("<div class='message-box " + type + "'>" + message + "</div>");
+        }
+    }], [{
+        key: "createEmitter",
+        value: function createEmitter(emitter) {
+            return $("<div class='message-emitter'>" + emitter + "</div>");
+        }
+    }]);
+
+    return Message;
+}();
+
+exports.Message = Message;
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -163,13 +621,6 @@ var Config = function () {
 exports.Config = Config;
 
 /***/ }),
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -185,11 +636,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _dom = __webpack_require__(12);
 
-var _config = __webpack_require__(2);
+var _config = __webpack_require__(9);
 
 var _participants = __webpack_require__(13);
 
-var _socket = __webpack_require__(0);
+var _socket = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -229,7 +680,6 @@ var Conference = function () {
             }.bind(this));
 
             this.socketIO.socket.on("message", function (message) {
-
                 switch (message.id) {
                     case "existingParticipants":
                         this.onExistingParticipants(message);
@@ -411,9 +861,9 @@ var ConferenceDOM = function () {
         key: 'createVideo',
         value: function createVideo(participant) {
             var videoId = "video-" + participant.id;
-            var videoHtml = '<video id="' + videoId + '" autoplay height="240px"></video>';
+            var videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay muted></video>';
 
-            $("#videoList").append(videoHtml);
+            $("#videos-container").append(videoHtml);
 
             return $("#" + videoId)[0];
         }
@@ -506,6 +956,8 @@ exports.Participant = Participant;
 
 var _conference = __webpack_require__(10);
 
+var _conversation_builder = __webpack_require__(0);
+
 $(document).ready(function () {
     var conference = new _conference.Conference();
 
@@ -514,6 +966,8 @@ $(document).ready(function () {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     conference.listen();
+
+    var build = new _conversation_builder.ConversationBuilder();
 });
 
 /***/ })

@@ -1,4 +1,5 @@
 import { Conference } from './conference.js';
+import {ConversationBuilder} from "../conversation/conversation_builder";
 
 $(document).ready(function ()
 {
@@ -9,4 +10,6 @@ $(document).ready(function ()
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     conference.listen();
+
+    let build = new ConversationBuilder();
 });

@@ -28,20 +28,12 @@ class Conference {
 
         this.iceServers = Config.getIceServers();
 
-        window.onbeforeunload = function ()
-        {
-            this.socketIO.socket.disconnect();
-        }.bind(this);
+        window.onbeforeunload = function () { this.socketIO.socket.disconnect(); }.bind(this);
 
-
-        this.socketIO.socket.on("id", function (id)
-        {
-            this.sessionId = id;
-        }.bind(this));
+        this.socketIO.socket.on("id", function (id) { this.sessionId = id; }.bind(this));
 
         this.socketIO.socket.on("message", function (message)
         {
-
             switch (message.id) {
                 case "existingParticipants":
                     this.onExistingParticipants(message);

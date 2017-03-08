@@ -215,7 +215,8 @@ class Videocall {
             href: URL.createObjectURL(received),
             target: '_blank',
             download: fileName,
-            class: 'single-file file-bubble file-bubble-download'
+            class: 'single-file file-bubble file-bubble-download',
+            id: 'auto-download'
         });
 
         var $el = $('#files-container');
@@ -450,9 +451,11 @@ class Videocall {
 
     handleFileDownloadResume(file)
     {
+        Materialize.toast('Attempting to retrieve temporary data', 3000);
+
         // this is bind to DOM element
         this.file_id = $(file.target).attr('data-id');
-        this.file_name = $(file.target).text();
+        this.file_name = $.trim($(file.target).text());
 
         this.getChunksByHash(this.file_id)
             .then(this.handleChunksFetchSuccess.bind(this))
@@ -461,6 +464,8 @@ class Videocall {
 
     handleChunksFetchSuccess(chunksStored)
     {
+        Materialize.toast('Temporary file data retrieve successfully', 3000);
+        Materialize.toast('Resuming download of the rest of the file from the server', 3000);
 
         this.arrayChunks = this.getArrayChunksFromObject(chunksStored);
 
@@ -481,6 +486,8 @@ class Videocall {
 
     handleFileDownloadFinished(data)
     {
+        Materialize.toast('Temporary file data retrieve successfully', 3000);
+
         this.saveToDisk(this.arrayChunks, this.file_name);
     }
 

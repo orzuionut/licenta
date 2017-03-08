@@ -4,8 +4,6 @@ class VideocallController {
 
   * index(request, response) 
   {
-
-
     yield response.sendView('pages/videocall/index');
   }
 

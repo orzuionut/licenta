@@ -3,9 +3,9 @@ class ConferenceDOM
     static createVideo(participant)
     {
         var videoId = "video-" + participant.id;
-        var videoHtml = '<video id="' + videoId + '" autoplay height="240px"></video>';
+        var videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay muted></video>';
 
-        $("#videoList").append(videoHtml);
+        $("#videos-container").append(videoHtml);
 
         return $("#" + videoId)[0];
     }

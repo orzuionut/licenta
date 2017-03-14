@@ -67,6 +67,8 @@ class PeerConnection
         this.sendChannel.binaryType = 'arraybuffer';
         
         this.setDataChannelHandlers(this.sendChannel);
+
+        this.isInitiator = true;
     }
 
     gotReceiveChannel(event)
@@ -75,6 +77,8 @@ class PeerConnection
         this.receiveChannel.binaryType = 'arraybuffer';
 
         this.setDataChannelHandlers(this.receiveChannel);
+
+        this.isInitiator = false;
     }
 
     setDataChannelHandlers(dataChannel)

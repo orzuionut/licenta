@@ -1,26 +1,16 @@
-class VideocallDOM {
+import {ConversationFilesDOM} from "../conversation/conversation_with_files";
 
+class VideocallDOM 
+{
     constructor()
     {
         this.localVideo = document.querySelector('#localVideo');
         this.remoteVideo = document.querySelector("#remoteVideo");
 
-        this.$dataChannelSend = $('#dataChannelSend');
-        this.$sendButton = $('#send-button');
-        this.$filesContainer = $('#files-container');
-
-        this.$filesDownload = document.querySelector('#files-download');
-
-        this.$files = $('.single-file');
-
-        ///////////////////////////////////////////
-        this.$conversationWrapper = $('.conversation-wrapper');
-        this.$conversationFilesWrapper = $('.conversation-files-wrapper');
-        this.$showFilesButton = $('#show-files-btn');
-        this.$hideFilesButton = $('#hide-files-btn');
-        this.$inputFile = $('#dataChannelSend');
-        this.$inputFileLabel = $('#fileInputLabel');
+        this.conversationDOM = new ConversationFilesDOM();
+        this.conversationDOM.bindListeners();
     }
+
 
     updateVideoElementsCallRunning()
     {
@@ -48,18 +38,7 @@ class VideocallDOM {
         });
     }
 
-    handleShowFilesButtonClicked()
-    {
-        this.$conversationWrapper.css({ display: "none" });
-        this.$conversationFilesWrapper.css({ display: "flex" });
-    }
-
-    handleHideFilesButtonClicked()
-    {
-        this.$conversationWrapper.css({ display: "flex" });
-        this.$conversationFilesWrapper.css({ display: "none" });
-    }
-
+    
     handleFileInputChanged(event)
     {
         let fileName = null;
@@ -68,7 +47,7 @@ class VideocallDOM {
             fileName = event.target.value.split( '\\' ).pop();
 
         if( fileName )
-            this.$inputFileLabel.find('span').html(fileName);
+            this.conversationDOM.filesDOM.footer.$inputFileLabel.find('span').html(fileName);
     }
 
 

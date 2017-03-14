@@ -22,29 +22,24 @@ module.exports = function (io) {
         for (let userId in userRegistry.usersById) {
             userList += ' ' + userId + ',';
         }
-
-        console.log("SERVER:" + 'receive new client : ' + socket.id + '. Currently have : ' + userList);
+        // console.log("SERVER:" + 'receive new client : ' + socket.id + '. Currently have : ' + userList);
 
         socket.emit('id', socket.id);
 
         socket.on('error', function (data) {
-            console.log("SERVER:" + 'Connection: ' + socket.id + ' error : ' + data);
+            // console.log("SERVER:" + 'Connection: ' + socket.id + ' error : ' + data);
 
-            leaveRoom(socket.id, function () {
-
-            });
+            leaveRoom(socket.id, function () {});
         });
 
         socket.on('disconnect', function (data) {
-            console.log("SERVER:" + 'Connection: ' + socket.id + ' disconnect : ' + data);
+            // console.log("SERVER:" + 'Connection: ' + socket.id + ' disconnect : ' + data);
 
-            leaveRoom(socket.id, function () {
-
-            });
+            leaveRoom(socket.id, function () {});
         });
 
         socket.on('message', function (message) {
-            console.log("SERVER:" + 'Connection: ' + socket.id + ' receive message: ' + message.id);
+            // console.log("SERVER:" + 'Connection: ' + socket.id + ' receive message: ' + message.id);
 
             switch (message.id) {
                 case 'joinRoom':
@@ -345,12 +340,13 @@ function leaveRoom(sessionId, callback) {
     stop(userSession.id);
 }
 
-function stop(sessionId) {
+function stop(sessionId)
+{
     userRegistry.unregister(sessionId);
 }
 
-function addIceCandidate(socket, message) {
-
+function addIceCandidate(socket, message)
+{
     var user = userRegistry.getById(socket.id);
     if (user != null) {
         // assign type to IceCandidate

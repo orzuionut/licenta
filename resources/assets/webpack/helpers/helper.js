@@ -11,6 +11,10 @@ class Helper
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4();
     }
+
+    static flash(message) {
+        Materialize.toast(message, 4000, 'flash-message');
+    }
 }
 
 export {Helper}

@@ -2,8 +2,11 @@ import { ConferenceDOM } from './dom';
 import { Config } from './../_config';
 import { Participant } from './participants';
 import { SocketIO } from '../modules/socket';
+import {ConversationFilesDOM} from "../conversation/conversation_with_files";
+import {FileTransfer} from "../file_transfer";
 
-class Conference {
+class Conference
+{
     constructor()
     {
         this.id = getIDfromURL();
@@ -11,6 +14,24 @@ class Conference {
         this.socketIO = new SocketIO(io, 'http://localhost:8181');
 
         this.socketIO.setRoom(this.id);
+
+        // this.servers = null;
+        // this.configuration = null;
+
+        this.sessionId = null;
+        this.participants = {};
+
+        this.iceServers = Config.getIceServers();
+
+        window.onbeforeunload = function () { this.socketIO.socket.disconnect(); }.bind(this);
+
+        this.DOM = {};
+
+        this.DOM.conversationDOM = new ConversationFilesDOM();
+        this.DOM.conversationDOM.bindListeners();
+
+        this.fileTransfer = new FileTransfer(this.socketIO.socket, this.DOM, this.peerConnection);
+        this.fileTransfer.bindEvents();
     }
 
     init()
@@ -23,13 +44,6 @@ class Conference {
 
     listen()
     {
-        this.sessionId = null;
-        this.participants = {};
-
-        this.iceServers = Config.getIceServers();
-
-        window.onbeforeunload = function () { this.socketIO.socket.disconnect(); }.bind(this);
-
         this.socketIO.socket.on("id", function (id) { this.sessionId = id; }.bind(this));
 
         this.socketIO.socket.on("message", function (message)
@@ -75,6 +89,16 @@ class Conference {
 
     onExistingParticipants(message)
     {
+        // this.peerConnection = new RTCPeerConnection(this.servers, this.configuration);
+        //
+        // this.channel = this.peerConnection.createDataChannel("hello", null);
+        //
+        // this.channel.onopen = function () {
+        //     console.log("RAGE");
+        // };
+        // this.channel.onclose = onSendChannelStateChange;
+        // this.channel.onmessage = onMessage;
+
         var constraints = {
             audio: true,
             video: true
@@ -89,6 +113,7 @@ class Conference {
 
         // bind function so that calling 'this' in that function will receive the current instance
         var options = {
+            // peerConnection: this.peerConnection,
             localVideo: video,
             mediaConstraints: constraints,
             onicecandidate: localParticipant.onIceCandidate.bind(localParticipant),
@@ -120,6 +145,7 @@ class Conference {
         var video = ConferenceDOM.createVideo(participant);
 
         var options = {
+            // peerConnection: this.peerConnection,
             remoteVideo: video,
             onicecandidate: participant.onIceCandidate.bind(participant),
             configuration: this.iceServers

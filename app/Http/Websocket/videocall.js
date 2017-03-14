@@ -105,7 +105,7 @@ function sendBlobToClient(blob, socket, offset)
     }
     else
     {
-        socket.emit('download finished', {data: 'plm'});
+        socket.emit('download finished', {data: ''});
     }
 
 }

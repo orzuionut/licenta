@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 28);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -78,17 +78,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConversationBuilder = undefined;
 
-var _conversation = __webpack_require__(2);
+var _conversation = __webpack_require__(4);
 
-var _conversations_list = __webpack_require__(3);
+var _conversations_list = __webpack_require__(5);
 
-var _dom = __webpack_require__(5);
+var _dom = __webpack_require__(6);
 
 var _header = __webpack_require__(7);
 
-var _body = __webpack_require__(4);
+var _body = __webpack_require__(1);
 
-var _footer = __webpack_require__(6);
+var _footer = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -114,6 +114,121 @@ exports.ConversationBuilder = ConversationBuilder;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Body = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _message = __webpack_require__(8);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Body = function () {
+    function Body($box) {
+        _classCallCheck(this, Body);
+
+        this.$box = $box;
+    }
+
+    _createClass(Body, [{
+        key: 'appendMessagesArray',
+        value: function appendMessagesArray(data, current_user_id) {
+            for (var i = 0; i < data.length; i++) {
+                this.appendMessage(data[i], current_user_id);
+            }
+        }
+    }, {
+        key: 'appendMessage',
+        value: function appendMessage(data, current_user_id) {
+            var is_current_user = data.user_id === current_user_id;
+            var type = is_current_user ? 'message-user' : 'message-other';
+
+            if (!is_current_user) {
+                var $emitter = _message.Message.createEmitter(data.user_name);
+
+                this.append($emitter);
+            }
+
+            this.append(new _message.Message(data, type));
+        }
+    }, {
+        key: 'append',
+        value: function append($element) {
+            this.$box.append($element);
+
+            this.scrollToBottom();
+        }
+    }, {
+        key: 'scrollToBottom',
+        value: function scrollToBottom() {
+            this.$box.scrollTop(this.$box[0].scrollHeight);
+        }
+    }, {
+        key: 'clear',
+        value: function clear() {
+            this.$box.empty();
+        }
+    }]);
+
+    return Body;
+}();
+
+exports.Body = Body;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Footer = function () {
+    function Footer($message_input, $submit_button) {
+        _classCallCheck(this, Footer);
+
+        this.$message_input = $message_input;
+        this.$submit_button = $submit_button;
+    }
+
+    _createClass(Footer, [{
+        key: "clearInput",
+        value: function clearInput() {
+            this.$message_input.val("");
+        }
+    }, {
+        key: "clickSubmitButton",
+        value: function clickSubmitButton() {
+            this.$submit_button.click();
+        }
+    }, {
+        key: "getMessage",
+        value: function getMessage() {
+            return this.$message_input.val();
+        }
+    }]);
+
+    return Footer;
+}();
+
+exports.Footer = Footer;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -155,7 +270,7 @@ var SocketIO = function () {
 exports.SocketIO = SocketIO;
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -168,7 +283,7 @@ exports.Conversation = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _socket = __webpack_require__(1);
+var _socket = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -309,7 +424,7 @@ var Conversation = function () {
 exports.Conversation = Conversation;
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -346,77 +461,7 @@ var ConversationsList = function () {
 exports.ConversationsList = ConversationsList;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.Body = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _message = __webpack_require__(8);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Body = function () {
-    function Body($box) {
-        _classCallCheck(this, Body);
-
-        this.$box = $box;
-    }
-
-    _createClass(Body, [{
-        key: 'appendMessagesArray',
-        value: function appendMessagesArray(data, current_user_id) {
-            for (var i = 0; i < data.length; i++) {
-                this.appendMessage(data[i], current_user_id);
-            }
-        }
-    }, {
-        key: 'appendMessage',
-        value: function appendMessage(data, current_user_id) {
-            var is_current_user = data.user_id === current_user_id;
-            var type = is_current_user ? 'message-user' : 'message-other';
-
-            if (!is_current_user) {
-                var $emitter = _message.Message.createEmitter(data.user_name);
-
-                this.append($emitter);
-            }
-
-            this.append(new _message.Message(data, type));
-        }
-    }, {
-        key: 'append',
-        value: function append($element) {
-            this.$box.append($element);
-
-            this.scrollToBottom();
-        }
-    }, {
-        key: 'scrollToBottom',
-        value: function scrollToBottom() {
-            this.$box.scrollTop(this.$box[0].scrollHeight);
-        }
-    }, {
-        key: 'clear',
-        value: function clear() {
-            this.$box.empty();
-        }
-    }]);
-
-    return Body;
-}();
-
-exports.Body = Body;
-
-/***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -437,51 +482,6 @@ var ConversationDOM = function ConversationDOM(header, body, footer) {
 };
 
 exports.ConversationDOM = ConversationDOM;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Footer = function () {
-    function Footer($message_input, $submit_button) {
-        _classCallCheck(this, Footer);
-
-        this.$message_input = $message_input;
-        this.$submit_button = $submit_button;
-    }
-
-    _createClass(Footer, [{
-        key: "clearInput",
-        value: function clearInput() {
-            this.$message_input.val("");
-        }
-    }, {
-        key: "clickSubmitButton",
-        value: function clickSubmitButton() {
-            this.$submit_button.click();
-        }
-    }, {
-        key: "getMessage",
-        value: function getMessage() {
-            return this.$message_input.val();
-        }
-    }]);
-
-    return Footer;
-}();
-
-exports.Footer = Footer;
 
 /***/ }),
 /* 7 */
@@ -578,7 +578,16 @@ exports.Message = Message;
 /* 16 */,
 /* 17 */,
 /* 18 */,
-/* 19 */
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

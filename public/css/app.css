@@ -345,7 +345,8 @@ header {
         margin: 0 !important;
         border-radius: 0; }
       #videocall-container #videos-container #videos-wrapper .video-fullscreen {
-        height: 88vh;
+        max-height: 88vh;
+        width: 100%;
         margin: 0 auto; }
       #videocall-container #videos-container #videos-wrapper .video-small {
         width: 20vh;
@@ -549,3 +550,13 @@ video {
   color: black;
   background: #D24D57;
   border-radius: 25px; }
+
+.flash-message {
+  padding: 15px 25px;
+  color: white;
+  background: #007AFF;
+  border-radius: 25px;
+  font-family: "Helvetica Neue";
+  font-size: 19px;
+  font-weight: 200;
+  line-height: 19px; }

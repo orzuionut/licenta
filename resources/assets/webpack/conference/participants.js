@@ -10,9 +10,7 @@ class Participant
 
     offerToReceiveVideo(error, offerSdp)
     {
-        if (error) {
-            return console.error("sdp offer error");
-        }
+        if (error) { return console.error("sdp offer error"); }
 
         var msg = {
             id: "receiveVideoFrom",

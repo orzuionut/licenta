@@ -1,27 +1,28 @@
-import {DB} from '../modules/indexedDB';
 import {VideocallDOM} from './dom';
 import {PeerConnection} from './peer_connection';
 
-import {Helper} from '../helpers/helper';
+import {FileTransfer} from "../file_transfer";
 
-class Videocall {
+class Videocall
+{
     constructor()
     {
+        this.REMOTE_STREAM_ADDED = 'remote stream added';
+
+        this.HANDLE_DATA_CHANNEL_MESSAGE = 'handle data channel message';
+        this.HANDLE_DATA_CHANNEL_OPEN = 'handle data channel open';
+        this.HANDLE_DATA_CHANNEL_CLOSE = 'handle data channel close';
+
         this.DOM = new VideocallDOM();
 
         this.nav = navigator;
 
         this.nav.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
-        window.onbeforeunload = function (e) {
-            this.hangup();
-        }.bind(this);
+        window.onbeforeunload = function(e){ this.hangup(); }.bind(this);
 
         this.sendChannel = null;
         this.receiveChannel = null;
-
-        this.DOM.$sendButton.on('click', this.sendFileToPeer.bind(this));
-
 
         this.isChannelReady = false;
         this.isInitiator = false;
@@ -35,19 +36,6 @@ class Videocall {
         this.room = getIDfromURL();
 
         this.socket = io.connect('http://localhost:8181/videocall');
-
-        //////////////////////////////////////////
-        this.db = new DB();
-
-        this.arrayToStoreChunks = [];
-        this.receivedDataSize = 0;
-        this.temporaryDataSize = 0;
-        this.lastPositionSavedInArray = 0;
-        this.chunkSizeLimit = 992000; // save chunks of ~ 1 MB to DB (62 slices of 16KB received)
-        this.uuid = Helper.guid();
-
-        /////////////////////////////////////////////////
-        this.bindDOMListeners();
     }
 
     build()
@@ -123,38 +111,24 @@ class Videocall {
                 self.peerConnection.addIceCandidate(message.label, message.candidate);
             }
         });
-
-        this.socket.on('download file', this.handleFileDownload.bind(this));
-        this.socket.on('download finished', this.handleFileDownloadFinished.bind(this));
     }
 
     bindListeners()
     {
-        const REMOTE_STREAM_ADDED = 'remote stream added';
+        PubSub.subscribe(this.REMOTE_STREAM_ADDED, this.handleRemoteStreamAdded.bind(this));
 
-        const HANDLE_DATA_CHANNEL_MESSAGE = 'handle data channel message';
-        const HANDLE_DATA_CHANNEL_OPEN = 'handle data channel open';
-        const HANDLE_DATA_CHANNEL_CLOSE = 'handle data channel close';
+        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_OPEN, this.handleDataChannelOpen.bind(this));
+        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_CLOSE, this.handleDataChannelClose.bind(this));
 
-        PubSub.subscribe(REMOTE_STREAM_ADDED, this.handleRemoteStreamAdded.bind(this));
-
-        PubSub.subscribe(HANDLE_DATA_CHANNEL_MESSAGE, this.handleDataChannelMessage.bind(this));
-        PubSub.subscribe(HANDLE_DATA_CHANNEL_OPEN, this.handleDataChannelOpen.bind(this));
-        PubSub.subscribe(HANDLE_DATA_CHANNEL_CLOSE, this.handleDataChannelClose.bind(this));
     }
 
-    bindDOMListeners()
+    bindDataChannelMessageListener()
     {
-        let self = this;
-        this.DOM.$files.on('click', this.target, self.handleFileDownloadResume.bind(self));
-        
-        this.DOM.$showFilesButton.on('click', self.DOM.handleShowFilesButtonClicked.bind(self.DOM));
-        this.DOM.$hideFilesButton.on('click', self.DOM.handleHideFilesButtonClicked.bind(self.DOM));
-
-        this.DOM.$inputFile.on('change', this, self.DOM.handleFileInputChanged.bind(self.DOM));
+        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, this.conversation.handleDataChannelMessage.bind(this.conversation));
     }
-
-    handleRemoteStreamAdded(message, event) {
+    
+    handleRemoteStreamAdded(message, event)
+    {
         attachMediaStream(this.DOM.remoteVideo, event.stream);
 
         this.remoteStream = event.stream;
@@ -162,8 +136,17 @@ class Videocall {
 
     handleDataChannelOpen(message, readyState)
     {
+        console.log(this.peerConnection);
+
         if (readyState == 'open')
         {
+            // DataChannel is open, the file transfer may start
+            this.conversation = new FileTransfer(this.socket, this.DOM, this.peerConnection);
+            this.conversation.bindEvents();
+            this.conversation.bindDOMListeners();
+
+            this.bindDataChannelMessageListener();
+
             // enable DOM buttons
         }
         else
@@ -171,59 +154,7 @@ class Videocall {
             // disable DOM buttons
         }
     }
-
-    handleDataChannelMessage(message, event)
-    {
-        let data = event.data;
-
-        if (typeof data !== 'string')
-        {
-            this.arrayToStoreChunks.push(data);
-
-            this.temporaryDataSize += data.byteLength;
-
-            if (this.temporaryDataSize == this.chunkSizeLimit)
-            {
-                let temporaryDataArray = this.arrayToStoreChunks.slice(this.lastPositionSavedInArray);
-
-                this.storeTemporaryData({data: temporaryDataArray, hash: this.uuid});
-
-                this.receivedDataSize += this.temporaryDataSize;
-                this.temporaryDataSize = 0;
-                this.lastPositionSavedInArray = this.arrayToStoreChunks.length;
-            }
-        }
-        else
-        {
-            data = JSON.parse(data);
-
-            this.saveToDisk(this.arrayToStoreChunks, data.fileName);
-
-            this.deleteTemporaryData(this.uuid);
-
-            this.arrayToStoreChunks = [];
-            this.receivedDataSize = 0;
-        }
-    }
-
-    saveToDisk(array, fileName)
-    {
-        let received = new window.Blob(array);
-
-        let $fileLink = $('<a/>', {
-            text: fileName,
-            href: URL.createObjectURL(received),
-            target: '_blank',
-            download: fileName,
-            class: 'single-file file-bubble file-bubble-download',
-            id: 'auto-download'
-        });
-
-        var $el = $('#files-container');
-
-        $el.append($fileLink);
-    }
-
+    
     handleDataChannelClose(message)
     {
         // disable buttons
@@ -277,98 +208,6 @@ class Videocall {
         }
     }
 
-    storeTemporaryData(data)
-    {
-        return this.db.insert(data);
-    }
-
-    deleteTemporaryData(hash)
-    {
-        this.db.deleteByHash(hash);
-    }
-
-    getChunksByHash(hash)
-    {
-        return this.db.getByHash(hash);
-    }
-
-
-    sendFileToPeer()
-    {
-        Materialize.toast('Sending file to the other peer..', 4000);
-
-        this.file = this.getFileFromInput();
-
-        this.chunkSize = 16000;
-        this.channelOpen = true;
-
-        this.reader = new window.FileReader();
-        this.reader.onload = this.onReadAsArrayBuffer.bind(this);
-
-        this.sliceFile(0);
-    }
-
-    sliceFile(offset)
-    {
-        this.offset = offset;
-
-        if (this.channelOpen)
-        {
-            let slice = this.file.slice(offset, offset + this.chunkSize);
-            this.reader.readAsArrayBuffer(slice);
-        }
-        else
-        {
-            console.log("Exception.. channel closed..");
-        }
-    }
-
-    onReadAsArrayBuffer(event)
-    {
-        let data = event.target.result;
-
-        this.sendThroughDataChannel(data);
-
-        if (this.file.size > this.offset + data.byteLength)
-        {
-            window.setTimeout(this.sliceFile.bind(this), 100, this.offset + this.chunkSize);
-        }
-        else
-        {
-            let data = {fileName: this.file.name};
-            this.sendThroughDataChannel(JSON.stringify(data));
-
-            delete this.reader;
-        }
-    }
-
-    sendThroughDataChannel(data)
-    {
-        if (this.channelOpen)
-        {
-            try
-            {
-                if (this.isInitiator)
-                {
-                    this.peerConnection.sendChannel.send(data);
-                }
-                else
-                {
-                    this.peerConnection.receiveChannel.send(data);
-                }
-            }
-            catch (exception)
-            {
-                this.channelOpen = false;
-            }
-        }
-    }
-
-    getFileFromInput()
-    {
-        return this.DOM.$dataChannelSend[0].files[0];
-    }
-
     hangup()
     {
         let data = {};
@@ -410,26 +249,7 @@ class Videocall {
         this.DOM.updateVideoElementsCallStopped();
         this.DOM.showFlashMessageCallStopped();
     }
-
-    storeFile(file, hash)
-    {
-        let data = {
-            user_id: user_id,
-            file: file,
-            fileName: this.file.name,
-            hash: hash
-        };
-
-        this.sendMessageWithType('store file', data);
-    }
-
-    blobToFile(blob, fileName)
-    {
-        blob.lastModifiedDate = new Date();
-        blob.name = fileName;
-        return blob;
-    }
-
+    
     stop()
     {
         this.isStarted = false;
@@ -448,62 +268,7 @@ class Videocall {
         this.pc = null;
         // this.DOM.sendButton.disabled = true;
     }
-
-    handleFileDownloadResume(file)
-    {
-        Materialize.toast('Attempting to retrieve temporary data', 3000);
-
-        // this is bind to DOM element
-        this.file_id = $(file.target).attr('data-id');
-        this.file_name = $.trim($(file.target).text());
-
-        this.getChunksByHash(this.file_id)
-            .then(this.handleChunksFetchSuccess.bind(this))
-            .catch(this.handleChunksFetchError);
-    }
-
-    handleChunksFetchSuccess(chunksStored)
-    {
-        Materialize.toast('Temporary file data retrieve successfully', 3000);
-        Materialize.toast('Resuming download of the rest of the file from the server', 3000);
-
-        this.arrayChunks = this.getArrayChunksFromObject(chunksStored);
-
-        /////////////////////////////////////////////////////////////////
-        let data = {
-            user_id: user_id,
-            file_id: this.file_id
-        };
-
-        this.sendMessageWithType('download file', data);
-    }
-
-    handleFileDownload(data)
-    {
-        console.log("GOT DATA");
-        this.arrayChunks.push(data.chunk);
-    }
-
-    handleFileDownloadFinished(data)
-    {
-        Materialize.toast('Temporary file data retrieve successfully', 3000);
-
-        this.saveToDisk(this.arrayChunks, this.file_name);
-    }
-
-    // chunksObjects contains multiple objects that each contain data equal to an Array[62]
-    getArrayChunksFromObject(chunksObjects)
-    {
-        var chunksArray = [];
-
-        for (let i = 0; i < chunksObjects.length; i++)
-        {
-            chunksArray.push(...chunksObjects[i].data);
-        }
-
-        return chunksArray;
-    }
-
+    
 }
 
 export {Videocall}

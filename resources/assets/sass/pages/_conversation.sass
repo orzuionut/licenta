@@ -1,14 +1,14 @@
 .conversations-content
 	display: flex
-	max-height: 90vh
+	overflow-y: hidden
 
 .conversation-wrapper, .conversation-files-wrapper
 	// Used for inner content scrolling when overflow
 	display: flex
 	flex-direction: column
 
-	margin-right: 2%
-	margin-left: 2%
+	margin-right: 5px
+	margin-left: 5px
 
 	height: 88vh
 	overflow: auto
@@ -49,9 +49,10 @@
 	display: flex
 	flex-direction: column
 	height: 88vh
+	flex-basis: 23%
 	overflow: auto
 
-	margin-left: 2%
+	margin-left: 5px
 
 	border-style: solid
 	border-right-width: medium
@@ -161,11 +162,14 @@
 			background-color: #F22613
 			margin-left: 25px
 
+
 .conversation-footer
 	border-top: 2px solid #939393
 	margin-bottom: 0
 
 	display: flex
+	align-items: center
+	justify-content: center
 
 	#enter-message
 		border: 0
@@ -175,13 +179,12 @@
 
 		// Textarea fixes
 		resize: none
-		height: auto !important
 		outline: none
     	box-shadow: none
 
-		flex-basis: 90%
+		flex: 0 0 80%
 
-		&::-webkit-input-placeholder
+		@include placeholder("&")
 			color: #939393
 			font-size: 16px
   		
@@ -190,5 +193,69 @@
 			box-shadow: none !important
 
 	#submit-message
-		flex-basis: 10%
+		//flex: 0 0 20%
 		background-color: #0B93F6
+
+		.btn.waves-effect.waves-light.center-align
+			padding: 0 !important
+			border-radius: 50%
+
+#conversation-container
+	flex: 1
+
+	.conversation-header
+		#show-files-header
+			display: flex
+			min-height: 50px
+			align-items: center
+			justify-content: center
+
+			#show-files-btn
+				margin-left: auto
+				margin-right: 10px
+				background-color: $accent
+
+			.btn
+				padding: 0
+				border-radius: 50%
+				width: 35px
+
+
+		#hide-files-header
+			display: flex
+			min-height: 50px
+			align-items: center
+			justify-content: center
+
+			#hide-files-btn
+				margin-right: auto
+				margin-left: 10px
+				background-color: #BDBEC2
+
+			.btn
+				padding: 0
+				border-radius: 50%
+				width: 35px
+				box-shadow: none
+
+	.conversation-wrapper
+		height: 88vh
+
+	.conversation-files-wrapper
+		height: 88vh
+
+	.conversation-footer
+
+		#fileInputLabel
+			flex: 0 0 80%
+
+		#send-button, #submit-message
+			flex-grow: 0
+			flex-shrink: 0
+
+			width: 35px
+			border-radius: 50%
+
+		.btn
+			padding: 0
+

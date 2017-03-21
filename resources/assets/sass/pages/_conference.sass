@@ -7,8 +7,10 @@
     display: flex
     flex-wrap: wrap
 
-    min-height: 88vh
+    max-height: 88vh
     padding: 0
+    margin-bottom: 0
+    margin-left: 5px
 
     .conference-video
       flex: 1
@@ -22,5 +24,7 @@
       border: 0
       box-shadow: none
 
-  #conversation-container
-    flex: 1
+
+@media screen and (max-width: 750px)
+  #conference-container
+    flex-direction: column

@@ -2,6 +2,7 @@ import {VideocallDOM} from './dom';
 import {PeerConnection} from './peer_connection';
 
 import {FileTransfer} from "../file_transfer";
+import {Helper} from "../helpers/helper";
 
 class Videocall
 {
@@ -19,8 +20,6 @@ class Videocall
 
         this.nav.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 
-        window.onbeforeunload = function(e){ this.hangup(); }.bind(this);
-
         this.sendChannel = null;
         this.receiveChannel = null;
 
@@ -33,7 +32,7 @@ class Videocall
         this.localStream = null;
         this.remoteStream = null;
 
-        this.room = getIDfromURL();
+        this.room = Helper.getIDfromURL();
 
         this.socket = io.connect('http://localhost:8181/videocall');
     }
@@ -89,6 +88,8 @@ class Videocall
             }
             else if (message.message === 'bye' && self.isStarted)
             {
+                console.log('Got bye message');
+
                 self.handleRemoteHangup(message);
             }
             else if (message.sd && message.sd.type === 'offer')
@@ -124,7 +125,7 @@ class Videocall
 
     bindDataChannelMessageListener()
     {
-        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, this.conversation.handleDataChannelMessage.bind(this.conversation));
+        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, this.fileTransfer.handleDataChannelMessage.bind(this.fileTransfer));
     }
     
     handleRemoteStreamAdded(message, event)
@@ -136,14 +137,14 @@ class Videocall
 
     handleDataChannelOpen(message, readyState)
     {
-        console.log(this.peerConnection);
-
         if (readyState == 'open')
         {
-            // DataChannel is open, the file transfer may start
-            this.conversation = new FileTransfer(this.socket, this.DOM, this.peerConnection);
-            this.conversation.bindEvents();
-            this.conversation.bindDOMListeners();
+            console.log("Initiating file transfer channel");
+
+            // DataChannelReceive is open, the file transfer may start
+            this.fileTransfer = new FileTransfer(this.socket, this.DOM, this.peerConnection);
+            this.fileTransfer.bindEvents();
+            this.fileTransfer.bindDOMListeners();
 
             this.bindDataChannelMessageListener();
 
@@ -228,23 +229,7 @@ class Videocall
 
     handleRemoteHangup(message)
     {
-        if (message.receivedDataSize)
-        {
-            Materialize.toast("Please wait while the rest of the file is uploaded to the server..", 4000);
-            
-            console.log("I have sent " + message.receivedDataSize + " to other peer");
-            console.log("Also the saved chunks of files are saved with hash: " + message.hash);
-
-            let remainingSlicesFromFile = this.file.slice(message.receivedDataSize);
-
-            let fileToStore = this.blobToFile(remainingSlicesFromFile, this.file.name);
-
-            this.storeFile(fileToStore, message.hash);
-        }
-
-        this.stop();
-
-        this.isInitiator = false;
+        this.fileTransfer.handleRemoteHangup(message);
 
         this.DOM.updateVideoElementsCallStopped();
         this.DOM.showFlashMessageCallStopped();

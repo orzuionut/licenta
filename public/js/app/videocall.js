@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 29);
+/******/ 	return __webpack_require__(__webpack_require__.s = 34);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,43 +74,66 @@
 
 
 Object.defineProperty(exports, "__esModule", {
-        value: true
+    value: true
 });
-exports.ConversationBuilder = undefined;
 
-var _conversation = __webpack_require__(4);
-
-var _conversations_list = __webpack_require__(5);
-
-var _dom = __webpack_require__(6);
-
-var _header = __webpack_require__(7);
-
-var _body = __webpack_require__(1);
-
-var _footer = __webpack_require__(2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var ConversationBuilder = function ConversationBuilder() {
-        _classCallCheck(this, ConversationBuilder);
+var Helper = function () {
+    function Helper() {
+        _classCallCheck(this, Helper);
+    }
 
-        // Side-menu list of conversations
-        var conversations_list = new _conversations_list.ConversationsList($(".conversation-item"));
+    _createClass(Helper, null, [{
+        key: 'guid',
+        value: function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            }
 
-        // Main chat-box
-        var header = new _header.Header($('#conversation-voice'), $('#conversation-video'), $('#conversation-profile'));
-        var body = new _body.Body($('.conversation-body'));
-        var footer = new _footer.Footer($('#enter-message'), $('#submit-message'));
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        }
+    }, {
+        key: 'blobToFile',
+        value: function blobToFile(blob, fileName) {
+            blob.lastModifiedDate = new Date();
+            blob.name = fileName;
+            return blob;
+        }
+    }, {
+        key: 'flash',
+        value: function flash(message) {
+            Materialize.toast(message, 4000, 'flash-message');
+        }
+    }, {
+        key: 'ArrayBufferToString',
+        value: function ArrayBufferToString(buffer) {
+            return String.fromCharCode.apply(null, new Uint8Array(buffer));
+        }
+    }, {
+        key: 'StringToArrayBuffer',
+        value: function StringToArrayBuffer(string) {
+            var buf = new ArrayBuffer(string.length); // 2 bytes for each char
+            var bufView = new Uint8Array(buf);
+            for (var i = 0, strLen = string.length; i < strLen; i++) {
+                bufView[i] = string.charCodeAt(i);
+            }
+            return buf;
+        }
+    }, {
+        key: 'getIDfromURL',
+        value: function getIDfromURL() {
+            var current_url = $(location).attr("href");
+            return current_url.substring(current_url.lastIndexOf("/") + 1);
+        }
+    }]);
 
-        var DOM = new _dom.ConversationDOM(header, body, footer);
+    return Helper;
+}();
 
-        var conversation = new _conversation.Conversation(DOM, conversation_id, user_id);
-
-        conversation.init();
-};
-
-exports.ConversationBuilder = ConversationBuilder;
+exports.Helper = Helper;
 
 /***/ }),
 /* 1 */
@@ -126,15 +149,15 @@ exports.Body = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _message = __webpack_require__(8);
+var _message = __webpack_require__(7);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Body = function () {
-    function Body($box) {
+    function Body() {
         _classCallCheck(this, Body);
 
-        this.$box = $box;
+        this.$box = $('.conversation-body');
     }
 
     _createClass(Body, [{
@@ -198,27 +221,35 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Footer = function () {
-    function Footer($message_input, $submit_button) {
+    function Footer() {
         _classCallCheck(this, Footer);
 
-        this.$message_input = $message_input;
-        this.$submit_button = $submit_button;
+        this.$message_input = $('#enter-message');
+        this.$submit_button = $('#submit-message');
+
+        this.style();
     }
 
     _createClass(Footer, [{
-        key: "clearInput",
+        key: 'clearInput',
         value: function clearInput() {
             this.$message_input.val("");
         }
     }, {
-        key: "clickSubmitButton",
+        key: 'clickSubmitButton',
         value: function clickSubmitButton() {
             this.$submit_button.click();
         }
     }, {
-        key: "getMessage",
+        key: 'getMessage',
         value: function getMessage() {
             return this.$message_input.val();
+        }
+    }, {
+        key: 'style',
+        value: function style() {
+            var height = this.$submit_button.css("height");
+            this.$submit_button.css({ "width": height + "px" });
         }
     }]);
 
@@ -229,6 +260,44 @@ exports.Footer = Footer;
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+        value: true
+});
+exports.ConversationBuilder = undefined;
+
+var _conversation = __webpack_require__(5);
+
+var _dom = __webpack_require__(6);
+
+var _body = __webpack_require__(1);
+
+var _footer = __webpack_require__(2);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationBuilder = function ConversationBuilder(id) {
+        _classCallCheck(this, ConversationBuilder);
+
+        // Main chat-box
+        var body = new _body.Body();
+        var footer = new _footer.Footer();
+
+        var DOM = new _dom.ConversationDOM(body, footer);
+
+        this.conversation = new _conversation.Conversation(DOM, id, user_id);
+
+        this.conversation.init();
+};
+
+exports.ConversationBuilder = ConversationBuilder;
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -270,7 +339,7 @@ var SocketIO = function () {
 exports.SocketIO = SocketIO;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -283,7 +352,7 @@ exports.Conversation = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _socket = __webpack_require__(3);
+var _socket = __webpack_require__(4);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -318,42 +387,6 @@ var Conversation = function () {
 
             self.bindSocketListeners();
             self.bindDOMListeners();
-
-            // // Match all anchor tags with id like :conversation-id-{number}:
-            // conversations_list.item.click(function () {
-            //     let old_conversation_id = conversation.id;
-            //     let new_conversation_id = conversations_list.getItemID(this);
-            //
-            //     // Conversation changed. Update stuff
-            //     if (old_conversation_id !== new_conversation_id)
-            //     {
-            //         conversation.DOM.body.clear();
-            //
-            //         conversation.setID(new_conversation_id);
-            //
-            //         socketIO.setRoom(new_conversation_id);
-            //
-            //         data.leaveRoom = old_conversation_id;
-            //         socketIO.sendMessage('roomChanged', data);
-            //
-            //         socketIO.sendMessage('init', data);
-            //     }
-            // });
-
-            // conversation.DOM.header.$video_button.click(function () {
-            //     data = {};
-            //     socketIO.sendMessage('call', data);
-            //
-            //     window.location.href = "/conversation/call/" + conversation.id;
-            // });
-            //
-            // conversation.DOM.header.$answer_call.click(function () {
-            //     window.location.href = "/conversation/call/" + conversation.id;
-            // });
-            //
-            // conversation.DOM.header.$reject_call.click(function () {
-            //     conversation.DOM.header.hideIncomingCallAlert();
-            // });
         }
     }, {
         key: 'bindSocketListeners',
@@ -369,7 +402,7 @@ var Conversation = function () {
                 self.DOM.body.appendMessagesArray(data, self.user_id);
             });
 
-            self.socketIO.socket.on('call', function (data) {
+            self.socketIO.socket.on('call', function () {
                 self.DOM.header.showIncomingCallAlert();
             });
         }
@@ -380,7 +413,6 @@ var Conversation = function () {
             var data = {};
 
             self.DOM.footer.$submit_button.on('click', function () {
-
                 var message = self.DOM.footer.getMessage();
                 self.messageSubmitted(message);
 
@@ -394,7 +426,7 @@ var Conversation = function () {
             });
 
             self.DOM.footer.$message_input.keypress(function (e) {
-                if (e.which == self.ENTER_KEY) {
+                if (e.which == self.ENTER_KEY && self.DOM.footer.getMessage().trim()) {
                     self.DOM.footer.clickSubmitButton();
                 }
             });
@@ -424,43 +456,6 @@ var Conversation = function () {
 exports.Conversation = Conversation;
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ConversationsList = function () {
-    function ConversationsList($element) {
-        _classCallCheck(this, ConversationsList);
-
-        this.item = $element;
-    }
-
-    _createClass(ConversationsList, [{
-        key: "getItemID",
-        value: function getItemID(item) {
-            var element = $(item).find("div[id^='conversation-id-']")[0];
-            var id = $(element).attr('id');
-
-            return id.substring(id.lastIndexOf("-") + 1);
-        }
-    }]);
-
-    return ConversationsList;
-}();
-
-exports.ConversationsList = ConversationsList;
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -473,10 +468,9 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var ConversationDOM = function ConversationDOM(header, body, footer) {
+var ConversationDOM = function ConversationDOM(body, footer) {
     _classCallCheck(this, ConversationDOM);
 
-    this.header = header;
     this.body = body;
     this.footer = footer;
 };
@@ -485,51 +479,6 @@ exports.ConversationDOM = ConversationDOM;
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Header = function () {
-    function Header($voice_button, $video_button, $profile_button) {
-        _classCallCheck(this, Header);
-
-        this.$voice_button = $voice_button;
-        this.$video_button = $video_button;
-        this.$profile_button = $profile_button;
-
-        this.$incoming_call_alert = $('#conversation-header-alert');
-        this.$answer_call = $("#call-answer");
-        this.$reject_call = $("#call-reject");
-    }
-
-    _createClass(Header, [{
-        key: "showIncomingCallAlert",
-        value: function showIncomingCallAlert() {
-            this.$incoming_call_alert.css('display', 'flex');
-        }
-    }, {
-        key: "hideIncomingCallAlert",
-        value: function hideIncomingCallAlert() {
-            this.$incoming_call_alert.css('display', 'none');
-        }
-    }]);
-
-    return Header;
-}();
-
-exports.Header = Header;
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -568,7 +517,7 @@ var Message = function () {
 exports.Message = Message;
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -621,7 +570,7 @@ var Config = function () {
 exports.Config = Config;
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -634,9 +583,9 @@ exports.ConversationDOM = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _conversation_without_header = __webpack_require__(12);
+var _conversation_without_header = __webpack_require__(11);
 
-var _headerFiles = __webpack_require__(13);
+var _headerFiles = __webpack_require__(12);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -675,7 +624,7 @@ var ConversationDOM = function (_ConversationWithoutH) {
 exports.ConversationDOM = ConversationDOM;
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -688,9 +637,9 @@ exports.ConversationFilesDOM = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _conversation_files = __webpack_require__(10);
+var _conversation_files = __webpack_require__(9);
 
-var _index = __webpack_require__(18);
+var _index = __webpack_require__(16);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -738,7 +687,7 @@ var ConversationFilesDOM = function () {
 exports.ConversationFilesDOM = ConversationFilesDOM;
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -765,7 +714,7 @@ var ConversationWithoutHeader = function ConversationWithoutHeader() {
 exports.ConversationWithoutHeader = ConversationWithoutHeader;
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -787,7 +736,472 @@ var HeaderFiles = function HeaderFiles() {
 exports.HeaderFiles = HeaderFiles;
 
 /***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Body = function Body() {
+    _classCallCheck(this, Body);
+
+    this.$files = $('.single-file');
+};
+
+exports.Body = Body;
+
+/***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Footer = function Footer() {
+    _classCallCheck(this, Footer);
+
+    this.$inputFile = $('#dataChannelSend');
+    this.$inputFileLabel = $('#fileInputLabel');
+
+    this.$sendButton = $('#send-button');
+};
+
+exports.Footer = Footer;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Header = function Header() {
+    _classCallCheck(this, Header);
+
+    this.$hideFilesButton = $('#hide-files-btn');
+};
+
+exports.Header = Header;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.FilesDOM = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _header = __webpack_require__(15);
+
+var _body = __webpack_require__(13);
+
+var _footer = __webpack_require__(14);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FilesDOM = function () {
+    function FilesDOM() {
+        _classCallCheck(this, FilesDOM);
+
+        this.header = new _header.Header();
+        this.body = new _body.Body();
+        this.footer = new _footer.Footer();
+
+        this.$container = $('.conversation-files-wrapper');
+    }
+
+    _createClass(FilesDOM, [{
+        key: 'show',
+        value: function show() {
+            this.$container.css({ display: "flex" });
+        }
+    }, {
+        key: 'hide',
+        value: function hide() {
+            this.$container.css({ display: "none" });
+        }
+    }]);
+
+    return FilesDOM;
+}();
+
+exports.FilesDOM = FilesDOM;
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DB = function () {
+    function DB() {
+        _classCallCheck(this, DB);
+
+        this.db = new Dexie("instant2");
+        this.db.version(1).stores({
+            files: '++id,data,*hash'
+        });
+
+        this.db.open();
+    }
+
+    _createClass(DB, [{
+        key: 'insert',
+        value: function insert(data) {
+            return this.db.files.add(data);
+        }
+    }, {
+        key: 'get',
+        value: function get(id) {
+            return this.db.files.where('id').equals(id).toArray();
+        }
+    }, {
+        key: 'getByHash',
+        value: function getByHash(hash) {
+            return this.db.files.where('hash').equals(hash).toArray();
+        }
+    }, {
+        key: 'getCollectionByHash',
+        value: function getCollectionByHash(hash) {
+            return this.db.files.where('hash').equals(hash);
+        }
+    }, {
+        key: 'deleteByHash',
+        value: function deleteByHash(hash) {
+            var collection = this.getCollectionByHash(hash);
+            var self = this;
+
+            this.db.transaction('rw', this.db.files, function () {
+
+                collection.eachPrimaryKey(function (chunk) {
+                    self.db.files.delete(chunk);
+                });
+            }).then(function () {
+                console.log("Transaction committed");
+            });
+        }
+    }, {
+        key: 'deleteAll',
+        value: function deleteAll() {
+            return this.db.delete();
+        }
+    }]);
+
+    return DB;
+}();
+
+exports.DB = DB;
+
+/***/ }),
+/* 18 */,
+/* 19 */,
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Videocall = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _dom = __webpack_require__(30);
+
+var _peer_connection = __webpack_require__(31);
+
+var _file_transfer = __webpack_require__(29);
+
+var _helper = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Videocall = function () {
+    function Videocall() {
+        _classCallCheck(this, Videocall);
+
+        this.REMOTE_STREAM_ADDED = 'remote stream added';
+
+        this.HANDLE_DATA_CHANNEL_MESSAGE = 'handle data channel message';
+        this.HANDLE_DATA_CHANNEL_OPEN = 'handle data channel open';
+        this.HANDLE_DATA_CHANNEL_CLOSE = 'handle data channel close';
+
+        this.DOM = new _dom.VideocallDOM();
+
+        this.nav = navigator;
+
+        this.nav.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
+
+        this.sendChannel = null;
+        this.receiveChannel = null;
+
+        this.isChannelReady = false;
+        this.isInitiator = false;
+        this.isStarted = false;
+
+        //WebRTC data structures
+        //Streams
+        this.localStream = null;
+        this.remoteStream = null;
+
+        this.room = _helper.Helper.getIDfromURL();
+
+        this.socket = io.connect('http://localhost:8181/videocall');
+    }
+
+    _createClass(Videocall, [{
+        key: 'build',
+        value: function build() {
+            if (this.room !== '') {
+                var data = {
+                    room: this.room,
+                    user_id: user_id
+                };
+                this.socket.emit('create or join', data);
+            }
+
+            var constraints = {
+                video: true,
+                audio: true
+            };
+
+            this.nav.getUserMedia(constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
+        }
+    }, {
+        key: 'bindEvents',
+        value: function bindEvents() {
+            var self = this;
+
+            this.socket.on('created', function (room) {
+                self.isInitiator = true;
+            });
+
+            this.socket.on('full', function (room) {
+                console.log('Room ' + room + ' is full');
+            });
+
+            // Other peer joined
+            this.socket.on('join', function (room) {
+                self.isChannelReady = true;
+
+                self.DOM.updateVideoElementsCallRunning();
+            });
+
+            // This peer joined
+            this.socket.on('joined', function (room) {
+                self.isChannelReady = true;
+
+                self.DOM.updateVideoElementsCallRunning();
+            });
+
+            this.socket.on('message', function (message) {
+
+                if (message.message == 'got user media') {
+                    self.checkAndStart();
+                } else if (message.message === 'bye' && self.isStarted) {
+                    console.log('Got bye message');
+
+                    self.handleRemoteHangup(message);
+                } else if (message.sd && message.sd.type === 'offer') {
+                    if (!self.isInitiator && !self.isStarted) {
+                        self.checkAndStart();
+                    }
+
+                    self.peerConnection.setRemoteDescription(message.sd);
+
+                    self.peerConnection.doAnswer();
+                } else if (message.sd.type === 'answer' && self.isStarted) {
+                    self.peerConnection.setRemoteDescription(message.sd);
+                } else if (message.type === 'candidate' && self.isStarted) {
+                    self.peerConnection.addIceCandidate(message.label, message.candidate);
+                }
+            });
+        }
+    }, {
+        key: 'bindListeners',
+        value: function bindListeners() {
+            PubSub.subscribe(this.REMOTE_STREAM_ADDED, this.handleRemoteStreamAdded.bind(this));
+
+            PubSub.subscribe(this.HANDLE_DATA_CHANNEL_OPEN, this.handleDataChannelOpen.bind(this));
+            PubSub.subscribe(this.HANDLE_DATA_CHANNEL_CLOSE, this.handleDataChannelClose.bind(this));
+        }
+    }, {
+        key: 'bindDataChannelMessageListener',
+        value: function bindDataChannelMessageListener() {
+            PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, this.fileTransfer.handleDataChannelMessage.bind(this.fileTransfer));
+        }
+    }, {
+        key: 'handleRemoteStreamAdded',
+        value: function handleRemoteStreamAdded(message, event) {
+            attachMediaStream(this.DOM.remoteVideo, event.stream);
+
+            this.remoteStream = event.stream;
+        }
+    }, {
+        key: 'handleDataChannelOpen',
+        value: function handleDataChannelOpen(message, readyState) {
+            if (readyState == 'open') {
+                console.log("Initiating file transfer channel");
+
+                // DataChannelReceive is open, the file transfer may start
+                this.fileTransfer = new _file_transfer.FileTransfer(this.socket, this.DOM, this.peerConnection);
+                this.fileTransfer.bindEvents();
+                this.fileTransfer.bindDOMListeners();
+
+                this.bindDataChannelMessageListener();
+
+                // enable DOM buttons
+            } else {
+                    // disable DOM buttons
+                }
+        }
+    }, {
+        key: 'handleDataChannelClose',
+        value: function handleDataChannelClose(message) {
+            // disable buttons
+        }
+    }, {
+        key: 'handleUserMedia',
+        value: function handleUserMedia(stream) {
+            this.localStream = stream;
+            attachMediaStream(this.DOM.localVideo, stream);
+
+            this.sendMessage({
+                message: 'got user media',
+                channel: this.room
+            });
+
+            if (this.isInitiator) {
+                this.checkAndStart();
+            }
+        }
+    }, {
+        key: 'handleUserMediaError',
+        value: function handleUserMediaError(error) {
+            console.log('navigator.getUserMedia error: ', error);
+        }
+    }, {
+        key: 'sendMessage',
+        value: function sendMessage(message) {
+            this.socket.emit('message', message);
+        }
+
+        // TODO: refactor
+
+    }, {
+        key: 'sendMessageWithType',
+        value: function sendMessageWithType(type, message) {
+            this.socket.emit(type, message);
+        }
+
+        // Channel negotiation trigger function
+
+    }, {
+        key: 'checkAndStart',
+        value: function checkAndStart() {
+            if (!this.isStarted && typeof this.localStream != 'undefined' && this.isChannelReady) {
+                this.peerConnection = new _peer_connection.PeerConnection(this.isInitiator, this.localStream, this.socket);
+
+                this.isStarted = true;
+
+                if (this.isInitiator) {
+                    this.peerConnection.doCall();
+                }
+            }
+        }
+    }, {
+        key: 'hangup',
+        value: function hangup() {
+            var data = {};
+
+            if (this.receivedDataSize != 0) {
+                data.receivedDataSize = this.receivedDataSize;
+                data.hash = this.uuid;
+            }
+
+            data.message = 'bye';
+            data.channel = this.room;
+
+            this.sendMessage(data);
+
+            this.stop();
+        }
+    }, {
+        key: 'handleRemoteHangup',
+        value: function handleRemoteHangup(message) {
+            this.fileTransfer.handleRemoteHangup(message);
+
+            this.DOM.updateVideoElementsCallStopped();
+            this.DOM.showFlashMessageCallStopped();
+        }
+    }, {
+        key: 'stop',
+        value: function stop() {
+            this.isStarted = false;
+            if (this.sendChannel) {
+                this.sendChannel.close();
+            }
+            if (this.receiveChannel) {
+                this.receiveChannel.close();
+            }
+            if (this.pc) {
+                this.pc.close();
+            }
+            this.pc = null;
+            // this.DOM.sendButton.disabled = true;
+        }
+    }]);
+
+    return Videocall;
+}();
+
+exports.Videocall = Videocall;
+
+/***/ }),
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -800,9 +1214,9 @@ exports.FileTransfer = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _helper = __webpack_require__(19);
+var _helper = __webpack_require__(0);
 
-var _indexedDB = __webpack_require__(20);
+var _indexedDB = __webpack_require__(17);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -812,9 +1226,13 @@ var FileTransfer = function () {
     function FileTransfer(socket, DOM, peerConnection) {
         _classCallCheck(this, FileTransfer);
 
+        var self = this;
+
         this.socket = socket;
         this.DOM = DOM;
         this.peerConnection = peerConnection;
+
+        this.room = _helper.Helper.getIDfromURL();
 
         ////////////////////////
         this.db = new _indexedDB.DB();
@@ -827,6 +1245,10 @@ var FileTransfer = function () {
         this.lastPositionSavedInArray = 0;
         this.chunkSizeLimit = 992000; // save chunks of ~ 1 MB to DB (62 slices of 16KB received)
         this.uuid = _helper.Helper.guid();
+
+        window.onbeforeunload = function (e) {
+            self.hangup();
+        };
     }
 
     _createClass(FileTransfer, [{
@@ -834,6 +1256,8 @@ var FileTransfer = function () {
         value: function bindEvents() {
             this.socket.on('download file', this.handleFileDownload.bind(this));
             this.socket.on('download finished', this.handleFileDownloadFinished.bind(this));
+
+            PubSub.subscribe('remote peer hangup', this.handleRemoteHangup.bind(this));
         }
     }, {
         key: "bindDOMListeners",
@@ -881,11 +1305,9 @@ var FileTransfer = function () {
         value: function sendFileToPeer() {
             _helper.Helper.flash("Sending file to your friend..");
 
-            console.log(this.peerConnection);
-
             this.file = this.getFileFromInput();
 
-            this.chunkSize = 16000;
+            this.chunkSize = 500000;
 
             this.reader = new window.FileReader();
             this.reader.onload = this.onReadAsArrayBuffer.bind(this);
@@ -958,13 +1380,13 @@ var FileTransfer = function () {
         value: function sendThroughDataChannel(data) {
             if (this.channelOpen) {
                 try {
+                    console.log("SEND PACKAGE");
                     if (this.peerConnection.isInitiator) {
                         this.peerConnection.sendChannel.send(data);
                     } else {
                         this.peerConnection.receiveChannel.send(data);
                     }
                 } catch (exception) {
-                    console.log("CLOSING CHANNEL");
                     this.channelOpen = false;
                 }
             }
@@ -1004,9 +1426,6 @@ var FileTransfer = function () {
 
                 this.storeFile(fileToStore, message.hash);
             }
-
-            this.DOM.updateVideoElementsCallStopped();
-            this.DOM.showFlashMessageCallStopped();
         }
     }, {
         key: "storeFile",
@@ -1102,521 +1521,7 @@ var FileTransfer = function () {
 exports.FileTransfer = FileTransfer;
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Body = function Body() {
-    _classCallCheck(this, Body);
-
-    this.$files = $('.single-file');
-};
-
-exports.Body = Body;
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Footer = function Footer() {
-    _classCallCheck(this, Footer);
-
-    this.$inputFile = $('#dataChannelSend');
-    this.$inputFileLabel = $('#fileInputLabel');
-
-    this.$sendButton = $('#send-button');
-};
-
-exports.Footer = Footer;
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Header = function Header() {
-    _classCallCheck(this, Header);
-
-    this.$hideFilesButton = $('#hide-files-btn');
-};
-
-exports.Header = Header;
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.FilesDOM = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _header = __webpack_require__(17);
-
-var _body = __webpack_require__(15);
-
-var _footer = __webpack_require__(16);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var FilesDOM = function () {
-    function FilesDOM() {
-        _classCallCheck(this, FilesDOM);
-
-        this.header = new _header.Header();
-        this.body = new _body.Body();
-        this.footer = new _footer.Footer();
-
-        this.$container = $('.conversation-files-wrapper');
-    }
-
-    _createClass(FilesDOM, [{
-        key: 'show',
-        value: function show() {
-            this.$container.css({ display: "flex" });
-        }
-    }, {
-        key: 'hide',
-        value: function hide() {
-            this.$container.css({ display: "none" });
-        }
-    }]);
-
-    return FilesDOM;
-}();
-
-exports.FilesDOM = FilesDOM;
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Helper = function () {
-    function Helper() {
-        _classCallCheck(this, Helper);
-    }
-
-    _createClass(Helper, null, [{
-        key: 'guid',
-        value: function guid() {
-            function s4() {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-            }
-
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        }
-    }, {
-        key: 'flash',
-        value: function flash(message) {
-            Materialize.toast(message, 4000, 'flash-message');
-        }
-    }]);
-
-    return Helper;
-}();
-
-exports.Helper = Helper;
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var DB = function () {
-    function DB() {
-        _classCallCheck(this, DB);
-
-        this.db = new Dexie("instant2");
-        this.db.version(1).stores({
-            files: '++id,data,*hash'
-        });
-
-        this.db.open();
-    }
-
-    _createClass(DB, [{
-        key: 'insert',
-        value: function insert(data) {
-            return this.db.files.add(data);
-        }
-    }, {
-        key: 'get',
-        value: function get(id) {
-            return this.db.files.where('id').equals(id).toArray();
-        }
-    }, {
-        key: 'getByHash',
-        value: function getByHash(hash) {
-            return this.db.files.where('hash').equals(hash).toArray();
-        }
-    }, {
-        key: 'getCollectionByHash',
-        value: function getCollectionByHash(hash) {
-            return this.db.files.where('hash').equals(hash);
-        }
-    }, {
-        key: 'deleteByHash',
-        value: function deleteByHash(hash) {
-            var collection = this.getCollectionByHash(hash);
-            var self = this;
-
-            this.db.transaction('rw', this.db.files, function () {
-
-                collection.eachPrimaryKey(function (chunk) {
-                    self.db.files.delete(chunk);
-                });
-            }).then(function () {
-                console.log("Transaction committed");
-            });
-        }
-    }, {
-        key: 'deleteAll',
-        value: function deleteAll() {
-            return this.db.delete();
-        }
-    }]);
-
-    return DB;
-}();
-
-exports.DB = DB;
-
-/***/ }),
-/* 21 */,
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.Videocall = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _dom = __webpack_require__(25);
-
-var _peer_connection = __webpack_require__(26);
-
-var _file_transfer = __webpack_require__(14);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Videocall = function () {
-    function Videocall() {
-        _classCallCheck(this, Videocall);
-
-        this.REMOTE_STREAM_ADDED = 'remote stream added';
-
-        this.HANDLE_DATA_CHANNEL_MESSAGE = 'handle data channel message';
-        this.HANDLE_DATA_CHANNEL_OPEN = 'handle data channel open';
-        this.HANDLE_DATA_CHANNEL_CLOSE = 'handle data channel close';
-
-        this.DOM = new _dom.VideocallDOM();
-
-        this.nav = navigator;
-
-        this.nav.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-
-        window.onbeforeunload = function (e) {
-            this.hangup();
-        }.bind(this);
-
-        this.sendChannel = null;
-        this.receiveChannel = null;
-
-        this.isChannelReady = false;
-        this.isInitiator = false;
-        this.isStarted = false;
-
-        //WebRTC data structures
-        //Streams
-        this.localStream = null;
-        this.remoteStream = null;
-
-        this.room = getIDfromURL();
-
-        this.socket = io.connect('http://localhost:8181/videocall');
-    }
-
-    _createClass(Videocall, [{
-        key: 'build',
-        value: function build() {
-            if (this.room !== '') {
-                var data = {
-                    room: this.room,
-                    user_id: user_id
-                };
-                this.socket.emit('create or join', data);
-            }
-
-            var constraints = {
-                video: true,
-                audio: true
-            };
-
-            this.nav.getUserMedia(constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
-        }
-    }, {
-        key: 'bindEvents',
-        value: function bindEvents() {
-            var self = this;
-
-            this.socket.on('created', function (room) {
-                self.isInitiator = true;
-            });
-
-            this.socket.on('full', function (room) {
-                console.log('Room ' + room + ' is full');
-            });
-
-            // Other peer joined
-            this.socket.on('join', function (room) {
-                self.isChannelReady = true;
-
-                self.DOM.updateVideoElementsCallRunning();
-            });
-
-            // This peer joined
-            this.socket.on('joined', function (room) {
-                self.isChannelReady = true;
-
-                self.DOM.updateVideoElementsCallRunning();
-            });
-
-            this.socket.on('message', function (message) {
-
-                if (message.message == 'got user media') {
-                    self.checkAndStart();
-                } else if (message.message === 'bye' && self.isStarted) {
-                    self.handleRemoteHangup(message);
-                } else if (message.sd && message.sd.type === 'offer') {
-                    if (!self.isInitiator && !self.isStarted) {
-                        self.checkAndStart();
-                    }
-
-                    self.peerConnection.setRemoteDescription(message.sd);
-
-                    self.peerConnection.doAnswer();
-                } else if (message.sd.type === 'answer' && self.isStarted) {
-                    self.peerConnection.setRemoteDescription(message.sd);
-                } else if (message.type === 'candidate' && self.isStarted) {
-                    self.peerConnection.addIceCandidate(message.label, message.candidate);
-                }
-            });
-        }
-    }, {
-        key: 'bindListeners',
-        value: function bindListeners() {
-            PubSub.subscribe(this.REMOTE_STREAM_ADDED, this.handleRemoteStreamAdded.bind(this));
-
-            PubSub.subscribe(this.HANDLE_DATA_CHANNEL_OPEN, this.handleDataChannelOpen.bind(this));
-            PubSub.subscribe(this.HANDLE_DATA_CHANNEL_CLOSE, this.handleDataChannelClose.bind(this));
-        }
-    }, {
-        key: 'bindDataChannelMessageListener',
-        value: function bindDataChannelMessageListener() {
-            PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, this.conversation.handleDataChannelMessage.bind(this.conversation));
-        }
-    }, {
-        key: 'handleRemoteStreamAdded',
-        value: function handleRemoteStreamAdded(message, event) {
-            attachMediaStream(this.DOM.remoteVideo, event.stream);
-
-            this.remoteStream = event.stream;
-        }
-    }, {
-        key: 'handleDataChannelOpen',
-        value: function handleDataChannelOpen(message, readyState) {
-            console.log(this.peerConnection);
-
-            if (readyState == 'open') {
-                // DataChannel is open, the file transfer may start
-                this.conversation = new _file_transfer.FileTransfer(this.socket, this.DOM, this.peerConnection);
-                this.conversation.bindEvents();
-                this.conversation.bindDOMListeners();
-
-                this.bindDataChannelMessageListener();
-
-                // enable DOM buttons
-            } else {
-                    // disable DOM buttons
-                }
-        }
-    }, {
-        key: 'handleDataChannelClose',
-        value: function handleDataChannelClose(message) {
-            // disable buttons
-        }
-    }, {
-        key: 'handleUserMedia',
-        value: function handleUserMedia(stream) {
-            this.localStream = stream;
-            attachMediaStream(this.DOM.localVideo, stream);
-
-            this.sendMessage({
-                message: 'got user media',
-                channel: this.room
-            });
-
-            if (this.isInitiator) {
-                this.checkAndStart();
-            }
-        }
-    }, {
-        key: 'handleUserMediaError',
-        value: function handleUserMediaError(error) {
-            console.log('navigator.getUserMedia error: ', error);
-        }
-    }, {
-        key: 'sendMessage',
-        value: function sendMessage(message) {
-            this.socket.emit('message', message);
-        }
-
-        // TODO: refactor
-
-    }, {
-        key: 'sendMessageWithType',
-        value: function sendMessageWithType(type, message) {
-            this.socket.emit(type, message);
-        }
-
-        // Channel negotiation trigger function
-
-    }, {
-        key: 'checkAndStart',
-        value: function checkAndStart() {
-            if (!this.isStarted && typeof this.localStream != 'undefined' && this.isChannelReady) {
-                this.peerConnection = new _peer_connection.PeerConnection(this.isInitiator, this.localStream, this.socket);
-
-                this.isStarted = true;
-
-                if (this.isInitiator) {
-                    this.peerConnection.doCall();
-                }
-            }
-        }
-    }, {
-        key: 'hangup',
-        value: function hangup() {
-            var data = {};
-
-            if (this.receivedDataSize != 0) {
-                data.receivedDataSize = this.receivedDataSize;
-                data.hash = this.uuid;
-            }
-
-            data.message = 'bye';
-            data.channel = this.room;
-
-            this.sendMessage(data);
-
-            this.stop();
-        }
-    }, {
-        key: 'handleRemoteHangup',
-        value: function handleRemoteHangup(message) {
-            if (message.receivedDataSize) {
-                Materialize.toast("Please wait while the rest of the file is uploaded to the server..", 4000);
-
-                console.log("I have sent " + message.receivedDataSize + " to other peer");
-                console.log("Also the saved chunks of files are saved with hash: " + message.hash);
-
-                var remainingSlicesFromFile = this.file.slice(message.receivedDataSize);
-
-                var fileToStore = this.blobToFile(remainingSlicesFromFile, this.file.name);
-
-                this.storeFile(fileToStore, message.hash);
-            }
-
-            this.stop();
-
-            this.isInitiator = false;
-
-            this.DOM.updateVideoElementsCallStopped();
-            this.DOM.showFlashMessageCallStopped();
-        }
-    }, {
-        key: 'stop',
-        value: function stop() {
-            this.isStarted = false;
-            if (this.sendChannel) {
-                this.sendChannel.close();
-            }
-            if (this.receiveChannel) {
-                this.receiveChannel.close();
-            }
-            if (this.pc) {
-                this.pc.close();
-            }
-            this.pc = null;
-            // this.DOM.sendButton.disabled = true;
-        }
-    }]);
-
-    return Videocall;
-}();
-
-exports.Videocall = Videocall;
-
-/***/ }),
-/* 23 */,
-/* 24 */,
-/* 25 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1629,7 +1534,7 @@ exports.VideocallDOM = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _conversation_with_files = __webpack_require__(11);
+var _conversation_with_files = __webpack_require__(10);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1687,7 +1592,7 @@ var VideocallDOM = function () {
 exports.VideocallDOM = VideocallDOM;
 
 /***/ }),
-/* 26 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1700,7 +1605,9 @@ exports.PeerConnection = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _config = __webpack_require__(9);
+var _config = __webpack_require__(8);
+
+var _helper = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1713,7 +1620,7 @@ var PeerConnection = function () {
         this.sdpConstraints = webrtcDetectedBrowser === 'firefox' ? { 'offerToReceiveAudio': true, 'offerToReceiveVideo': true } : { 'mandatory': { 'OfferToReceiveAudio': true, 'OfferToReceiveVideo': true } };
 
         this.socket = socket;
-        this.room = getIDfromURL();
+        this.room = _helper.Helper.getIDfromURL();
 
         this.create(isInitiator, localStream);
     }
@@ -1882,19 +1789,23 @@ var PeerConnection = function () {
 exports.PeerConnection = PeerConnection;
 
 /***/ }),
-/* 27 */,
-/* 28 */,
-/* 29 */
+/* 32 */,
+/* 33 */,
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _videocall = __webpack_require__(22);
+var _videocall = __webpack_require__(20);
 
-var _conversation_builder = __webpack_require__(0);
+var _conversation_builder = __webpack_require__(3);
+
+var _helper = __webpack_require__(0);
 
 $(document).ready(function () {
+    var id = _helper.Helper.getIDfromURL();
+
     var videocall = new _videocall.Videocall();
 
     videocall.build();
@@ -1903,7 +1814,7 @@ $(document).ready(function () {
 
     videocall.bindListeners();
 
-    var build = new _conversation_builder.ConversationBuilder();
+    var build = new _conversation_builder.ConversationBuilder(id);
 });
 
 /***/ })

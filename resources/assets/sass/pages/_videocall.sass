@@ -1,5 +1,6 @@
 #videocall-container
 	display: flex
+	overflow-y: hidden
 
 	#videos-container
 		max-height: 90vh
@@ -32,6 +33,8 @@
 
 #conversation-container
 	max-height: 90vh
+	overflow-x: hidden
+	overflow-y: hidden
 
 	.conversation-files-wrapper
 		display: none
@@ -95,3 +98,8 @@
 				margin-left: auto
 				flex-basis: 20%
 
+
+
+@media screen and (max-width: 750px)
+	#videocall-container
+		flex-direction: column

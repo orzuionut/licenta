@@ -1,20 +1,14 @@
-import {Helper} from "./helpers/helper";
-import {DB} from "./modules/indexedDB";
+import {Helper} from "../helpers/helper";
 
-class FileTransfer
+
+class FileReceive
 {
-    constructor(socket, DOM, peerConnection)
+    constructor(socket, DOM, db, dataChannel)
     {
-        let self = this;
-        
         this.socket = socket;
         this.DOM = DOM;
-        this.peerConnection = peerConnection;
-
-        this.room = Helper.getIDfromURL();
-
-        ////////////////////////
-        this.db = new DB();
+        this.db = db;
+        this.dataChannel = dataChannel;
 
         this.channelOpen = true;
 
@@ -25,16 +19,12 @@ class FileTransfer
         this.chunkSizeLimit = 992000; // save chunks of ~ 1 MB to DB (62 slices of 16KB received)
         this.uuid = Helper.guid();
 
-
-        window.onbeforeunload = function(e) { self.hangup(); };
     }
 
     bindEvents()
     {
         this.socket.on('download file', this.handleFileDownload.bind(this));
         this.socket.on('download finished', this.handleFileDownloadFinished.bind(this));
-
-        PubSub.subscribe('remote peer hangup', this.handleRemoteHangup.bind(this));
     }
 
     bindDOMListeners()
@@ -42,16 +32,31 @@ class FileTransfer
         let self = this;
 
         this.DOM.conversationDOM.filesDOM.body.$files.on('click', this.target, self.handleFileDownloadResume.bind(self));
-        this.DOM.conversationDOM.filesDOM.footer.$inputFile.on('change', this, self.DOM.handleFileInputChanged.bind(self.DOM));
-        this.DOM.conversationDOM.filesDOM.footer.$sendButton.on('click', self.sendFileToPeer.bind(self));
     }
 
     handleDataChannelMessage(message, event)
     {
         let data = event.data;
-
-        if (typeof data !== 'string')
+        
+        try
         {
+            data = JSON.parse(data);
+
+            console.log(data);
+
+            this.saveToDisk(this.arrayToStoreChunks, data.fileName);
+
+            this.deleteTemporaryData(this.uuid);
+
+            this.arrayToStoreChunks = [];
+            this.receivedDataSize = 0;
+
+            Helper.flash("You have received a new file");
+        }
+        catch (e)
+        {
+            data = Helper.StringToArrayBuffer(data);
+
             this.arrayToStoreChunks.push(data);
 
             this.temporaryDataSize += data.byteLength;
@@ -66,67 +71,6 @@ class FileTransfer
                 this.temporaryDataSize = 0;
                 this.lastPositionSavedInArray = this.arrayToStoreChunks.length;
             }
-        }
-        else
-        {
-            data = JSON.parse(data);
-
-            this.saveToDisk(this.arrayToStoreChunks, data.fileName);
-
-            this.deleteTemporaryData(this.uuid);
-
-            this.arrayToStoreChunks = [];
-            this.receivedDataSize = 0;
-
-            Helper.flash("You have received a new file");
-        }
-    }
-
-    sendFileToPeer()
-    {
-        Helper.flash("Sending file to your friend..");
-        
-        this.file = this.getFileFromInput();
-
-        this.chunkSize = 16000;
-
-        this.reader = new window.FileReader();
-        this.reader.onload = this.onReadAsArrayBuffer.bind(this);
-
-        this.sliceFile(0);
-    }
-
-    sliceFile(offset)
-    {
-        this.offset = offset;
-
-        if (this.channelOpen)
-        {
-            let slice = this.file.slice(offset, offset + this.chunkSize);
-            this.reader.readAsArrayBuffer(slice);
-        }
-        else
-        {
-            console.log("Exception.. channel closed..");
-        }
-    }
-
-    onReadAsArrayBuffer(event)
-    {
-        let data = event.target.result;
-
-        this.sendThroughDataChannel(data);
-
-        if (this.file.size > this.offset + data.byteLength)
-        {
-            window.setTimeout(this.sliceFile.bind(this), 100, this.offset + this.chunkSize);
-        }
-        else
-        {
-            let data = {fileName: this.file.name};
-            this.sendThroughDataChannel(JSON.stringify(data));
-
-            delete this.reader;
         }
     }
 
@@ -163,34 +107,6 @@ class FileTransfer
         return this.db.getByHash(hash);
     }
 
-    sendThroughDataChannel(data)
-    {
-        if (this.channelOpen)
-        {
-            try
-            {
-                console.log("SEND PACKAGE");
-                if (this.peerConnection.isInitiator)
-                {
-                    this.peerConnection.sendChannel.send(data);
-                }
-                else
-                {
-                    this.peerConnection.receiveChannel.send(data);
-                }
-            }
-            catch (exception)
-            {
-                this.channelOpen = false;
-            }
-        }
-    }
-
-    getFileFromInput()
-    {
-        return this.DOM.conversationDOM.filesDOM.footer.$inputFile[0].files[0];
-    }
-
     hangup()
     {
         let data = {};
@@ -205,6 +121,7 @@ class FileTransfer
         data.channel = this.room;
 
         this.sendMessage(data);
+
     }
 
     handleRemoteHangup(message)
@@ -222,6 +139,9 @@ class FileTransfer
 
             this.storeFile(fileToStore, message.hash);
         }
+
+        this.DOM.updateVideoElementsCallStopped();
+        this.DOM.showFlashMessageCallStopped();
     }
 
     storeFile(file, hash)
@@ -311,4 +231,4 @@ class FileTransfer
 
 }
 
-export {FileTransfer}
+export {FileReceive}

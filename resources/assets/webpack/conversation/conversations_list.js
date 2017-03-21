@@ -1,8 +1,8 @@
 class ConversationsList {
 
-    constructor($element)
+    constructor()
     {
-        this.item = $element;
+        this.item = $(".conversation-item");
     }
 
     getItemID(item)

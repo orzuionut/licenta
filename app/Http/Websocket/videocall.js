@@ -7,12 +7,12 @@ const co = use('co');
 
 const participantsIDsArray = [];
 
-module.exports = function (io) {
-
+module.exports = function (io) 
+{
     io.on('connection', function (socket) {
 
-        socket.on('create or join', function (data) {
-
+        socket.on('create or join', function (data) 
+        {
             var numClients = findClientsSocket(io, data.room);
             let room = data.room;
 

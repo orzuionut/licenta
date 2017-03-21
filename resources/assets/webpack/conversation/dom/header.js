@@ -1,10 +1,10 @@
 class Header {
 
-    constructor($voice_button, $video_button, $profile_button)
+    constructor()
     {
-        this.$voice_button = $voice_button;
-        this.$video_button = $video_button;
-        this.$profile_button = $profile_button;
+        this.$voice_button = $('#conversation-voice');
+        this.$video_button = $('#conversation-video');
+        this.$profile_button = $('#conversation-profile');
 
         this.$incoming_call_alert = $('#conversation-header-alert');
         this.$answer_call = $("#call-answer");

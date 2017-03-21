@@ -2,9 +2,9 @@ import { Message } from './../message';
 
 class Body{
 
-    constructor($box)
+    constructor()
     {
-        this.$box = $box;
+        this.$box = $('.conversation-body');
     }
 
     appendMessagesArray(data, current_user_id)

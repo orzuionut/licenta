@@ -2,36 +2,37 @@ import { ConferenceDOM } from './dom';
 import { Config } from './../_config';
 import { Participant } from './participants';
 import { SocketIO } from '../modules/socket';
-import {ConversationFilesDOM} from "../conversation/conversation_with_files";
-import {FileTransfer} from "../file_transfer";
+import {FileReceive} from "./file_receive";
+import {DB} from "../modules/indexedDB";
+import {SendFile} from "./file_send";
+import {DataChannelSend} from "./data_channel_send";
+import {DataChannelReceive} from "./data_channel_receive";
+import {Helper} from "../helpers/helper";
 
 class Conference
 {
     constructor()
     {
-        this.id = getIDfromURL();
+        this.id = Helper.getIDfromURL();
 
         this.socketIO = new SocketIO(io, 'http://localhost:8181');
 
         this.socketIO.setRoom(this.id);
 
-        // this.servers = null;
-        // this.configuration = null;
+        this.configuration = null;
 
         this.sessionId = null;
         this.participants = {};
+
+        this.fileReceive = {};
 
         this.iceServers = Config.getIceServers();
 
         window.onbeforeunload = function () { this.socketIO.socket.disconnect(); }.bind(this);
 
-        this.DOM = {};
+        this.DOM = new ConferenceDOM();
 
-        this.DOM.conversationDOM = new ConversationFilesDOM();
-        this.DOM.conversationDOM.bindListeners();
-
-        this.fileTransfer = new FileTransfer(this.socketIO.socket, this.DOM, this.peerConnection);
-        this.fileTransfer.bindEvents();
+        this.db = new DB();
     }
 
     init()
@@ -89,15 +90,13 @@ class Conference
 
     onExistingParticipants(message)
     {
-        // this.peerConnection = new RTCPeerConnection(this.servers, this.configuration);
-        //
-        // this.channel = this.peerConnection.createDataChannel("hello", null);
-        //
-        // this.channel.onopen = function () {
-        //     console.log("RAGE");
-        // };
-        // this.channel.onclose = onSendChannelStateChange;
-        // this.channel.onmessage = onMessage;
+        var self = this;
+
+        var dataChannelConfig = {};
+
+        // Send Channel opened.. maybe enable buttons
+        dataChannelConfig.onopen = function () {};
+        dataChannelConfig.onclose = null;
 
         var constraints = {
             audio: true,
@@ -113,23 +112,32 @@ class Conference
 
         // bind function so that calling 'this' in that function will receive the current instance
         var options = {
-            // peerConnection: this.peerConnection,
             localVideo: video,
             mediaConstraints: constraints,
             onicecandidate: localParticipant.onIceCandidate.bind(localParticipant),
-            configuration: this.iceServers
+            configuration: this.iceServers,
+            dataChannelConfig: dataChannelConfig,
+            dataChannels: true
         };
 
         localParticipant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options, function (error)
         {
-            if (error)
-            {
-                return console.error(error);
-            }
-
-            // Generate the SDP offer
+            if (error) return console.error(error);
+            
             this.generateOffer(localParticipant.offerToReceiveVideo.bind(localParticipant));
         });
+        
+        this.localPeer = localParticipant.rtcPeer;
+
+        // Send files through data channel
+        this.dataChannelSend = new DataChannelSend(this.localPeer);
+
+        this.sendFile = new SendFile(this.DOM, this.dataChannelSend);
+        this.sendFile.bindDOMListeners();
+
+        /////////////////////////////////
+
+        window.RTC = this.localPeer;
 
         // @message.data => existing Participants in the room
         for (var i in message.data) {
@@ -139,26 +147,46 @@ class Conference
 
     receiveVideoFrom(sender)
     {
+        var dataChannel = new DataChannelReceive(this.localPeer);
+        
+        var dataChannelConfig = {};
+
+        dataChannelConfig.onopen = function () {};
+        dataChannelConfig.onclose = null;
+        
+        dataChannelConfig.onmessage = dataChannel.handleMessage;
+
         var participant = new Participant(sender, this.socketIO.socket);
         this.participants[sender] = participant;
 
         var video = ConferenceDOM.createVideo(participant);
 
         var options = {
-            // peerConnection: this.peerConnection,
             remoteVideo: video,
             onicecandidate: participant.onIceCandidate.bind(participant),
-            configuration: this.iceServers
+            configuration: this.iceServers,
+            dataChannelConfig: dataChannelConfig,
+            dataChannels: true
         };
 
         participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function (error)
         {
-            if (error) {
-                return console.error(error);
-            }
-            
+            if (error) { return console.error(error); }
+
             this.generateOffer(participant.offerToReceiveVideo.bind(participant));
         });
+
+        dataChannel.setRemotePeer(participant.rtcPeer);
+
+        this.fileReceive[sender] = new FileReceive(this.socketIO.socket, this.DOM, this.db, dataChannel);
+        this.fileReceive[sender].bindEvents();
+        this.fileReceive[sender].bindDOMListeners();
+
+        PubSub.subscribe('handle data channel message', this.fileReceive[sender].handleDataChannelMessage.bind(this.fileReceive[sender]));
+
+
+        //TODO: delete
+        window.peerRTC = participant.rtcPeer;
     }
 
     /**
@@ -180,6 +208,9 @@ class Conference
 
         participant.dispose();
         delete this.participants[message.sessionId];
+
+        // Delete the file transfer
+        delete this.fileReceive[message.sessionId];
 
         // remove video tag
         $("#video-" + participant.id).remove();

@@ -10,8 +10,7 @@ class VideocallDOM
         this.conversationDOM = new ConversationFilesDOM();
         this.conversationDOM.bindListeners();
     }
-
-
+    
     updateVideoElementsCallRunning()
     {
         this.localVideo.classList.remove("video-fullscreen");
@@ -37,7 +36,6 @@ class VideocallDOM
             imageUrl: "/img/call_ended_icon.png"
         });
     }
-
     
     handleFileInputChanged(event)
     {

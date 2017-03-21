@@ -63,56 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-        value: true
-});
-exports.ConversationBuilder = undefined;
-
-var _conversation = __webpack_require__(4);
-
-var _conversations_list = __webpack_require__(5);
-
-var _dom = __webpack_require__(6);
-
-var _header = __webpack_require__(7);
-
-var _body = __webpack_require__(1);
-
-var _footer = __webpack_require__(2);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ConversationBuilder = function ConversationBuilder() {
-        _classCallCheck(this, ConversationBuilder);
-
-        // Side-menu list of conversations
-        var conversations_list = new _conversations_list.ConversationsList($(".conversation-item"));
-
-        // Main chat-box
-        var header = new _header.Header($('#conversation-voice'), $('#conversation-video'), $('#conversation-profile'));
-        var body = new _body.Body($('.conversation-body'));
-        var footer = new _footer.Footer($('#enter-message'), $('#submit-message'));
-
-        var DOM = new _dom.ConversationDOM(header, body, footer);
-
-        var conversation = new _conversation.Conversation(DOM, conversation_id, user_id);
-
-        conversation.init();
-};
-
-exports.ConversationBuilder = ConversationBuilder;
-
-/***/ }),
+/* 0 */,
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -126,15 +81,15 @@ exports.Body = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _message = __webpack_require__(8);
+var _message = __webpack_require__(7);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Body = function () {
-    function Body($box) {
+    function Body() {
         _classCallCheck(this, Body);
 
-        this.$box = $box;
+        this.$box = $('.conversation-body');
     }
 
     _createClass(Body, [{
@@ -198,27 +153,35 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Footer = function () {
-    function Footer($message_input, $submit_button) {
+    function Footer() {
         _classCallCheck(this, Footer);
 
-        this.$message_input = $message_input;
-        this.$submit_button = $submit_button;
+        this.$message_input = $('#enter-message');
+        this.$submit_button = $('#submit-message');
+
+        this.style();
     }
 
     _createClass(Footer, [{
-        key: "clearInput",
+        key: 'clearInput',
         value: function clearInput() {
             this.$message_input.val("");
         }
     }, {
-        key: "clickSubmitButton",
+        key: 'clickSubmitButton',
         value: function clickSubmitButton() {
             this.$submit_button.click();
         }
     }, {
-        key: "getMessage",
+        key: 'getMessage',
         value: function getMessage() {
             return this.$message_input.val();
+        }
+    }, {
+        key: 'style',
+        value: function style() {
+            var height = this.$submit_button.css("height");
+            this.$submit_button.css({ "width": height + "px" });
         }
     }]);
 
@@ -229,6 +192,44 @@ exports.Footer = Footer;
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+        value: true
+});
+exports.ConversationBuilder = undefined;
+
+var _conversation = __webpack_require__(5);
+
+var _dom = __webpack_require__(6);
+
+var _body = __webpack_require__(1);
+
+var _footer = __webpack_require__(2);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationBuilder = function ConversationBuilder(id) {
+        _classCallCheck(this, ConversationBuilder);
+
+        // Main chat-box
+        var body = new _body.Body();
+        var footer = new _footer.Footer();
+
+        var DOM = new _dom.ConversationDOM(body, footer);
+
+        this.conversation = new _conversation.Conversation(DOM, id, user_id);
+
+        this.conversation.init();
+};
+
+exports.ConversationBuilder = ConversationBuilder;
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -270,7 +271,7 @@ var SocketIO = function () {
 exports.SocketIO = SocketIO;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -283,7 +284,7 @@ exports.Conversation = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _socket = __webpack_require__(3);
+var _socket = __webpack_require__(4);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -318,42 +319,6 @@ var Conversation = function () {
 
             self.bindSocketListeners();
             self.bindDOMListeners();
-
-            // // Match all anchor tags with id like :conversation-id-{number}:
-            // conversations_list.item.click(function () {
-            //     let old_conversation_id = conversation.id;
-            //     let new_conversation_id = conversations_list.getItemID(this);
-            //
-            //     // Conversation changed. Update stuff
-            //     if (old_conversation_id !== new_conversation_id)
-            //     {
-            //         conversation.DOM.body.clear();
-            //
-            //         conversation.setID(new_conversation_id);
-            //
-            //         socketIO.setRoom(new_conversation_id);
-            //
-            //         data.leaveRoom = old_conversation_id;
-            //         socketIO.sendMessage('roomChanged', data);
-            //
-            //         socketIO.sendMessage('init', data);
-            //     }
-            // });
-
-            // conversation.DOM.header.$video_button.click(function () {
-            //     data = {};
-            //     socketIO.sendMessage('call', data);
-            //
-            //     window.location.href = "/conversation/call/" + conversation.id;
-            // });
-            //
-            // conversation.DOM.header.$answer_call.click(function () {
-            //     window.location.href = "/conversation/call/" + conversation.id;
-            // });
-            //
-            // conversation.DOM.header.$reject_call.click(function () {
-            //     conversation.DOM.header.hideIncomingCallAlert();
-            // });
         }
     }, {
         key: 'bindSocketListeners',
@@ -369,7 +334,7 @@ var Conversation = function () {
                 self.DOM.body.appendMessagesArray(data, self.user_id);
             });
 
-            self.socketIO.socket.on('call', function (data) {
+            self.socketIO.socket.on('call', function () {
                 self.DOM.header.showIncomingCallAlert();
             });
         }
@@ -380,7 +345,6 @@ var Conversation = function () {
             var data = {};
 
             self.DOM.footer.$submit_button.on('click', function () {
-
                 var message = self.DOM.footer.getMessage();
                 self.messageSubmitted(message);
 
@@ -394,7 +358,7 @@ var Conversation = function () {
             });
 
             self.DOM.footer.$message_input.keypress(function (e) {
-                if (e.which == self.ENTER_KEY) {
+                if (e.which == self.ENTER_KEY && self.DOM.footer.getMessage().trim()) {
                     self.DOM.footer.clickSubmitButton();
                 }
             });
@@ -424,43 +388,6 @@ var Conversation = function () {
 exports.Conversation = Conversation;
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ConversationsList = function () {
-    function ConversationsList($element) {
-        _classCallCheck(this, ConversationsList);
-
-        this.item = $element;
-    }
-
-    _createClass(ConversationsList, [{
-        key: "getItemID",
-        value: function getItemID(item) {
-            var element = $(item).find("div[id^='conversation-id-']")[0];
-            var id = $(element).attr('id');
-
-            return id.substring(id.lastIndexOf("-") + 1);
-        }
-    }]);
-
-    return ConversationsList;
-}();
-
-exports.ConversationsList = ConversationsList;
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -473,10 +400,9 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var ConversationDOM = function ConversationDOM(header, body, footer) {
+var ConversationDOM = function ConversationDOM(body, footer) {
     _classCallCheck(this, ConversationDOM);
 
-    this.header = header;
     this.body = body;
     this.footer = footer;
 };
@@ -485,51 +411,6 @@ exports.ConversationDOM = ConversationDOM;
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Header = function () {
-    function Header($voice_button, $video_button, $profile_button) {
-        _classCallCheck(this, Header);
-
-        this.$voice_button = $voice_button;
-        this.$video_button = $video_button;
-        this.$profile_button = $profile_button;
-
-        this.$incoming_call_alert = $('#conversation-header-alert');
-        this.$answer_call = $("#call-answer");
-        this.$reject_call = $("#call-reject");
-    }
-
-    _createClass(Header, [{
-        key: "showIncomingCallAlert",
-        value: function showIncomingCallAlert() {
-            this.$incoming_call_alert.css('display', 'flex');
-        }
-    }, {
-        key: "hideIncomingCallAlert",
-        value: function hideIncomingCallAlert() {
-            this.$incoming_call_alert.css('display', 'none');
-        }
-    }]);
-
-    return Header;
-}();
-
-exports.Header = Header;
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -568,6 +449,7 @@ var Message = function () {
 exports.Message = Message;
 
 /***/ }),
+/* 8 */,
 /* 9 */,
 /* 10 */,
 /* 11 */,
@@ -578,7 +460,100 @@ exports.Message = Message;
 /* 16 */,
 /* 17 */,
 /* 18 */,
-/* 19 */,
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.ConversationFull = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _conversations_list = __webpack_require__(27);
+
+var _conversation_builder = __webpack_require__(3);
+
+var _header = __webpack_require__(28);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ConversationFull = function (_ConversationBuilder) {
+    _inherits(ConversationFull, _ConversationBuilder);
+
+    function ConversationFull() {
+        _classCallCheck(this, ConversationFull);
+
+        // Side-menu list of conversations
+        var _this = _possibleConstructorReturn(this, (ConversationFull.__proto__ || Object.getPrototypeOf(ConversationFull)).call(this));
+
+        _this.conversations_list = new _conversations_list.ConversationsList();
+
+        _this.conversation.DOM.header = new _header.Header();
+        return _this;
+    }
+
+    _createClass(ConversationFull, [{
+        key: "bindDOMListeners",
+        value: function bindDOMListeners() {
+            var self = this;
+
+            this.conversations_list.item.on('click', this, self.switchConversation.bind(self));
+
+            this.conversation.DOM.header.$video_button.click(function () {
+                var data = {};
+                self.conversation.socketIO.sendMessage('call', data);
+
+                window.location.href = "/conversation/call/" + self.conversation.id;
+            });
+
+            this.conversation.DOM.header.$answer_call.click(function () {
+                window.location.href = "/conversation/call/" + self.conversation.id;
+            });
+
+            this.conversation.DOM.header.$reject_call.click(function () {
+                self.conversation.DOM.header.hideIncomingCallAlert();
+            });
+        }
+    }, {
+        key: "switchConversation",
+        value: function switchConversation(clickEvent) {
+            var conversationItem = clickEvent.currentTarget;
+
+            var old_conversation_id = this.conversation.id;
+            var new_conversation_id = this.conversations_list.getItemID(conversationItem);
+
+            // Conversation changed. Update stuff
+            if (old_conversation_id !== new_conversation_id) {
+                this.conversation.DOM.body.clear();
+
+                this.conversation.setID(new_conversation_id);
+
+                this.conversation.socketIO.setRoom(new_conversation_id);
+
+                var data = {};
+
+                data.leaveRoom = old_conversation_id;
+                this.conversation.socketIO.sendMessage('roomChanged', data);
+
+                this.conversation.socketIO.sendMessage('init', data);
+            }
+        }
+    }]);
+
+    return ConversationFull;
+}(_conversation_builder.ConversationBuilder);
+
+exports.ConversationFull = ConversationFull;
+
+/***/ }),
 /* 20 */,
 /* 21 */,
 /* 22 */,
@@ -586,17 +561,103 @@ exports.Message = Message;
 /* 24 */,
 /* 25 */,
 /* 26 */,
-/* 27 */,
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationsList = function () {
+    function ConversationsList() {
+        _classCallCheck(this, ConversationsList);
+
+        this.item = $(".conversation-item");
+    }
+
+    _createClass(ConversationsList, [{
+        key: "getItemID",
+        value: function getItemID(item) {
+            var element = $(item).find("div[id^='conversation-id-']")[0];
+            var id = $(element).attr('id');
+
+            return id.substring(id.lastIndexOf("-") + 1);
+        }
+    }]);
+
+    return ConversationsList;
+}();
+
+exports.ConversationsList = ConversationsList;
+
+/***/ }),
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _conversation_builder = __webpack_require__(0);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Header = function () {
+    function Header() {
+        _classCallCheck(this, Header);
+
+        this.$voice_button = $('#conversation-voice');
+        this.$video_button = $('#conversation-video');
+        this.$profile_button = $('#conversation-profile');
+
+        this.$incoming_call_alert = $('#conversation-header-alert');
+        this.$answer_call = $("#call-answer");
+        this.$reject_call = $("#call-reject");
+    }
+
+    _createClass(Header, [{
+        key: 'showIncomingCallAlert',
+        value: function showIncomingCallAlert() {
+            this.$incoming_call_alert.css('display', 'flex');
+        }
+    }, {
+        key: 'hideIncomingCallAlert',
+        value: function hideIncomingCallAlert() {
+            this.$incoming_call_alert.css('display', 'none');
+        }
+    }]);
+
+    return Header;
+}();
+
+exports.Header = Header;
+
+/***/ }),
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _conversation_full = __webpack_require__(19);
 
 $(document).ready(function () {
-    var build = new _conversation_builder.ConversationBuilder();
+    var conversationFull = new _conversation_full.ConversationFull();
+    conversationFull.bindDOMListeners();
 });
 
 /***/ })

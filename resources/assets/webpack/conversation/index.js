@@ -1,6 +1,7 @@
-import { ConversationBuilder } from './conversation_builder';
+import {ConversationFull} from "./conversation_full";
 
 $(document).ready(function ()
 {
-    let build = new ConversationBuilder();
+    let conversationFull = new ConversationFull();
+    conversationFull.bindDOMListeners();
 });

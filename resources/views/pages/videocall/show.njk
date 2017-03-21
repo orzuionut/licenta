@@ -12,32 +12,9 @@
         </section>
 
         <section id="conversation-container" class="col-flex-1-4">
-
             {% include "partials/_conversation_header_files.njk" %}
 
-            <div class="conversation-files-wrapper card-panel">
-
-                <div class="conversation-header">
-                    <button id="hide-files-btn">
-                        <i class="material-icons">keyboard_backspace</i>
-                    </button>
-                </div>
-
-                <div id="files-container" class="conversation-files-body">
-
-                    {% for file in files %}
-                        {#<div class="message-emitter">{{ file.user_sender_id }}</div>#}
-                        <div class="single-file file-bubble file-bubble-resume" data-id="{{ file.id }}">
-                            {{ file.name }}
-                        </div>
-                    {% endfor %}
-
-                </div>
-
-                {% include "partials/_conversation_videocall_files_container.njk" %}
-
-            </div>
-
+            {% include "partials/_conversation_files_container.njk" %}
         </section>
 
     </div>

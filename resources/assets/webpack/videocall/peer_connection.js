@@ -1,4 +1,5 @@
 import {Config} from './../_config';
+import {Helper} from "../helpers/helper";
 
 class PeerConnection 
 {
@@ -11,7 +12,7 @@ class PeerConnection
         {'mandatory': {'OfferToReceiveAudio': true, 'OfferToReceiveVideo': true}};
 
         this.socket = socket;
-        this.room = getIDfromURL();
+        this.room = Helper.getIDfromURL();
 
         this.create(isInitiator, localStream);
     }

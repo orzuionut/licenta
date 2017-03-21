@@ -4,18 +4,19 @@
 
 	<div id="conference-container">
 
-		<section id="videos-container" class="card-panel"></section>
+		<section id="videos-container" class="col-flex-3-4 card-panel"></section>
 
 		<section id="conversation-container" class="col-flex-1-4">
-
 			{% include "partials/_conversation_header_files.njk" %}
 
 			<div class="conversation-files-wrapper card-panel">
 
 				<div class="conversation-header">
-					<button id="hide-files-btn">
-						<i class="material-icons">keyboard_backspace</i>
-					</button>
+					<div id="hide-files-header">
+						<button id="hide-files-btn" class="btn">
+							<i class="material-icons">keyboard_backspace</i>
+						</button>
+					</div>
 				</div>
 
 				<div id="files-container" class="conversation-files-body">
@@ -32,7 +33,6 @@
 				{% include "partials/_conversation_videocall_files_container.njk" %}
 
 			</div>
-
 		</section>
 
 	</div>

@@ -3,13 +3,13 @@
 
 .col-flex-3-4 {
   flex-basis: 75%;
-  flex-grow: 3;
-  flex-shrink: 1; }
+  flex-grow: 0;
+  flex-shrink: 0; }
 
 .col-flex-1-4 {
   flex-basis: 25%;
-  flex-grow: 1;
-  flex-shrink: 3; }
+  flex-grow: 0;
+  flex-shrink: 0; }
 
 .hidden {
   display: none; }
@@ -130,7 +130,7 @@ header {
       font-size: 16px;
       line-height: 10vh; }
       header .menu > ul a:hover {
-        color: #ff4d55; }
+        color: #0B93F6; }
 
 .logo h1 a {
   color: #000;
@@ -200,13 +200,13 @@ header {
 
 .conversations-content {
   display: flex;
-  max-height: 90vh; }
+  overflow-y: hidden; }
 
 .conversation-wrapper, .conversation-files-wrapper {
   display: flex;
   flex-direction: column;
-  margin-right: 2%;
-  margin-left: 2%;
+  margin-right: 5px;
+  margin-left: 5px;
   height: 88vh;
   overflow: auto;
   padding: 0; }
@@ -232,8 +232,9 @@ header {
   display: flex;
   flex-direction: column;
   height: 88vh;
+  flex-basis: 23%;
   overflow: auto;
-  margin-left: 2%;
+  margin-left: 5px;
   border-style: solid;
   border-right-width: medium;
   background-color: #434753; }
@@ -311,29 +312,82 @@ header {
 .conversation-footer {
   border-top: 2px solid #939393;
   margin-bottom: 0;
-  display: flex; }
+  display: flex;
+  align-items: center;
+  justify-content: center; }
   .conversation-footer #enter-message {
     border: 0;
     margin: 0;
     color: black;
     font-size: 19px;
     resize: none;
-    height: auto !important;
     outline: none;
       outline-box-shadow: none;
-    flex-basis: 90%; }
+    flex: 0 0 80%; }
     .conversation-footer #enter-message::-webkit-input-placeholder {
+      color: #939393;
+      font-size: 16px; }
+    .conversation-footer #enter-message::-moz-placeholder {
+      color: #939393;
+      font-size: 16px; }
+    .conversation-footer #enter-message:-ms-input-placeholder {
       color: #939393;
       font-size: 16px; }
     .conversation-footer #enter-message:focus {
       border-bottom: 0 !important;
       box-shadow: none !important; }
   .conversation-footer #submit-message {
-    flex-basis: 10%;
     background-color: #0B93F6; }
+    .conversation-footer #submit-message .btn.waves-effect.waves-light.center-align {
+      padding: 0 !important;
+      border-radius: 50%; }
+
+#conversation-container {
+  flex: 1; }
+  #conversation-container .conversation-header #show-files-header {
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center; }
+    #conversation-container .conversation-header #show-files-header #show-files-btn {
+      margin-left: auto;
+      margin-right: 10px;
+      background-color: #0B93F6; }
+    #conversation-container .conversation-header #show-files-header .btn {
+      padding: 0;
+      border-radius: 50%;
+      width: 35px; }
+  #conversation-container .conversation-header #hide-files-header {
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center; }
+    #conversation-container .conversation-header #hide-files-header #hide-files-btn {
+      margin-right: auto;
+      margin-left: 10px;
+      background-color: #BDBEC2; }
+    #conversation-container .conversation-header #hide-files-header .btn {
+      padding: 0;
+      border-radius: 50%;
+      width: 35px;
+      box-shadow: none; }
+  #conversation-container .conversation-wrapper {
+    height: 88vh; }
+  #conversation-container .conversation-files-wrapper {
+    height: 88vh; }
+  #conversation-container .conversation-footer #fileInputLabel {
+    flex: 0 0 80%; }
+  #conversation-container .conversation-footer #send-button, #conversation-container .conversation-footer #submit-message {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 35px;
+    border-radius: 50%; }
+  #conversation-container .conversation-footer .btn {
+    padding: 0; }
 
 #videocall-container {
-  display: flex; }
+  display: flex;
+  overflow-y: hidden; }
   #videocall-container #videos-container {
     max-height: 90vh; }
     #videocall-container #videos-container #videos-wrapper {
@@ -357,7 +411,9 @@ header {
         display: none; }
 
 #conversation-container {
-  max-height: 90vh; }
+  max-height: 90vh;
+  overflow-x: hidden;
+  overflow-y: hidden; }
   #conversation-container .conversation-files-wrapper {
     display: none; }
   #conversation-container .single-file {
@@ -406,14 +462,20 @@ header {
         margin-left: auto;
         flex-basis: 20%; }
 
+@media screen and (max-width: 750px) {
+  #videocall-container {
+    flex-direction: column; } }
+
 #conference-container {
   display: flex; }
   #conference-container #videos-container {
     flex: 3;
     display: flex;
     flex-wrap: wrap;
-    min-height: 88vh;
-    padding: 0; }
+    max-height: 88vh;
+    padding: 0;
+    margin-bottom: 0;
+    margin-left: 5px; }
     #conference-container #videos-container .conference-video {
       flex: 1;
       flex-basis: 48%;
@@ -424,8 +486,10 @@ header {
       margin: 0;
       border: 0;
       box-shadow: none; }
-  #conference-container #conversation-container {
-    flex: 1; }
+
+@media screen and (max-width: 750px) {
+  #conference-container {
+    flex-direction: column; } }
 
 video {
   min-width: 200px;
@@ -528,11 +592,11 @@ video {
 
 .file-bubble {
   font-family: "Helvetica Neue";
-  font-size: 15px;
+  font-size: 16px;
   font-weight: normal;
-  max-width: 80%;
+  max-width: 95%;
   word-wrap: break-word;
-  line-height: 15px;
+  line-height: 16px;
   margin-bottom: 5px;
   margin-left: 2%;
   margin-right: 2%; }
@@ -547,7 +611,7 @@ video {
 .file-bubble-resume {
   position: relative;
   padding: 10px 20px;
-  color: black;
+  color: white;
   background: #D24D57;
   border-radius: 25px; }
 

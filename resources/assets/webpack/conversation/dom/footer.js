@@ -1,9 +1,11 @@
 class Footer{
 
-    constructor($message_input, $submit_button)
+    constructor()
     {
-        this.$message_input = $message_input;
-        this.$submit_button = $submit_button;
+        this.$message_input = $('#enter-message');
+        this.$submit_button = $('#submit-message');
+
+        this.style();
     }
 
     clearInput()
@@ -19,6 +21,12 @@ class Footer{
     getMessage()
     {
         return this.$message_input.val();
+    }
+
+    style()
+    {
+        let height = this.$submit_button.css( "height" );
+        this.$submit_button.css({"width": height + "px"});
     }
 }
 

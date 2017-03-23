@@ -16,6 +16,8 @@ class SocketIO {
     setRoom(room)
     {
         this.room = room;
+        
+        this.socket.emit('join', {room: room});
     }
 
 }

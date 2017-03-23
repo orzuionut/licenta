@@ -4,17 +4,19 @@ import {Helper} from "../helpers/helper";
 
 $(document).ready(function ()
 {
-    const id = Helper.getIDfromURL();
-
-    let videocall = new Videocall();
+    const user_id = $('#_user_id').val();
+    const user_name = $('#_user_name').val();
+    const conversation_id = Helper.getIDfromURL();
+    
+    let videocall = new Videocall(user_id);
 
     videocall.build();
 
-    videocall.bindEvents();
+    videocall.handleSocketMessages();
 
     videocall.bindListeners();
 
-    let build = new ConversationBuilder(id);
+    let build = new ConversationBuilder(conversation_id, user_id, user_name);
     
 });
 

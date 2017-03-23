@@ -1,13 +1,18 @@
 import {VideocallDOM} from './dom';
 import {PeerConnection} from './peer_connection';
 
-import {FileTransfer} from "../file_transfer";
 import {Helper} from "../helpers/helper";
+import {FileReceive} from "./file_transfer/file_receive";
+import {FileSend} from "./file_transfer/file_send";
+import {FileResumeReceive} from "./file_transfer/file_resume_receive";
+import {DB} from "../modules/indexedDB";
 
 class Videocall
 {
-    constructor()
+    constructor(user_id)
     {
+        this.user_id = user_id;
+        
         this.REMOTE_STREAM_ADDED = 'remote stream added';
 
         this.HANDLE_DATA_CHANNEL_MESSAGE = 'handle data channel message';
@@ -27,14 +32,18 @@ class Videocall
         this.isInitiator = false;
         this.isStarted = false;
 
-        //WebRTC data structures
-        //Streams
         this.localStream = null;
         this.remoteStream = null;
 
         this.room = Helper.getIDfromURL();
 
         this.socket = io.connect('http://localhost:8181/videocall');
+
+        this.db = new DB();
+        
+        this.fileResumeReceive = new FileResumeReceive(this.user_id, this.socket, this.DOM, this.db);
+        this.fileResumeReceive.bindEvents();
+        this.fileResumeReceive.bindDOMListeners();
     }
 
     build()
@@ -43,7 +52,7 @@ class Videocall
         {
             let data = {
                 room: this.room,
-                user_id: user_id
+                user_id: this.user_id
             };
             this.socket.emit('create or join', data);
         }
@@ -56,24 +65,28 @@ class Videocall
         this.nav.getUserMedia(constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
     }
 
-    bindEvents()
+    handleSocketMessages()
     {
         let self = this;
 
-        this.socket.on('created', function (room) { self.isInitiator = true; });
+        this.socket.on('created', function (room) {
+            self.isInitiator = true;
+        });
 
-        this.socket.on('full', function (room) { console.log('Room ' + room + ' is full'); });
+        this.socket.on('full', function (room) {
+            console.log('Room ' + room + ' is full');
+        });
 
         // Other peer joined
-        this.socket.on('join', function (room) 
+        this.socket.on('join', function (room)
         {
             self.isChannelReady = true;
-            
+
             self.DOM.updateVideoElementsCallRunning();
         });
 
         // This peer joined
-        this.socket.on('joined', function (room) 
+        this.socket.on('joined', function (room)
         {
             self.isChannelReady = true;
 
@@ -88,8 +101,6 @@ class Videocall
             }
             else if (message.message === 'bye' && self.isStarted)
             {
-                console.log('Got bye message');
-
                 self.handleRemoteHangup(message);
             }
             else if (message.sd && message.sd.type === 'offer')
@@ -121,13 +132,14 @@ class Videocall
         PubSub.subscribe(this.HANDLE_DATA_CHANNEL_OPEN, this.handleDataChannelOpen.bind(this));
         PubSub.subscribe(this.HANDLE_DATA_CHANNEL_CLOSE, this.handleDataChannelClose.bind(this));
 
+        window.onbeforeunload = function() { this.hangup(); }.bind(this);
     }
 
-    bindDataChannelMessageListener()
+    bindDataChannelMessageListener(fileReceive)
     {
-        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, this.fileTransfer.handleDataChannelMessage.bind(this.fileTransfer));
+        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, fileReceive.handleDataChannelMessage.bind(fileReceive));
     }
-    
+
     handleRemoteStreamAdded(message, event)
     {
         attachMediaStream(this.DOM.remoteVideo, event.stream);
@@ -139,14 +151,11 @@ class Videocall
     {
         if (readyState == 'open')
         {
-            console.log("Initiating file transfer channel");
+            this.fileSend = new FileSend(this.socket, this.DOM, this.peerConnection, this.user_id);
+            this.fileSend.bindDOMListeners();
 
-            // DataChannelReceive is open, the file transfer may start
-            this.fileTransfer = new FileTransfer(this.socket, this.DOM, this.peerConnection);
-            this.fileTransfer.bindEvents();
-            this.fileTransfer.bindDOMListeners();
-
-            this.bindDataChannelMessageListener();
+            this.fileReceive = new FileReceive(this.socket, this.DOM, this.db, this.peerConnection);
+            this.bindDataChannelMessageListener(this.fileReceive);
 
             // enable DOM buttons
         }
@@ -155,7 +164,7 @@ class Videocall
             // disable DOM buttons
         }
     }
-    
+
     handleDataChannelClose(message)
     {
         // disable buttons
@@ -213,10 +222,10 @@ class Videocall
     {
         let data = {};
 
-        if (this.receivedDataSize != 0)
+        if (this.fileReceive.receivedDataSize != 0)
         {
-            data.receivedDataSize = this.receivedDataSize;
-            data.hash = this.uuid;
+            data.receivedDataSize = this.fileReceive.receivedDataSize;
+            data.hash = this.fileReceive.uuid;
         }
 
         data.message = 'bye';
@@ -229,12 +238,15 @@ class Videocall
 
     handleRemoteHangup(message)
     {
-        this.fileTransfer.handleRemoteHangup(message);
-
         this.DOM.updateVideoElementsCallStopped();
         this.DOM.showFlashMessageCallStopped();
+
+        if (message.receivedDataSize)
+        {
+            this.fileSend.uploadRemainingFileToServer(message);
+        }
     }
-    
+
     stop()
     {
         this.isStarted = false;
@@ -251,9 +263,10 @@ class Videocall
             this.pc.close();
         }
         this.pc = null;
+
         // this.DOM.sendButton.disabled = true;
     }
-    
+
 }
 
 export {Videocall}

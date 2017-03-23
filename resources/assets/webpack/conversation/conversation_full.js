@@ -1,17 +1,24 @@
 import {ConversationsList} from './conversations_list';
 import {ConversationBuilder} from "./conversation_builder";
 import {Header} from "./dom/header";
+import {Helper} from "../helpers/helper";
+import {FileTransfer} from "../fileTransfer/index";
+import {FileReceiver} from "../fileTransfer/file_receiver";
 
 class ConversationFull extends ConversationBuilder
 {
-    constructor()
+    constructor(conversation_id, user_id, user_name)
     {
-        super();
+        super(conversation_id, user_id, user_name);
 
         // Side-menu list of conversations
         this.conversations_list = new ConversationsList();
 
         this.conversation.DOM.header = new Header();
+
+        this.fileTransfer = new FileTransfer(conversation_id);
+
+        this.fileReceiver = new FileReceiver(conversation_id);
     }
 
     bindDOMListeners()
@@ -19,6 +26,8 @@ class ConversationFull extends ConversationBuilder
         let self = this;
         
         this.conversations_list.item.on('click', this, self.switchConversation.bind(self));
+        
+        this.conversation.DOM.header.$file_input.on('change', self.uploadFile.bind(self));
         
         this.conversation.DOM.header.$video_button.click(function ()
         {
@@ -61,7 +70,24 @@ class ConversationFull extends ConversationBuilder
             this.conversation.socketIO.sendMessage('roomChanged', data);
 
             this.conversation.socketIO.sendMessage('init', data);
+            
+            /////////////////////
+            this.fileTransfer.setConversationId(new_conversation_id);
         }
+    }
+    
+    uploadFile()
+    {
+        Helper.flash("Uploading file in progres..");
+
+        let file = this.getFileFromInput();
+        
+        this.fileTransfer.startSending(file);
+    }
+
+    getFileFromInput()
+    {
+        return this.conversation.DOM.header.$file_input[0].files[0];
     }
 }
 

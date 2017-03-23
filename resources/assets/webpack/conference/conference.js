@@ -11,9 +11,9 @@ import {Helper} from "../helpers/helper";
 
 class Conference
 {
-    constructor()
+    constructor(conversation_id)
     {
-        this.id = Helper.getIDfromURL();
+        this.id = conversation_id;
 
         this.socketIO = new SocketIO(io, 'http://localhost:8181');
 

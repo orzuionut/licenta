@@ -1,0 +1,39 @@
+#dataChannelSend
+  width: 0.1px
+  height: 0.1px
+  opacity: 0
+  overflow: hidden
+  position: absolute
+  z-index: -1
+
+  & + label
+    margin-right: auto
+    height: 36px
+
+    max-width: 200px
+    overflow: hidden
+
+    font-size: 1.25em
+    font-weight: 700
+    text-overflow: ellipsis
+    white-space: nowrap
+
+    padding: 0.625rem 1.25rem
+    color: $flat-blue
+    border: 2px solid currentColor
+    display: inline-block
+    cursor: pointer
+
+  & + label svg
+    width: 1em
+    height: 1em
+    vertical-align: middle
+    fill: currentColor
+    margin-top: -0.25em
+    margin-right: 0.25em
+
+  &:focus + label
+    outline: 1px dotted #000
+
+  &:focus + label, & + label:hover
+    color: #8E8E93

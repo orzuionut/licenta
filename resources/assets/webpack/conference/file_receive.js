@@ -121,7 +121,6 @@ class FileReceive
         data.channel = this.room;
 
         this.sendMessage(data);
-
     }
 
     handleRemoteHangup(message)

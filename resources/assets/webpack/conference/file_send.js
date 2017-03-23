@@ -28,7 +28,7 @@ class SendFile {
 
         this.chunkSize = 16000;
 
-        this.reader = new window.FileReader();
+        this.reader = new window.FileSlicer();
         this.reader.onload = this.onReadAsArrayBuffer.bind(this);
 
         this.sliceFile(0);

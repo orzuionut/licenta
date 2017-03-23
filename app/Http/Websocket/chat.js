@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const co = use('co');
 
@@ -9,34 +9,48 @@ const Message = use('App/Model/Message');
 
 module.exports = function (io) {
 
-    io.on('connection', function (socket) {
+    io.on('connection', function (socket)
+    {
+        socket.on('join', function (data)
+        {
+            socket.join(data.room);
+        });
 
-        socket.on('roomChanged', function(data) {
+        socket.on('roomChanged', function(data)
+        {
             socket.leave(data.leaveRoom);
         });
 
-        socket.on('init', function(data){
+        socket.on('init', function(data)
+        {
             socket.join(data.room);
 
             let conversation_id = data.room;
-            co(getConversationMessages(conversation_id)).then(function(messages){
+            co(getConversationMessages(conversation_id)).then( function(messages)
+            {
                 sendMessageToUser(socket, data.room, messages);
             });
-
         });
 
-        socket.on('input', function (data){
+        socket.on('input', function (data)
+        {
             saveMessage(data);
 
             sendMessageToParticipants(socket, data.room, 'output', data);
         });
 
-        socket.on('call', function (data){
+        socket.on('call', function (data)
+        {
             sendMessageToParticipants(socket, data.room, 'call', data);
         });
 
+        socket.on('file_chunk', function (data)
+        {
+            sendMessageToParticipants(socket, data.room, 'file_chunk', data.fileChunk);
+        });
+
     });
-}
+};
 
 
 function* getConversationMessages(conversation_id)
@@ -53,8 +67,8 @@ function* getMessages(conversation_id)
     const messages = yield conversation.messages().fetch();
 
     // Workaround to sendThroughDataChannel array to view. TODO: fix this
-    const json = JSON.stringify(messages)
-    let build_messages = JSON.parse(json)
+    const json = JSON.stringify(messages);
+    let build_messages = JSON.parse(json);
 
     for(var i = 0; i < build_messages.length; i = i + 1)
     {
@@ -70,7 +84,8 @@ function* getMessages(conversation_id)
 
 function saveMessage(data)
 {
-    co(function* (){ 
+    co(function* ()
+    {
         yield insertMessageIntoDB(data); 
     });
 }

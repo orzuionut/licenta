@@ -3,7 +3,10 @@ module.exports = {
     entry: {
         conference: `./conference/index.js`,
         conversation: `./conversation/index.js`,
-        videocall: `./videocall/index.js`
+        videocall: `./videocall/index.js`,
+        workers: './workers/index.js',
+        file_reader: './workers/file_reader.js',
+        file_receiver: './workers/file_receiver.js'
     },
     output: {
         path: `${__dirname}/public/js/app`,

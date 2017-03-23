@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 37);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -78,6 +78,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -101,6 +103,20 @@ var Helper = function () {
             blob.lastModifiedDate = new Date();
             blob.name = fileName;
             return blob;
+        }
+
+        // chunksObjects contains multiple objects that each contain data equal to an Array[62]
+
+    }, {
+        key: 'getArrayChunksFromObject',
+        value: function getArrayChunksFromObject(chunksObjects) {
+            var chunksArray = [];
+
+            for (var i = 0; i < chunksObjects.length; i++) {
+                chunksArray.push.apply(chunksArray, _toConsumableArray(chunksObjects[i].data));
+            }
+
+            return chunksArray;
         }
     }, {
         key: 'flash',
@@ -128,6 +144,37 @@ var Helper = function () {
             var current_url = $(location).attr("href");
             return current_url.substring(current_url.lastIndexOf("/") + 1);
         }
+    }, {
+        key: 'measureBW',
+        value: function measureBW() {
+            var startTime, endTime, fileSize;
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+
+                // we only need to know when the request has completed
+                if (xhr.readyState === 4 && xhr.status === 200) {
+
+                    // Here we stop the timer & register end time
+                    endTime = new Date().getTime();
+
+                    // Also, calculate the file-size which has transferred
+                    fileSize = xhr.responseText.length;
+
+                    // Calculate the connection-speed
+                    var speed = fileSize / ((endTime - startTime) / 1000) / 1024;
+
+                    // Report the result, or have fries with it...
+                    alert(speed + " KBps\n");
+                }
+            };
+
+            startTime = new Date().getTime();
+
+            xhr.open("GET", "/img/register_panel.jpg", true);
+            xhr.send();
+        }
     }]);
 
     return Helper;
@@ -137,6 +184,50 @@ exports.Helper = Helper;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SocketIO = function () {
+    function SocketIO(io, url) {
+        _classCallCheck(this, SocketIO);
+
+        this.socket = io.connect(url);
+    }
+
+    _createClass(SocketIO, [{
+        key: 'sendMessage',
+        value: function sendMessage(event, data) {
+            // Add the room to the message
+            data.room = this.room;
+
+            this.socket.emit(event, data);
+        }
+    }, {
+        key: 'setRoom',
+        value: function setRoom(room) {
+            this.room = room;
+
+            this.socket.emit('join', { room: room });
+        }
+    }]);
+
+    return SocketIO;
+}();
+
+exports.SocketIO = SocketIO;
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -206,7 +297,7 @@ var Body = function () {
 exports.Body = Body;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -259,7 +350,7 @@ var Footer = function () {
 exports.Footer = Footer;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -274,13 +365,13 @@ var _conversation = __webpack_require__(5);
 
 var _dom = __webpack_require__(6);
 
-var _body = __webpack_require__(1);
+var _body = __webpack_require__(2);
 
-var _footer = __webpack_require__(2);
+var _footer = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var ConversationBuilder = function ConversationBuilder(id) {
+var ConversationBuilder = function ConversationBuilder(id, user_id, user_name) {
         _classCallCheck(this, ConversationBuilder);
 
         // Main chat-box
@@ -289,54 +380,12 @@ var ConversationBuilder = function ConversationBuilder(id) {
 
         var DOM = new _dom.ConversationDOM(body, footer);
 
-        this.conversation = new _conversation.Conversation(DOM, id, user_id);
+        this.conversation = new _conversation.Conversation(DOM, id, user_id, user_name);
 
         this.conversation.init();
 };
 
 exports.ConversationBuilder = ConversationBuilder;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var SocketIO = function () {
-    function SocketIO(io, url) {
-        _classCallCheck(this, SocketIO);
-
-        this.socket = io.connect(url);
-    }
-
-    _createClass(SocketIO, [{
-        key: "sendMessage",
-        value: function sendMessage(event, data) {
-            // Add the room to the message
-            data.room = this.room;
-
-            this.socket.emit(event, data);
-        }
-    }, {
-        key: "setRoom",
-        value: function setRoom(room) {
-            this.room = room;
-        }
-    }]);
-
-    return SocketIO;
-}();
-
-exports.SocketIO = SocketIO;
 
 /***/ }),
 /* 5 */
@@ -352,18 +401,19 @@ exports.Conversation = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _socket = __webpack_require__(4);
+var _socket = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Conversation = function () {
-    function Conversation(DOM, id, user_id) {
+    function Conversation(DOM, id, user_id, user_name) {
         _classCallCheck(this, Conversation);
 
         this.DOM = DOM;
 
         this.id = id;
         this.user_id = user_id;
+        this.user_name = user_name;
     }
 
     _createClass(Conversation, [{
@@ -374,6 +424,8 @@ var Conversation = function () {
             self.ENTER_KEY = 13;
 
             var data = {};
+
+            this.fileChunksArray = [];
 
             self.socketIO = new _socket.SocketIO(io, 'http://localhost:8181/chat');
 
@@ -419,7 +471,7 @@ var Conversation = function () {
                 data = {
                     user_id: self.user_id,
                     message: message,
-                    user_name: user_name,
+                    user_name: self.user_name,
                     conversation_id: self.id
                 };
                 self.socketIO.sendMessage('input', data);
@@ -698,9 +750,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConversationWithoutHeader = undefined;
 
-var _body = __webpack_require__(1);
+var _body = __webpack_require__(2);
 
-var _footer = __webpack_require__(2);
+var _footer = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -926,7 +978,8 @@ var DB = function () {
 exports.DB = DB;
 
 /***/ }),
-/* 18 */
+/* 18 */,
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -939,33 +992,33 @@ exports.Conference = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(23);
+var _dom = __webpack_require__(24);
 
 var _config = __webpack_require__(8);
 
-var _participants = __webpack_require__(26);
+var _participants = __webpack_require__(27);
 
-var _socket = __webpack_require__(4);
+var _socket = __webpack_require__(1);
 
-var _file_receive = __webpack_require__(24);
+var _file_receive = __webpack_require__(25);
 
 var _indexedDB = __webpack_require__(17);
 
-var _file_send = __webpack_require__(25);
+var _file_send = __webpack_require__(26);
 
-var _data_channel_send = __webpack_require__(22);
+var _data_channel_send = __webpack_require__(23);
 
-var _data_channel_receive = __webpack_require__(21);
+var _data_channel_receive = __webpack_require__(22);
 
 var _helper = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Conference = function () {
-    function Conference() {
+    function Conference(conversation_id) {
         _classCallCheck(this, Conference);
 
-        this.id = _helper.Helper.getIDfromURL();
+        this.id = conversation_id;
 
         this.socketIO = new _socket.SocketIO(io, 'http://localhost:8181');
 
@@ -1206,9 +1259,9 @@ var Conference = function () {
 exports.Conference = Conference;
 
 /***/ }),
-/* 19 */,
 /* 20 */,
-/* 21 */
+/* 21 */,
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1250,7 +1303,7 @@ var DataChannelReceive = function () {
 exports.DataChannelReceive = DataChannelReceive;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1286,7 +1339,7 @@ var DataChannelSend = function () {
 exports.DataChannelSend = DataChannelSend;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1338,7 +1391,7 @@ var ConferenceDOM = function () {
 exports.ConferenceDOM = ConferenceDOM;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1586,7 +1639,7 @@ var FileReceive = function () {
 exports.FileReceive = FileReceive;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1632,7 +1685,7 @@ var SendFile = function () {
 
             this.chunkSize = 16000;
 
-            this.reader = new window.FileReader();
+            this.reader = new window.FileSlicer();
             this.reader.onload = this.onReadAsArrayBuffer.bind(this);
 
             this.sliceFile(0);
@@ -1691,7 +1744,7 @@ var SendFile = function () {
 exports.SendFile = SendFile;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1760,32 +1813,38 @@ var Participant = function () {
 exports.Participant = Participant;
 
 /***/ }),
-/* 27 */,
 /* 28 */,
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _conference = __webpack_require__(18);
+var _conference = __webpack_require__(19);
 
-var _conversation_builder = __webpack_require__(3);
+var _conversation_builder = __webpack_require__(4);
 
 var _helper = __webpack_require__(0);
 
 $(document).ready(function () {
-    var id = _helper.Helper.getIDfromURL();
+    var user_id = $('#_user_id').val();
+    var user_name = $('#_user_name').val();
+    var conversation_id = _helper.Helper.getIDfromURL();
 
-    var conference = new _conference.Conference();
+    var conference = new _conference.Conference(conversation_id);
 
     conference.init();
     conference.listen();
 
-    var build = new _conversation_builder.ConversationBuilder(id);
+    var build = new _conversation_builder.ConversationBuilder(conversation_id, user_id, user_name);
 
     window.Conference = conference;
 });

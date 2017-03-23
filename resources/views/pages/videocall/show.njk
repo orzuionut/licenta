@@ -2,6 +2,9 @@
 
 {% block content %}
 
+    <input type="hidden" id="_user_id" value="{{ currentUser.id }}">
+    <input type="hidden" id="_user_name" value="{{ currentUser.getFullName() }}">
+
     <div id="videocall-container">
 
         <section id="videos-container" class="col-flex-3-4">
@@ -18,12 +21,6 @@
         </section>
 
     </div>
-
-    <script>
-        var user_id = {{ currentUser.id }};
-        var conversation_id = 1;
-        var user_name = "{{ currentUser.getFullName() }}";
-    </script>
 
     <script src="/js/app/videocall.js"></script>
 

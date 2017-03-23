@@ -1,13 +1,14 @@
 import { SocketIO } from '../modules/socket';
 
-class Conversation {
-
-    constructor(DOM, id, user_id)
+class Conversation
+{
+    constructor(DOM, id, user_id, user_name)
     {
         this.DOM = DOM;
 
         this.id = id;
         this.user_id = user_id;
+        this.user_name = user_name;
     }
 
     init()
@@ -17,6 +18,8 @@ class Conversation {
         self.ENTER_KEY = 13;
 
         let data = {};
+
+        this.fileChunksArray = [];
 
         self.socketIO = new SocketIO(io, 'http://localhost:8181/chat');
 
@@ -67,7 +70,7 @@ class Conversation {
             data = {
                 user_id: self.user_id,
                 message: message,
-                user_name: user_name,
+                user_name: self.user_name,
                 conversation_id: self.id
             };
             self.socketIO.sendMessage('input', data);

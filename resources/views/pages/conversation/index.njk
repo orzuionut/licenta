@@ -4,43 +4,28 @@
 
     {{ csrfField }}
 
+    <input type="hidden" id="_user_id" value="{{ currentUser.id }}">
+    <input type="hidden" id="_user_name" value="{{ currentUser.getFullName() }}">
+    <input type="hidden" id="_conversation_id" value="{{ conversations[0].id }}">
 
     <div class="conversations-content">
-
 
         <div class="conversations-list col-flex-1-4 card-panel">
 
             {% for conversation in conversations %}
-
                 <div class="conversation-item row">
-
                     <div class="card-panel">
-
                         <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
-
                     </div>
-
                 </div>
-
             {% endfor %}
 
         </div>
 
-
         {% include "partials/_conversation_page.njk" %}
-
 
     </div>
 
-    <script>
-
-        let user_id = {{ currentUser.id }};
-        let user_name = "{{ currentUser.getFullName() }}";
-        let conversation_id = {{ conversations[0].id }};
-
-    </script>
-
     <script src="/js/app/conversation.js"></script>
-
 
 {% endblock %}

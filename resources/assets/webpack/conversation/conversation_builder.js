@@ -6,7 +6,7 @@ import { Footer } from './dom/footer';
 
 class ConversationBuilder
 {
-    constructor(id)
+    constructor(id, user_id, user_name)
     {
         // Main chat-box
         let body = new Body();
@@ -14,7 +14,7 @@ class ConversationBuilder
 
         let DOM = new ConversationDOM(body, footer);
 
-        this.conversation = new Conversation(DOM, id, user_id);
+        this.conversation = new Conversation(DOM, id, user_id, user_name);
 
         this.conversation.init();
     }

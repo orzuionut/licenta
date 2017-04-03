@@ -10,21 +10,46 @@
 
     <div class="conversations-content">
 
-        <div class="conversations-list col-flex-1-4 card-panel">
+        <div id="conversations-side" class="col-flex-1-4 card-panel">
 
-            {% for conversation in conversations %}
-                <div class="conversation-item row">
-                    <div class="card-panel">
-                        <div id="conversation-id-{{ conversation.id }}">{{ conversation.name }}</div>
-                    </div>
+            <div id="conversations-list-header">
+                <div id="filter-conversations">
+                    <input type="text" id="filter-conversations-input" placeholder="Search in conversations">
                 </div>
-            {% endfor %}
+
+                <div id="add-conversation">
+                    <a href="#conversation-modal">
+                        <i class="material-icons">add_circle_outline</i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="conversations-list">
+                {% for conversation in conversations %}
+                    <div class="conversation-item row">
+                        <div id="conversation-id-{{ conversation.id }}">
+                            {% if conversation.name %}
+                                {{ conversation.name }}
+                            {% else %}
+                                {% if conversation.users[0].id == currentUser.id %}
+                                    {{ conversation.users[1].first_name }} {{ conversation.users[1].last_name }}
+                                {% else %}
+                                    {{ conversation.users[0].first_name }} {{ conversation.users[0].last_name }}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
 
         </div>
 
         {% include "partials/_conversation_page.njk" %}
 
     </div>
+
+    {% include "partials/conversations/create-modal.njk" %}
 
     <script src="/js/app/conversation.js"></script>
 

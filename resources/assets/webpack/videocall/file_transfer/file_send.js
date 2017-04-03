@@ -26,7 +26,7 @@ class FileSend
 
         this.file = this.getFileFromInput();
         let self = this;
-        let worker = new Worker("/js/app/file_reader.js");
+        let worker = new Worker("/js/app/file_transfer.js");
 
         worker.postMessage(this.file);
 

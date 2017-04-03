@@ -19,8 +19,6 @@ class Conversation
 
         let data = {};
 
-        this.fileChunksArray = [];
-
         self.socketIO = new SocketIO(io, 'http://localhost:8181/chat');
 
         if (self.socketIO.socket === undefined)

@@ -7,7 +7,6 @@ import {DB} from "../modules/indexedDB";
 import {SendFile} from "./file_send";
 import {DataChannelSend} from "./data_channel_send";
 import {DataChannelReceive} from "./data_channel_receive";
-import {Helper} from "../helpers/helper";
 
 class Conference
 {

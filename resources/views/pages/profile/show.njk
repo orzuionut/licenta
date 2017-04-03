@@ -3,11 +3,13 @@
 
 {% block content %}
 
-	<div class="profile-box row margin-t-50">
-		<div>
+	<div class="profile-box row margin-t-10 card-panel">
+		<div id="profile-picture">
+			<img src="/img/profile.jpg">
+		</div>
 
+		<div id="profile-name">
 			{{ user.first_name }} {{ user.last_name }}
-			
 		</div>
 
 	</div>

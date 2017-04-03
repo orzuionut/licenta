@@ -17,10 +17,10 @@ class Body{
 
     appendMessage(data, current_user_id)
     {
-        let is_current_user = data.user_id === current_user_id;
+        let is_current_user = data.user_id == current_user_id;
         let type = is_current_user ? 'message-user' : 'message-other';
 
-        if(! is_current_user)
+        if( ! is_current_user )
         {
             let $emitter = Message.createEmitter(data.user_name);
 

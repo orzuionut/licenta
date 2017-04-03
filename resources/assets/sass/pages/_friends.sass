@@ -1,6 +1,63 @@
-.friend-box
-	width: 150px
-	font-size: 18px
-	font-family: roboto
-	font-weigth: 400
-	color: #456ec9
+#tab-header
+	display: flex
+	align-items: center
+	justify-content: center
+
+	text-transform: uppercase
+	font-size: 20px
+	width: 100%
+	padding-left: 30%
+	padding-right: 30%
+	margin-bottom: 50px
+
+	#friends-tab, #people-tab
+		flex-basis: 50%
+		text-align: center
+		cursor: pointer
+
+		color: black
+
+	.active
+		border-bottom: thin solid #9F9F9F
+		color: $primary !important
+
+#persons-content
+	min-height: 88vh
+
+	#persons-list, #persons-search
+		margin-left: 15%
+		margin-right: 15%
+
+	.persons
+		margin-top: 10px
+
+		.person-box
+			display: flex
+
+			&:nth-child(2n-1)
+				background-color: $background
+
+			&:nth-child(2n)
+				background-color: #D4D4D4
+
+			.person-profile
+				flex-basis: 50%
+
+				img
+					border-radius: 50%
+
+			.person-info
+				display: flex
+				align-items: center
+				justify-content: center
+				flex-direction: column
+
+				flex-basis: 50%
+				padding-left: 10px
+
+				font-size: 18px
+				font-family: roboto
+				font-weigth: 400
+				color: #456ec9
+
+

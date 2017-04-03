@@ -1,5 +1,4 @@
 import {ConversationFull} from "./conversation_full";
-import {Helper} from "../helpers/helper";
 
 $(document).ready(function ()
 {

@@ -46,7 +46,9 @@ module.exports = function (io) {
 
         socket.on('file_chunk', function (data)
         {
-            sendMessageToParticipants(socket, data.room, 'file_chunk', data.fileChunk);
+            console.log("GOT CHYUNK");
+
+            sendMessageToParticipants(socket, data.room, 'file_chunk', data);
         });
 
     });

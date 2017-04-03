@@ -4,9 +4,9 @@ module.exports = {
         conference: `./conference/index.js`,
         conversation: `./conversation/index.js`,
         videocall: `./videocall/index.js`,
+        friends: './friends/index.js',
         workers: './workers/index.js',
-        file_reader: './workers/file_reader.js',
-        file_receiver: './workers/file_receiver.js'
+        file_transfer: './workers/file_transfer.js'
     },
     output: {
         path: `${__dirname}/public/js/app`,

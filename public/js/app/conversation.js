@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 38);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -261,7 +261,7 @@ var Body = function () {
     }, {
         key: 'appendMessage',
         value: function appendMessage(data, current_user_id) {
-            var is_current_user = data.user_id === current_user_id;
+            var is_current_user = data.user_id == current_user_id;
             var type = is_current_user ? 'message-user' : 'message-other';
 
             if (!is_current_user) {
@@ -425,8 +425,6 @@ var Conversation = function () {
 
             var data = {};
 
-            this.fileChunksArray = [];
-
             self.socketIO = new _socket.SocketIO(io, 'http://localhost:8181/chat');
 
             if (self.socketIO.socket === undefined) {
@@ -574,14 +572,103 @@ exports.Message = Message;
 /* 10 */,
 /* 11 */,
 /* 12 */,
-/* 13 */,
-/* 14 */,
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FileReceiver = function () {
+    function FileReceiver(worker, conversation_id) {
+        _classCallCheck(this, FileReceiver);
+
+        this.worker = worker;
+
+        this.conversation_id = conversation_id;
+
+        var data = {
+            conversation_id: conversation_id
+        };
+
+        this.worker.postMessage(data);
+    }
+
+    _createClass(FileReceiver, [{
+        key: "setConversationId",
+        value: function setConversationId(conversation_id) {
+            this.conversation_id = conversation_id;
+        }
+    }]);
+
+    return FileReceiver;
+}();
+
+exports.FileReceiver = FileReceiver;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FileTransfer = function () {
+    function FileTransfer(worker, conversation_id) {
+        _classCallCheck(this, FileTransfer);
+
+        this.worker = worker;
+        this.conversation_id = conversation_id;
+    }
+
+    _createClass(FileTransfer, [{
+        key: "setConversationId",
+        value: function setConversationId(conversation_id) {
+            this.conversation_id = conversation_id;
+        }
+    }, {
+        key: "startSending",
+        value: function startSending(file, hash) {
+            var data = {
+                isReader: true,
+                file: file,
+                hash: hash,
+                conversation_id: this.conversation_id
+            };
+
+            // Send the file to the Web Worker to process it
+            this.worker.postMessage(data);
+        }
+    }]);
+
+    return FileTransfer;
+}();
+
+exports.FileTransfer = FileTransfer;
+
+/***/ }),
 /* 15 */,
 /* 16 */,
 /* 17 */,
 /* 18 */,
 /* 19 */,
-/* 20 */
+/* 20 */,
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -594,17 +681,17 @@ exports.ConversationFull = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _conversations_list = __webpack_require__(28);
+var _conversations_list = __webpack_require__(32);
 
 var _conversation_builder = __webpack_require__(4);
 
-var _header = __webpack_require__(29);
+var _header = __webpack_require__(33);
 
 var _helper = __webpack_require__(0);
 
-var _index = __webpack_require__(31);
+var _index = __webpack_require__(14);
 
-var _file_receiver = __webpack_require__(30);
+var _file_receiver = __webpack_require__(13);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -625,9 +712,28 @@ var ConversationFull = function (_ConversationBuilder) {
 
         _this.conversation.DOM.header = new _header.Header();
 
-        _this.fileTransfer = new _index.FileTransfer(conversation_id);
+        var worker = new Worker("/js/app/file_transfer.js");
 
-        _this.fileReceiver = new _file_receiver.FileReceiver(conversation_id);
+        worker.onmessage = function (data) {
+            // Blob = data.data.Blob
+
+            var $fileLink = $('<a/>', {
+                text: data.data.fileName,
+                href: URL.createObjectURL(data.data.blob),
+                target: '_blank',
+                download: data.data.fileName,
+                class: 'single-file file-bubble file-bubble-download',
+                id: 'auto-download'
+            });
+
+            var $el = $('.conversation-body');
+
+            $el.append($fileLink);
+        };
+
+        _this.fileTransfer = new _index.FileTransfer(worker, conversation_id);
+
+        _this.fileReceiver = new _file_receiver.FileReceiver(worker, conversation_id);
         return _this;
     }
 
@@ -665,6 +771,9 @@ var ConversationFull = function (_ConversationBuilder) {
 
             // Conversation changed. Update stuff
             if (old_conversation_id !== new_conversation_id) {
+                // Set clicked conversation as active
+                this.conversations_list.switchActive(conversationItem);
+
                 this.conversation.DOM.body.clear();
 
                 this.conversation.setID(new_conversation_id);
@@ -678,18 +787,19 @@ var ConversationFull = function (_ConversationBuilder) {
 
                 this.conversation.socketIO.sendMessage('init', data);
 
-                /////////////////////
                 this.fileTransfer.setConversationId(new_conversation_id);
+                this.fileReceiver.setConversationId(new_conversation_id);
             }
         }
     }, {
         key: "uploadFile",
         value: function uploadFile() {
-            _helper.Helper.flash("Uploading file in progres..");
+            _helper.Helper.flash("Uploading file in progress..");
 
             var file = this.getFileFromInput();
+            var hash = _helper.Helper.guid();
 
-            this.fileTransfer.startSending(file);
+            this.fileTransfer.startSending(file, hash);
         }
     }, {
         key: "getFileFromInput",
@@ -704,14 +814,17 @@ var ConversationFull = function (_ConversationBuilder) {
 exports.ConversationFull = ConversationFull;
 
 /***/ }),
-/* 21 */,
 /* 22 */,
 /* 23 */,
 /* 24 */,
 /* 25 */,
 /* 26 */,
 /* 27 */,
-/* 28 */
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -720,8 +833,13 @@ exports.ConversationFull = ConversationFull;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.ConversationsList = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _create = __webpack_require__(34);
+
+var _filter = __webpack_require__(35);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -730,15 +848,37 @@ var ConversationsList = function () {
         _classCallCheck(this, ConversationsList);
 
         this.item = $(".conversation-item");
+
+        // Set first conversation as current active
+        this.currentActiveItem = $(".conversations-list .conversation-item").first();
+        this.switchActive(this.currentActiveItem);
+
+        this.conversationCreate = new _create.ConversationCreate();
+        this.conversationsFilter = new _filter.ConversationsFilter();
+
+        this.bindDOMListeners();
     }
 
     _createClass(ConversationsList, [{
+        key: "bindDOMListeners",
+        value: function bindDOMListeners() {
+            var self = this;
+        }
+    }, {
         key: "getItemID",
         value: function getItemID(item) {
             var element = $(item).find("div[id^='conversation-id-']")[0];
             var id = $(element).attr('id');
 
             return id.substring(id.lastIndexOf("-") + 1);
+        }
+    }, {
+        key: "switchActive",
+        value: function switchActive(item) {
+            $(this.currentActiveItem).removeClass('active');
+            $(item).addClass('active');
+
+            this.currentActiveItem = item;
         }
     }]);
 
@@ -748,7 +888,7 @@ var ConversationsList = function () {
 exports.ConversationsList = ConversationsList;
 
 /***/ }),
-/* 29 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -795,7 +935,7 @@ var Header = function () {
 exports.Header = Header;
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -809,90 +949,138 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var FileReceiver = function () {
-    function FileReceiver(conversation_id) {
-        _classCallCheck(this, FileReceiver);
+var ConversationCreate = function () {
+    function ConversationCreate() {
+        _classCallCheck(this, ConversationCreate);
 
-        this.worker = new Worker("/js/app/file_receiver.js");
-        this.conversation_id = conversation_id;
+        this.$addButton = $("#add-conversation");
+        this.$selectField = $('select');
 
-        this.worker.postMessage(this.conversation_id);
+        // Activate modal triggering
+        this.modal = $('.modal');
+        this.modal.modal();
+
+        this.friends = [];
+
+        this.bindDOMListeners();
     }
 
-    _createClass(FileReceiver, [{
-        key: "setConversationId",
-        value: function setConversationId(conversation_id) {
-            this.conversation_id = conversation_id;
-        }
-    }]);
+    _createClass(ConversationCreate, [{
+        key: 'bindDOMListeners',
+        value: function bindDOMListeners() {
+            var self = this;
 
-    return FileReceiver;
-}();
-
-exports.FileReceiver = FileReceiver;
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var FileTransfer = function () {
-    function FileTransfer(conversation_id) {
-        _classCallCheck(this, FileTransfer);
-
-        this.worker = new Worker("/js/app/file_reader.js");
-        this.conversation_id = conversation_id;
-    }
-
-    _createClass(FileTransfer, [{
-        key: "setConversationId",
-        value: function setConversationId(conversation_id) {
-            this.conversation_id = conversation_id;
+            this.$addButton.on('click', self.handleAdd.bind(self));
         }
     }, {
-        key: "startSending",
-        value: function startSending(file) {
-            var data = {
-                file: file,
-                conversation_id: this.conversation_id
-            };
+        key: 'handleAdd',
+        value: function handleAdd() {
+            var self = this;
 
-            // Send the file to the Web Worker to process it
-            this.worker.postMessage(data);
+            if (self.friends.length == 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "conversation/get/friends",
+                    data: {},
+                    success: function success(data) {
+                        self.friends = data;
+
+                        self.createSelectField(data);
+                    }
+                });
+            }
+        }
+    }, {
+        key: 'createSelectField',
+        value: function createSelectField(data) {
+            this.$selectField.append(this.createOptions(data));
+
+            this.$selectField.material_select();
+        }
+    }, {
+        key: 'createOptions',
+        value: function createOptions(data) {
+            var options = "";
+
+            for (var i = 0; i < data.length; i++) {
+                options += '<option value="' + data[i].id + '"> ' + data[i].first_name + ' ' + data[i].last_name + ' </option>';
+            }
+
+            return options;
         }
     }]);
 
-    return FileTransfer;
+    return ConversationCreate;
 }();
 
-exports.FileTransfer = FileTransfer;
+exports.ConversationCreate = ConversationCreate;
 
 /***/ }),
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _conversation_full = __webpack_require__(20);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var _helper = __webpack_require__(0);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationsFilter = function () {
+    function ConversationsFilter() {
+        _classCallCheck(this, ConversationsFilter);
+
+        this.$filterInput = $("#filter-conversations-input");
+
+        this.bindDOMListeners();
+    }
+
+    _createClass(ConversationsFilter, [{
+        key: 'bindDOMListeners',
+        value: function bindDOMListeners() {
+            this.handleFiltering();
+        }
+    }, {
+        key: 'handleFiltering',
+        value: function handleFiltering() {
+            this.$filterInput.on('keyup', function () {
+                var value = $(this).val();
+
+                $('.conversation-item').each(function () {
+                    if ($(this).text().search(value) > -1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        }
+    }]);
+
+    return ConversationsFilter;
+}();
+
+exports.ConversationsFilter = ConversationsFilter;
+
+/***/ }),
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _conversation_full = __webpack_require__(21);
 
 $(document).ready(function () {
     var user_id = $('#_user_id').val();

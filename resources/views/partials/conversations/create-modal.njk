@@ -1,0 +1,22 @@
+<!-- Modal Structure -->
+<div id="conversation-modal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h2>New conversation</h2>
+
+        <div id="conversation-create">
+            <form action="conversation" method="POST" id="c-conv-create">
+                <input type="text" id="c-conv-name" name="c-conv-name" placeholder="Conversation name">
+
+                <select id="c-conv-friends" name="c-conv-friends" multiple>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <input class="modal-action modal-close waves-effect waves-green btn-flat"
+               type="submit"
+               form="c-conv-create"
+               value="Create">
+    </div>
+</div>

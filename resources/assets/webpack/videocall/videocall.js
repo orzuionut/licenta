@@ -2,10 +2,9 @@ import {VideocallDOM} from './dom';
 import {PeerConnection} from './peer_connection';
 
 import {Helper} from "../helpers/helper";
-import {FileReceive} from "./file_transfer/file_receive";
-import {FileSend} from "./file_transfer/file_send";
 import {FileResumeReceive} from "./file_transfer/file_resume_receive";
 import {DB} from "../modules/indexedDB";
+import {FileDrop} from "./file_transfer/index";
 
 class Videocall
 {
@@ -69,11 +68,13 @@ class Videocall
     {
         let self = this;
 
-        this.socket.on('created', function (room) {
+        this.socket.on('created', function (room) 
+        {
             self.isInitiator = true;
         });
 
-        this.socket.on('full', function (room) {
+        this.socket.on('full', function (room) 
+        {
             console.log('Room ' + room + ' is full');
         });
 
@@ -151,11 +152,8 @@ class Videocall
     {
         if (readyState == 'open')
         {
-            this.fileSend = new FileSend(this.socket, this.DOM, this.peerConnection, this.user_id);
-            this.fileSend.bindDOMListeners();
-
-            this.fileReceive = new FileReceive(this.socket, this.DOM, this.db, this.peerConnection);
-            this.bindDataChannelMessageListener(this.fileReceive);
+            let fileDrop = new FileDrop(this.room);
+            fileDrop.bindDOMListeners();
 
             // enable DOM buttons
         }

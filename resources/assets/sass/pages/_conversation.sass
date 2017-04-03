@@ -1,3 +1,5 @@
+@import "conversation/create"
+
 .conversations-content
 	display: flex
 	overflow-y: hidden
@@ -14,9 +16,13 @@
 	overflow: auto
 	padding: 0
 
+	&.card-panel
+		margin-bottom: 0 !important
+		margin-right: 0 !important
+		margin-left: 0 !important
 
 	.conversation-header, .conversation-footer
-		min-height: 50px
+		height: 50px
 
 	.conversation-header
 		border-bottom: 2px solid #939393
@@ -42,38 +48,82 @@
 		margin-top: 20px
 
 
-.conversations-list
-	order: -1
-
-	// Used for scrolling items when overflowing
-	display: flex
-	flex-direction: column
+#conversations-side
 	height: 88vh
-	flex-basis: 23%
-	overflow: auto
+	border-right: 2px solid #939393
 
-	margin-left: 5px
-
-	border-style: solid
-	border-right-width: medium
-
-	background-color: #434753
-
-	.card-panel
-		margin: 0 !important
-		padding: 15px !important
-
-
-	.conversation-item
+	&.card-panel
 		margin-left: 0 !important
+		margin-bottom: 0 !important
 		margin-right: 0 !important
-		margin-bottom: 10px !important
-		text-align: center !important
+		padding: 0 !important
 
-		font-size: 16px
+	#conversations-list-header
+		display: flex
+		align-items: center
+		justify-content: center
 
-		&:hover
+		height: 50px
+		border-bottom: 2px solid #939393
+
+		#filter-conversations
+			flex-basis: 75%
+			height: 100%
+
+			#filter-conversations-input
+				margin-bottom: 0 !important
+				padding-left: 10px
+
+			input
+				border-bottom: none !important
+
+				&:focus
+					box-shadow: none
+
+
+		#add-conversation
+			flex-basis: 25%
+			height: 100%
+			margin-left: auto
+			margin-right:
+			display: flex
+			align-items: center
+			justify-content: center
+			color: $primary
 			cursor: pointer
+
+
+	.conversations-list
+		order: -1
+
+		// Used for scrolling items when overflowing
+		display: flex
+		flex-direction: column
+		height: 88vh
+		flex-basis: 23%
+		overflow: auto
+
+		.conversation-item
+			margin-left: 0 !important
+			margin-right: 0 !important
+			margin-bottom: 0 !important
+			text-align: center !important
+			font-size: 20px
+			color: $primary
+			height: 50px
+			display: flex
+			align-items: center
+			justify-content: center
+			border-bottom: 1px solid #C2C2C2
+
+			&:hover
+				background-color: #F0F0F0
+				color: black
+				cursor: pointer
+
+	.active
+		background-color: $primary
+		color: white !important
 
 
 .conversation-header
@@ -179,6 +229,23 @@
 		resize: none
 		outline: none
     	box-shadow: none
+		line-height: 48px
+		overflow-y: hidden
+
+		&::-webkit-input-placeholder
+			line-height: 48px
+
+		&:-moz-placeholder
+			/* Firefox 18- */
+			line-height: 48px
+
+		&::-moz-placeholder
+			/* Firefox 19+ */
+			line-height: 48px
+
+		&:-ms-input-placeholder
+			line-height: 48px
+
 
 		flex: 0 0 80%
 

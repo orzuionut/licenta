@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 42);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -261,7 +261,7 @@ var Body = function () {
     }, {
         key: 'appendMessage',
         value: function appendMessage(data, current_user_id) {
-            var is_current_user = data.user_id === current_user_id;
+            var is_current_user = data.user_id == current_user_id;
             var type = is_current_user ? 'message-user' : 'message-other';
 
             if (!is_current_user) {
@@ -424,8 +424,6 @@ var Conversation = function () {
             self.ENTER_KEY = 13;
 
             var data = {};
-
-            this.fileChunksArray = [];
 
             self.socketIO = new _socket.SocketIO(io, 'http://localhost:8181/chat');
 
@@ -691,7 +689,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _conversation_files = __webpack_require__(9);
 
-var _index = __webpack_require__(16);
+var _index = __webpack_require__(18);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -788,7 +786,9 @@ var HeaderFiles = function HeaderFiles() {
 exports.HeaderFiles = HeaderFiles;
 
 /***/ }),
-/* 13 */
+/* 13 */,
+/* 14 */,
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -809,7 +809,7 @@ var Body = function Body() {
 exports.Body = Body;
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -833,7 +833,7 @@ var Footer = function Footer() {
 exports.Footer = Footer;
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -854,7 +854,7 @@ var Header = function Header() {
 exports.Header = Header;
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -867,11 +867,11 @@ exports.FilesDOM = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _header = __webpack_require__(15);
+var _header = __webpack_require__(17);
 
-var _body = __webpack_require__(13);
+var _body = __webpack_require__(15);
 
-var _footer = __webpack_require__(14);
+var _footer = __webpack_require__(16);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -904,7 +904,7 @@ var FilesDOM = function () {
 exports.FilesDOM = FilesDOM;
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -978,8 +978,7 @@ var DB = function () {
 exports.DB = DB;
 
 /***/ }),
-/* 18 */,
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -992,25 +991,23 @@ exports.Conference = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(24);
+var _dom = __webpack_require__(28);
 
 var _config = __webpack_require__(8);
 
-var _participants = __webpack_require__(27);
+var _participants = __webpack_require__(31);
 
 var _socket = __webpack_require__(1);
 
-var _file_receive = __webpack_require__(25);
+var _file_receive = __webpack_require__(29);
 
-var _indexedDB = __webpack_require__(17);
+var _indexedDB = __webpack_require__(19);
 
-var _file_send = __webpack_require__(26);
+var _file_send = __webpack_require__(30);
 
-var _data_channel_send = __webpack_require__(23);
+var _data_channel_send = __webpack_require__(27);
 
-var _data_channel_receive = __webpack_require__(22);
-
-var _helper = __webpack_require__(0);
+var _data_channel_receive = __webpack_require__(26);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1259,9 +1256,12 @@ var Conference = function () {
 exports.Conference = Conference;
 
 /***/ }),
-/* 20 */,
 /* 21 */,
-/* 22 */
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1303,7 +1303,7 @@ var DataChannelReceive = function () {
 exports.DataChannelReceive = DataChannelReceive;
 
 /***/ }),
-/* 23 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1339,7 +1339,7 @@ var DataChannelSend = function () {
 exports.DataChannelSend = DataChannelSend;
 
 /***/ }),
-/* 24 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1391,7 +1391,7 @@ var ConferenceDOM = function () {
 exports.ConferenceDOM = ConferenceDOM;
 
 /***/ }),
-/* 25 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1639,7 +1639,7 @@ var FileReceive = function () {
 exports.FileReceive = FileReceive;
 
 /***/ }),
-/* 26 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1744,7 +1744,7 @@ var SendFile = function () {
 exports.SendFile = SendFile;
 
 /***/ }),
-/* 27 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1813,22 +1813,23 @@ var Participant = function () {
 exports.Participant = Participant;
 
 /***/ }),
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
 /* 32 */,
 /* 33 */,
 /* 34 */,
 /* 35 */,
 /* 36 */,
-/* 37 */
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _conference = __webpack_require__(19);
+var _conference = __webpack_require__(20);
 
 var _conversation_builder = __webpack_require__(4);
 

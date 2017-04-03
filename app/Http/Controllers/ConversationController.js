@@ -11,15 +11,13 @@ class ConversationController {
     {
         const user = request.currentUser;
 
-        let conversations = yield user.conversations().fetch();
+        let conversations = yield user.conversations().with('users').fetch();
 
         // Workaround to send array to view. TODO: fix this
         const json = JSON.stringify(conversations);
         conversations = JSON.parse(json);
-
-
+        
         yield response.sendView('pages/conversation/index', {conversations: conversations})
-
     }
 
     * call(request, response)
@@ -40,32 +38,28 @@ class ConversationController {
 
     }
 
-    * create(request, response) {
-        //
+    * friends (request, response)
+    {
+        const currentUser = request.currentUser;
+        let friends = yield currentUser.friends().fetch();
+
+        yield response.send(friends);
     }
 
     * store(request, response)
     {
+        let name = request.input('c-conv-name');
+        let participants = request.input('c-conv-friends');
+        participants.push(request.currentUser.id);
 
+        let newConversation = new Conversation();
+        newConversation.name = name;
+        yield newConversation.save();
+
+        yield newConversation.users().attach(participants);
+
+        yield response.redirect('/conversation');
     }
-
-    * show(request, response) {
-        //
-    }
-
-    * edit(request, response) {
-        //
-    }
-
-    * update(request, response) {
-        //
-    }
-
-    * destroy(request, response) {
-        //
-    }
-
-
 }
 
 module.exports = ConversationController;

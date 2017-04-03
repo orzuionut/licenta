@@ -1,9 +1,13 @@
-'use strict'
+'use strict';
 
-const Lucid = use('Lucid')
+const Lucid = use('Lucid');
 
-class ConversationUser extends Lucid {
-
+class ConversationUser extends Lucid
+{
+    static get table ()
+    {
+        return 'conversation_user'
+    }
 }
 
-module.exports = ConversationUser
+module.exports = ConversationUser;

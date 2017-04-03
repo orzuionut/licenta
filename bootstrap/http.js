@@ -100,7 +100,9 @@ module.exports = function (callback) {
       |
       */
       const Server = use('Adonis/Src/Server');
+
       const io = use('socket.io')(Server.getInstance());
+
       io.listen(8181);
 
       use('App/Http/Websocket/conference')(io);

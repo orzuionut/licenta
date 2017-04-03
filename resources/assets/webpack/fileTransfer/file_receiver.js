@@ -1,11 +1,16 @@
 class FileReceiver
 {
-    constructor(conversation_id)
+    constructor(worker, conversation_id)
     {
-        this.worker = new Worker("/js/app/file_receiver.js");
+        this.worker = worker;
+        
         this.conversation_id = conversation_id;
         
-        this.worker.postMessage(this.conversation_id);
+        let data = {
+            conversation_id: conversation_id
+        };
+        
+        this.worker.postMessage(data);
     }
 
     setConversationId(conversation_id)

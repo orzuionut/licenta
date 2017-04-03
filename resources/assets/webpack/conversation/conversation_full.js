@@ -15,10 +15,29 @@ class ConversationFull extends ConversationBuilder
         this.conversations_list = new ConversationsList();
 
         this.conversation.DOM.header = new Header();
+        
+        let worker = new Worker("/js/app/file_transfer.js");
 
-        this.fileTransfer = new FileTransfer(conversation_id);
+        worker.onmessage = function (data) {
+            // Blob = data.data.Blob
 
-        this.fileReceiver = new FileReceiver(conversation_id);
+            let $fileLink = $('<a/>', {
+                text: data.data.fileName,
+                href: URL.createObjectURL(data.data.blob),
+                target: '_blank',
+                download: data.data.fileName,
+                class: 'single-file file-bubble file-bubble-download',
+                id: 'auto-download'
+            });
+
+            var $el = $('.conversation-body');
+
+            $el.append($fileLink);
+        };
+
+        this.fileTransfer = new FileTransfer(worker, conversation_id);
+
+        this.fileReceiver = new FileReceiver(worker, conversation_id);
     }
 
     bindDOMListeners()
@@ -58,6 +77,9 @@ class ConversationFull extends ConversationBuilder
         // Conversation changed. Update stuff
         if (old_conversation_id !== new_conversation_id)
         {
+            // Set clicked conversation as active
+            this.conversations_list.switchActive(conversationItem);
+            
             this.conversation.DOM.body.clear();
 
             this.conversation.setID(new_conversation_id);
@@ -71,18 +93,19 @@ class ConversationFull extends ConversationBuilder
 
             this.conversation.socketIO.sendMessage('init', data);
             
-            /////////////////////
             this.fileTransfer.setConversationId(new_conversation_id);
+            this.fileReceiver.setConversationId(new_conversation_id);
         }
     }
     
     uploadFile()
     {
-        Helper.flash("Uploading file in progres..");
+        Helper.flash("Uploading file in progress..");
 
         let file = this.getFileFromInput();
+        let hash = Helper.guid();
         
-        this.fileTransfer.startSending(file);
+        this.fileTransfer.startSending(file, hash);
     }
 
     getFileFromInput()

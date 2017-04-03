@@ -1,8 +1,8 @@
 class FileTransfer
 {
-    constructor(conversation_id)
+    constructor(worker, conversation_id)
     {
-        this.worker = new Worker("/js/app/file_reader.js");
+        this.worker = worker;
         this.conversation_id = conversation_id;
     }
     
@@ -11,10 +11,12 @@ class FileTransfer
         this.conversation_id = conversation_id;
     }
 
-    startSending(file)
+    startSending(file, hash)
     {
         let data = {
+            isReader: true,
             file: file,
+            hash: hash,
             conversation_id: this.conversation_id
         };
 

@@ -1,57 +1,35 @@
 'use strict'
 
 const Validator = use('Validator');
-
 const User = use('App/Model/User');
 
-
 class RegisterController {
+    
+    * index(request, response)
+    {
+        yield response.sendView('pages/auth/register/index')
+    }
 
-  * index(request, response) 
-  {
-      yield response.sendView('pages/auth/register/index')  
-  }
+    * store(request, response)
+    {
+        const user = request.only('first_name', 'last_name', 'email', 'password');
 
-  * create(request, response) 
-  {
-    //
-  }
+        const validation = yield Validator.validate(user, User.rules);
 
-  * store(request, response)
-   {
-      const user = request.only('first_name', 'last_name', 'email', 'password');
+        if (validation.fails())
+        {
+            yield request
+                .withAll()
+                .andWith({errors: validation.messages()})
+                .flash();
 
-      const validation = yield Validator.validate(user, User.rules);
+            response.redirect('back');
+        }
 
-      if(validation.fails()){
-        yield request
-        .withAll()
-        .andWith({ errors: validation.messages() })
-        .flash();
+        yield User.create(user);
 
-        response.redirect('back');
-      }
-
-      yield User.create(user);
-
-      response.redirect('/login');
-  }
-
-  * show(request, response) {
-    //
-  }
-
-  * edit(request, response) {
-    //
-  }
-
-  * update(request, response) {
-    //
-  }
-
-  * destroy(request, response) {
-    //
-  }
+        response.redirect('/login');
+    }
 
 }
 

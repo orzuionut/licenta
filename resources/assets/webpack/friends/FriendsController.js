@@ -94,10 +94,20 @@ class FriendsController
 
     handleRemoveFriend()
     {
-
+        let self = this;
+        
+        $.ajax({
+            type: "DELETE",
+            url: "/friends/" + self.modal.profileID,
+            data: {},
+            success: function (success) {
+                if (success)
+                {
+                    self.modal.showAddFriend();
+                }
+            }
+        });
     }
-
-
 }
 
 export {FriendsController}

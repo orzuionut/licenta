@@ -5,8 +5,8 @@ const Conversation = use('App/Model/Conversation');
 const ConversationUser = use('App/Model/ConversationUser');
 const Message = use('App/Model/Message');
 
-class ConversationController {
-
+class ConversationController
+{
     * index(request, response)
     {
         const user = request.currentUser;
@@ -41,7 +41,7 @@ class ConversationController {
     * friends (request, response)
     {
         const currentUser = request.currentUser;
-        let friends = yield currentUser.friends().fetch();
+        let friends = yield currentUser.friends();
 
         yield response.send(friends);
     }
@@ -59,6 +59,17 @@ class ConversationController {
         yield newConversation.users().attach(participants);
 
         yield response.redirect('/conversation');
+    }
+
+    * destroy (request, response)
+    {
+        const id = request.param('id');
+
+        const conversation = yield Conversation.find(id);
+
+        yield conversation.delete();
+
+        response.send("OK");
     }
 }
 

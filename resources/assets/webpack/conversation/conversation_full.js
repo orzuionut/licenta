@@ -4,6 +4,7 @@ import {Header} from "./dom/header";
 import {Helper} from "../helpers/helper";
 import {FileTransfer} from "../fileTransfer/index";
 import {FileReceiver} from "../fileTransfer/file_receiver";
+import {ConversationSettings} from "./header/settings";
 
 class ConversationFull extends ConversationBuilder
 {
@@ -15,6 +16,8 @@ class ConversationFull extends ConversationBuilder
         this.conversations_list = new ConversationsList();
 
         this.conversation.DOM.header = new Header();
+
+        this.settings = new ConversationSettings(conversation_id);
         
         let worker = new Worker("/js/app/file_transfer.js");
 
@@ -65,6 +68,17 @@ class ConversationFull extends ConversationBuilder
         {
             self.conversation.DOM.header.hideIncomingCallAlert();
         });
+
+        this.conversation.DOM.header.$conversation_settings.dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrainWidth: false, // Does not change width of dropdown to that of the activator
+            hover: false, // Activate on hover
+            gutter: 0, // Spacing from edge
+            belowOrigin: true, // Displays dropdown below the button
+            alignment: 'left', // Displays dropdown with edge aligned to the left of button
+            stopPropagation: false // Stops event propagation
+        });
     }
 
     switchConversation(clickEvent)
@@ -79,7 +93,7 @@ class ConversationFull extends ConversationBuilder
         {
             // Set clicked conversation as active
             this.conversations_list.switchActive(conversationItem);
-            
+
             this.conversation.DOM.body.clear();
 
             this.conversation.setID(new_conversation_id);
@@ -95,6 +109,9 @@ class ConversationFull extends ConversationBuilder
             
             this.fileTransfer.setConversationId(new_conversation_id);
             this.fileReceiver.setConversationId(new_conversation_id);
+
+            // Set new conversation id in settings
+            this.settings.setConversationID(new_conversation_id);
         }
     }
     

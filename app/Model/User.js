@@ -2,8 +2,8 @@
 
 const Lucid = use('Lucid')
 
-class User extends Lucid {
-
+class User extends Lucid
+{
 	static boot()
 	{
 		super.boot();
@@ -22,10 +22,31 @@ class User extends Lucid {
 		}
     }
 
-    friends()
+    * friends()
     {
-    	return this.belongsToMany('App/Model/User', 'friends', 'user_id_1', 'user_id_2');
+		const friends_first = yield this.friendsFirst().fetch();
+		const friends_second = yield this.friendsSecond().fetch();
+
+		return friends_first.toJSON().concat(friends_second.toJSON());
     }
+	
+	* friendById(id)
+	{
+		const friends_first = yield this.friendsFirst().where('id', id).fetch();
+		const friends_second = yield this.friendsSecond().where('id', id).fetch();
+
+		return friends_first.toJSON().concat(friends_second.toJSON());
+	}
+	
+	friendsFirst()
+	{
+		return this.belongsToMany('App/Model/User', 'friends', 'user_id_1', 'user_id_2');
+	}
+	
+	friendsSecond()
+	{
+		return this.belongsToMany('App/Model/User', 'friends', 'user_id_2', 'user_id_1');
+	}
 
     conversations()
     {

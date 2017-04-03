@@ -4,24 +4,28 @@ const Event = use('Event');
 const User = use('App/Model/User');
 const Friend = use('App/Model/Friend');
 
-class FriendController {
-
+class FriendController
+{
     * index(request, response)
     {
         const currentUser = request.currentUser;
-        let friends = yield currentUser.friends().fetch();
-
-        // Workaround to sendThroughDataChannel array to view. TODO: fix this
-        const json_friends = JSON.stringify(friends);
-        friends = JSON.parse(json_friends);
+        let friends = yield currentUser.friends();
 
         yield response.sendView('pages/friends/index', {persons: friends});
     }
 
     * store(request, response)
     {
-        const user_1_id = request.all().id;
-        const user_2_id = request.currentUser.id;
+        let user_1_id = request.all().id;
+        let user_2_id = request.currentUser.id;
+
+        // Saving to the database in ascending order of id
+        if (user_1_id < user_2_id)
+        {
+            let aux = user_1_id;
+            user_1_id = user_2_id;
+            user_2_id = aux;
+        }
 
         let newFriendship = new Friend();
         newFriendship.user_id_1 = user_1_id;
@@ -38,16 +42,9 @@ class FriendController {
         const id = request.param('id');
 
         let user = yield User.query().where('id', id).fetch();
+        user = user.toJSON();
 
-        // Workaround to sendThroughDataChannel array to view. TODO: fix this
-        const json_user = JSON.stringify(user);
-        user = JSON.parse(json_user);
-
-        let friend = yield request.currentUser.friends().where('id', id).fetch();
-
-        // Workaround to sendThroughDataChannel array to view. TODO: fix this
-        const json_friend = JSON.stringify(friend);
-        friend = JSON.parse(json_friend);
+        let friend = yield request.currentUser.friendById(id);
 
         let user_info = {
             id: user[0].id,
@@ -60,17 +57,32 @@ class FriendController {
 
     * destroy(request, response)
     {
-        const id = request.all().id;
+        const friend_id = request.param('id');
+        const user_id = request.currentUser.id;
+
+        if (user_id > friend_id)
+        {
+            const friendship = yield Database
+                .table('friends')
+                .where('user_id_1', friend_id)
+                .where('user_id_2', user_id)
+                .limit(1);
+
+            yield friendship.delete();
+        }
+        else
+        {
+
+        }
+
+        response.send(true)
     }
 
     * people(request, response)
     {
-        let users = yield User.all();
-        // Workaround to sendThroughDataChannel array to view. TODO: fix this
-        const json_users = JSON.stringify(users);
-        users = JSON.parse(json_users);
+        let users = yield User.query().where('id', "!=", request.currentUser.id).fetch();
 
-        yield response.sendView('pages/friends/people', {persons: users});
+        yield response.sendView('pages/friends/people', {persons: users.toJSON()});
     }
 
 }

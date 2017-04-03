@@ -11,6 +11,8 @@ class Header {
         this.$incoming_call_alert = $('#conversation-header-alert');
         this.$answer_call = $("#call-answer");
         this.$reject_call = $("#call-reject");
+
+        this.$conversation_settings = $('#conversation-settings');
     }
 
     showIncomingCallAlert()

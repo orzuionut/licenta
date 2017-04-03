@@ -24,8 +24,8 @@ class AllTablesTableSchema extends Schema {
 
             table.primary(['user_id_1', 'user_id_2'])
 
-            table.foreign('user_id_1').references('users.id')
-            table.foreign('user_id_2').references('users.id')
+            table.foreign('user_id_1').references('users.id').onDelete('CASCADE')
+            table.foreign('user_id_2').references('users.id').onDelete('CASCADE')
 
 
             table.timestamps()
@@ -45,10 +45,10 @@ class AllTablesTableSchema extends Schema {
             table.increments('id').primary()
 
             table.integer('conversation_id').unsigned()
-            table.foreign('conversation_id').references('conversations.id')
+            table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE')
 
             table.integer('user_id').unsigned()
-            table.foreign('user_id').references('users.id')
+            table.foreign('user_id').references('users.id').onDelete('CASCADE')
 
             table.string('message').notNullable()
 
@@ -63,8 +63,8 @@ class AllTablesTableSchema extends Schema {
 
             table.primary(['user_id', 'conversation_id'])
 
-            table.foreign('user_id').references('users.id')
-            table.foreign('conversation_id').references('conversations.id')
+            table.foreign('user_id').references('users.id').onDelete('CASCADE')
+            table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE')
 
 
             table.timestamps()
@@ -77,7 +77,7 @@ class AllTablesTableSchema extends Schema {
             table.string('name').notNullable();
 
             table.integer('user_sender_id').unsigned();
-            table.foreign('user_sender_id').references('users.id');
+            table.foreign('user_sender_id').references('users.id').onDelete('CASCADE');
 
             table.timestamps()
         });
@@ -88,7 +88,7 @@ class AllTablesTableSchema extends Schema {
 
             table.primary(['user_id', 'file_id']);
 
-            table.foreign('user_id').references('users.id');
+            table.foreign('user_id').references('users.id').onDelete('CASCADE');
             table.foreign('file_id').references('files.id');
 
 

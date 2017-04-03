@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 43);
+/******/ 	return __webpack_require__(__webpack_require__.s = 45);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -693,6 +693,8 @@ var _index = __webpack_require__(14);
 
 var _file_receiver = __webpack_require__(13);
 
+var _settings = __webpack_require__(35);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -711,6 +713,8 @@ var ConversationFull = function (_ConversationBuilder) {
         _this.conversations_list = new _conversations_list.ConversationsList();
 
         _this.conversation.DOM.header = new _header.Header();
+
+        _this.settings = new _settings.ConversationSettings(conversation_id);
 
         var worker = new Worker("/js/app/file_transfer.js");
 
@@ -760,6 +764,17 @@ var ConversationFull = function (_ConversationBuilder) {
             this.conversation.DOM.header.$reject_call.click(function () {
                 self.conversation.DOM.header.hideIncomingCallAlert();
             });
+
+            this.conversation.DOM.header.$conversation_settings.dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrainWidth: false, // Does not change width of dropdown to that of the activator
+                hover: false, // Activate on hover
+                gutter: 0, // Spacing from edge
+                belowOrigin: true, // Displays dropdown below the button
+                alignment: 'left', // Displays dropdown with edge aligned to the left of button
+                stopPropagation: false // Stops event propagation
+            });
         }
     }, {
         key: "switchConversation",
@@ -789,6 +804,9 @@ var ConversationFull = function (_ConversationBuilder) {
 
                 this.fileTransfer.setConversationId(new_conversation_id);
                 this.fileReceiver.setConversationId(new_conversation_id);
+
+                // Set new conversation id in settings
+                this.settings.setConversationID(new_conversation_id);
             }
         }
     }, {
@@ -837,9 +855,9 @@ exports.ConversationsList = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _create = __webpack_require__(34);
+var _create = __webpack_require__(36);
 
-var _filter = __webpack_require__(35);
+var _filter = __webpack_require__(37);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -915,6 +933,8 @@ var Header = function () {
         this.$incoming_call_alert = $('#conversation-header-alert');
         this.$answer_call = $("#call-answer");
         this.$reject_call = $("#call-reject");
+
+        this.$conversation_settings = $('#conversation-settings');
     }
 
     _createClass(Header, [{
@@ -936,6 +956,131 @@ exports.Header = Header;
 
 /***/ }),
 /* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationDelete = function () {
+    function ConversationDelete() {
+        _classCallCheck(this, ConversationDelete);
+
+        // PubSub Messages
+        this.DELETE_CONVERSATION_GET_ID_MESSAGE = "delete conversation";
+        this.DELETE_CONVERSATION_POST_ID_MESSAGE = "delete conversation with id";
+
+        this.modal = $("#conversation-delete-modal");
+        this.modal.modal();
+
+        this.$confirmDeleteBtn = $("#conversation-delete-confirm");
+
+        this.bindDOMListeners();
+        this.bindListeners();
+    }
+
+    _createClass(ConversationDelete, [{
+        key: "bindDOMListeners",
+        value: function bindDOMListeners() {
+            var self = this;
+
+            this.$confirmDeleteBtn.on('click', self.getConversationIdToDelete.bind(self));
+        }
+    }, {
+        key: "bindListeners",
+        value: function bindListeners() {
+            PubSub.subscribe(this.DELETE_CONVERSATION_POST_ID_MESSAGE, this.deleteConversation);
+        }
+    }, {
+        key: "getConversationIdToDelete",
+        value: function getConversationIdToDelete() {
+            PubSub.publish(this.DELETE_CONVERSATION_GET_ID_MESSAGE, null);
+        }
+    }, {
+        key: "deleteConversation",
+        value: function deleteConversation(message, id) {
+            console.log(id);
+
+            $.ajax({
+                type: "DELETE",
+                url: "conversation/" + id,
+                data: {},
+                success: function success(data) {
+                    window.location.href = "/conversation";
+                }
+            });
+        }
+    }]);
+
+    return ConversationDelete;
+}();
+
+exports.ConversationDelete = ConversationDelete;
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.ConversationSettings = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _delete = __webpack_require__(34);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConversationSettings = function () {
+    function ConversationSettings(conversation_id) {
+        _classCallCheck(this, ConversationSettings);
+
+        this.conversation_id = conversation_id;
+
+        // PubSub Messages
+        this.DELETE_CONVERSATION_GET_ID_MESSAGE = "delete conversation";
+        this.DELETE_CONVERSATION_POST_ID_MESSAGE = "delete conversation with id";
+
+        this.delete = new _delete.ConversationDelete();
+
+        this.bindListeners();
+    }
+
+    _createClass(ConversationSettings, [{
+        key: "setConversationID",
+        value: function setConversationID(conversation_id) {
+            this.conversation_id = conversation_id;
+        }
+    }, {
+        key: "bindListeners",
+        value: function bindListeners() {
+            PubSub.subscribe(this.DELETE_CONVERSATION_GET_ID_MESSAGE, this.sendConversationIdToDelete.bind(this));
+        }
+    }, {
+        key: "sendConversationIdToDelete",
+        value: function sendConversationIdToDelete() {
+            PubSub.publish(this.DELETE_CONVERSATION_POST_ID_MESSAGE, this.conversation_id);
+        }
+    }]);
+
+    return ConversationSettings;
+}();
+
+exports.ConversationSettings = ConversationSettings;
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1016,7 +1161,7 @@ var ConversationCreate = function () {
 exports.ConversationCreate = ConversationCreate;
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1067,14 +1212,14 @@ var ConversationsFilter = function () {
 exports.ConversationsFilter = ConversationsFilter;
 
 /***/ }),
-/* 36 */,
-/* 37 */,
 /* 38 */,
 /* 39 */,
 /* 40 */,
 /* 41 */,
 /* 42 */,
-/* 43 */
+/* 43 */,
+/* 44 */,
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

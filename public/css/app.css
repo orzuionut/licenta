@@ -256,6 +256,19 @@ header {
 #conversation-modal #conversation-create {
   margin-top: 50px; }
 
+#conversation-delete, #conversation-delete-confirm {
+  color: #FF1300; }
+
+#conversation-delete-modal h2 {
+  font-size: 40px;
+  text-align: center;
+  color: #FF1300; }
+
+#conversation-delete-modal p {
+  font-size: 20px;
+  text-align: center;
+  margin-top: 50px; }
+
 .conversations-content {
   display: flex;
   overflow-y: hidden; }

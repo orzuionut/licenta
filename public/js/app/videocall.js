@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 45);
+/******/ 	return __webpack_require__(__webpack_require__.s = 47);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1082,17 +1082,17 @@ exports.Videocall = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(37);
+var _dom = __webpack_require__(39);
 
-var _peer_connection = __webpack_require__(41);
+var _peer_connection = __webpack_require__(43);
 
 var _helper = __webpack_require__(0);
 
-var _file_resume_receive = __webpack_require__(39);
+var _file_resume_receive = __webpack_require__(41);
 
 var _indexedDB = __webpack_require__(19);
 
-var _index = __webpack_require__(40);
+var _index = __webpack_require__(42);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1356,7 +1356,9 @@ exports.Videocall = Videocall;
 /* 34 */,
 /* 35 */,
 /* 36 */,
-/* 37 */
+/* 37 */,
+/* 38 */,
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1427,7 +1429,7 @@ var VideocallDOM = function () {
 exports.VideocallDOM = VideocallDOM;
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1482,7 +1484,7 @@ var DataReceive = function () {
 exports.DataReceive = DataReceive;
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1497,7 +1499,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _helper = __webpack_require__(0);
 
-var _data_receive = __webpack_require__(38);
+var _data_receive = __webpack_require__(40);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1580,7 +1582,7 @@ var FileResumeReceive = function (_DataReceive) {
 exports.FileResumeReceive = FileResumeReceive;
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1660,7 +1662,7 @@ var FileDrop = function () {
 exports.FileDrop = FileDrop;
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1857,10 +1859,10 @@ var PeerConnection = function () {
 exports.PeerConnection = PeerConnection;
 
 /***/ }),
-/* 42 */,
-/* 43 */,
 /* 44 */,
-/* 45 */
+/* 45 */,
+/* 46 */,
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -14,6 +14,16 @@ class Conversation extends Lucid {
 		return this.hasMany('App/Model/Message');
 	}
 
+	partialFiles()
+	{
+		return this.hasMany('App/Model/PartialFile');
+	}
+
+    completelFiles()
+    {
+        return this.hasMany('App/Model/CompleteFile');
+    }
+
 	* getNrOfParticipants()
 	{
 		let users = yield this.users().fetch();

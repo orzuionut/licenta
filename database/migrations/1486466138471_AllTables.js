@@ -2,9 +2,10 @@
 
 const Schema = use('Schema')
 
-class AllTablesTableSchema extends Schema {
-
-    up() {
+class AllTablesTableSchema extends Schema
+{
+    up()
+    {
         this.create('users', (table) => {
             table.increments('id').primary();
 
@@ -71,36 +72,40 @@ class AllTablesTableSchema extends Schema {
 
         })
 
-        this.create('files', (table) => {
+        this.create('complete_files', (table) => {
             table.string('id').primary();
+            table.integer('user_sender_id').unsigned();
+            table.integer('conversation_id').unsigned();
 
             table.string('name').notNullable();
+            table.string('hash').notNullable();
 
-            table.integer('user_sender_id').unsigned();
             table.foreign('user_sender_id').references('users.id').onDelete('CASCADE');
+            table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE');
 
             table.timestamps()
         });
 
-        this.create('file_receivers', (table) => {
-            table.integer('user_id').unsigned();
-            table.string('file_id');
+        this.create('partial_files', (table) => {
+            table.string('id').primary();
+            table.integer('user_sender_id').unsigned();
+            table.integer('conversation_id').unsigned();
 
-            table.primary(['user_id', 'file_id']);
+            table.string('name').notNullable();
+            table.string('hash').notNullable();
+            table.integer('amount').unsigned();
 
-            table.foreign('user_id').references('users.id').onDelete('CASCADE');
-            table.foreign('file_id').references('files.id');
-
+            table.foreign('user_sender_id').references('users.id').onDelete('CASCADE');
+            table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE');
 
             table.timestamps()
         });
-
-
     }
 
-    down() {
-        this.drop('file_receiver');
-        this.drop('files');
+    down()
+    {
+        this.drop('complete_files');
+        this.drop('partial_files');
         this.drop('conversation_user');
         this.drop('messages');
         this.drop('friends');
@@ -110,4 +115,4 @@ class AllTablesTableSchema extends Schema {
 
 }
 
-module.exports = AllTablesTableSchema
+module.exports = AllTablesTableSchema;

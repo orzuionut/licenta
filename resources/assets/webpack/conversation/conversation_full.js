@@ -4,7 +4,9 @@ import {Header} from "./dom/header";
 import {Helper} from "../helpers/helper";
 import {FileTransfer} from "../fileTransfer/index";
 import {FileReceiver} from "../fileTransfer/file_receiver";
-import {ConversationSettings} from "./header/settings";
+import {Config} from "../_config";
+import {ConversationFiles} from './files/index';
+import {ConversationActions} from "./header/index";
 
 class ConversationFull extends ConversationBuilder
 {
@@ -17,7 +19,8 @@ class ConversationFull extends ConversationBuilder
 
         this.conversation.DOM.header = new Header();
 
-        this.settings = new ConversationSettings(conversation_id);
+        this.actionButtons = new ConversationActions(conversation_id);
+        this.files = new ConversationFiles(this.conversation.socketIO, conversation_id, user_id);
         
         let worker = new Worker("/js/app/file_transfer.js");
 
@@ -41,6 +44,13 @@ class ConversationFull extends ConversationBuilder
         this.fileTransfer = new FileTransfer(worker, conversation_id);
 
         this.fileReceiver = new FileReceiver(worker, conversation_id);
+
+        this.bindDOMListeners();
+        this.bindListeners();
+    }
+
+    bindListeners()
+    {
     }
 
     bindDOMListeners()
@@ -106,15 +116,11 @@ class ConversationFull extends ConversationBuilder
             this.conversation.socketIO.sendMessage('roomChanged', data);
 
             this.conversation.socketIO.sendMessage('init', data);
-            
-            this.fileTransfer.setConversationId(new_conversation_id);
-            this.fileReceiver.setConversationId(new_conversation_id);
 
-            // Set new conversation id in settings
-            this.settings.setConversationID(new_conversation_id);
+            PubSub.publish(Config.getConversationSwitchMessage(), new_conversation_id);
         }
     }
-    
+
     uploadFile()
     {
         Helper.flash("Uploading file in progress..");

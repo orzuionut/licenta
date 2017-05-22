@@ -1,0 +1,41 @@
+{% extends 'layouts/master.njk' %}
+
+{% block content %}
+
+    <input type="hidden" id="_user_id" value="{{ currentUser.id }}">
+    <input type="hidden" id="_user_name" value="{{ currentUser.getFullName() }}">
+
+    <div id="cinema-container-vertical">
+
+        <section id="film-container" class="card-panel">
+            <article id="film-playing">
+
+            </article>
+
+            <article id="film-placeholder">
+                <img src="/img/upload_icon.png" alt="Drag and drop film here">
+            </article>
+        </section>
+
+        <section id="people-container" class="card-panel">
+            <section id="videos-conversation-toggle">
+                <div id="conversation-toggle">
+                    <i class="material-icons">message</i>
+                </div>
+                <div id="videos-toggle">
+                    <i class="material-icons">videocam</i>
+                </div>
+            </section>
+
+            <section id="videos-container"></section>
+
+            <section id="conversation-container" class="col-flex-1-4">
+                {% include "partials/__conversation_without_header.njk" %}
+            </section>
+        </section>
+
+    </div>
+
+    <script src="/js/app/cinema.js"></script>
+
+{% endblock %}

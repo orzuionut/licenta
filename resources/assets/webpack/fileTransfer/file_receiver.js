@@ -1,3 +1,4 @@
+import {Config} from "../_config";
 class FileReceiver
 {
     constructor(worker, conversation_id)
@@ -11,9 +12,16 @@ class FileReceiver
         };
         
         this.worker.postMessage(data);
+
+        this.bindListeners();
     }
 
-    setConversationId(conversation_id)
+    bindListeners()
+    {
+        PubSub.subscribe(Config.getConversationSwitchMessage(), this.setConversationId.bind(this));
+    }
+
+    setConversationId(message, conversation_id)
     {
         this.conversation_id = conversation_id;
     }

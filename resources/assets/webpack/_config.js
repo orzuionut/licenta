@@ -32,6 +32,86 @@ class Config
             ]
         };
     }
+
+    static getConversationSwitchMessage()
+    {
+        return "conversation has been changed";
+    }
+
+    static getConversationFilesButtonClickedMessage()
+    {
+        return "conversation files button clicked";
+    }
+
+    static getConversationCompleteFilesTabClickedMessage()
+    {
+        return "conversation complete files tab clicked";
+    }
+
+    static getConversationIncompleteFilesTabClickedMessage()
+    {
+        return "conversation incomplete files tab clicked";
+    }
+
+    static getConversationCompleteFilesRetrievedMessage()
+    {
+        return "conversation complete files retrieved";
+    }
+
+    static getConversationIncompleteFilesRetrievedMessage()
+    {
+        return "conversation incomplete files retrieved";
+    }
+
+    static getFileMessageBoxClickedMessage()
+    {
+        return "conversation complete files file message-box clicked";
+    }
+
+    static getFilmDroppedMessage()
+    {
+        return "cinema film dropped";
+    }
+
+    static getHideFilmUploadMessage()
+    {
+        return "film uploading hidden";
+    }
+
+    static getWebSocketVariable()
+    {
+        return "get websocket var";
+    }
+
+    static webSocketVariableRetrieved()
+    {
+        return "web socket variable retrieved";
+    }
+
+    static getAppendFilmToDOMMessage()
+    {
+        return "append film to dom";
+    }
+
+    static getFilmPlayButtonPressedMessage()
+    {
+        return "film play button pressed";
+    }
+
+    static getFilmPauseButtonPressedMessage()
+    {
+        return "film pause button pressed";
+    }
+
+    static getFilmPlayButtonPressedByOtherMessage()
+    {
+        return "other participant pressed play"
+    }
+
+    static getFilmPauseButtonPressedByOtherMessage()
+    {
+        return "other participant pressed pause";
+    }
 }
 
 export { Config }

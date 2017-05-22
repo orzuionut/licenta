@@ -14,7 +14,7 @@ class CompleteFile extends Lucid
         return this.belongsTo('App/Model/Conversation');
     }
 
-    sender()
+    user()
     {
         return this.belongsTo('App/Model/User');
     }

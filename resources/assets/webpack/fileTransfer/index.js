@@ -1,12 +1,20 @@
+import {Config} from "../_config";
 class FileTransfer
 {
     constructor(worker, conversation_id)
     {
         this.worker = worker;
         this.conversation_id = conversation_id;
+
+        this.bindListeners();
+    }
+
+    bindListeners()
+    {
+        PubSub.subscribe(Config.getConversationSwitchMessage(), this.setConversationId.bind(this));
     }
     
-    setConversationId(conversation_id)
+    setConversationId(message, conversation_id)
     {
         this.conversation_id = conversation_id;
     }

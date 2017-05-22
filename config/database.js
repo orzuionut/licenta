@@ -48,9 +48,9 @@ module.exports = {
   mysql: {
     client: 'mysql',
     connection: {
-      host: Env.get('DB_HOST', 'localhost'),
-      user: Env.get('DB_USER', 'instant'),
-      password: Env.get('DB_PASSWORD', ''),
+      host: Env.get('DB_HOST', '127.0.0.1'),
+      user: Env.get('DB_USER', 'root'),
+      password: Env.get('DB_PASSWORD', 'sql'),
       database: Env.get('DB_DATABASE', 'instant')
     }
   },

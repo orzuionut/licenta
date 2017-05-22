@@ -1,41 +1,41 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -46,7 +46,7 @@
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -55,19 +55,152 @@
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 47);
+/******/ 	return __webpack_require__(__webpack_require__.s = 57);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Config = function () {
+    function Config() {
+        _classCallCheck(this, Config);
+    }
+
+    _createClass(Config, null, [{
+        key: "getIceServers",
+        value: function getIceServers() {
+            return {
+                iceServers: [{
+                    urls: "stun:stun.l.google.com:19302"
+                }, {
+                    urls: "stun:stun1.l.google.com:19302"
+                }, {
+                    urls: "stun:stun.voxgratia.org"
+                }, {
+                    urls: "turn:numb.viagenie.ca",
+                    username: "darkstyle6196@gmail.com",
+                    credential: "nonney06011996"
+                }]
+            };
+        }
+    }, {
+        key: "getPeerConnectionConstraints",
+        value: function getPeerConnectionConstraints() {
+            return {
+                optional: [{
+                    DtlsSrtpKeyAgreement: true
+                }]
+            };
+        }
+    }, {
+        key: "getConversationSwitchMessage",
+        value: function getConversationSwitchMessage() {
+            return "conversation has been changed";
+        }
+    }, {
+        key: "getConversationFilesButtonClickedMessage",
+        value: function getConversationFilesButtonClickedMessage() {
+            return "conversation files button clicked";
+        }
+    }, {
+        key: "getConversationCompleteFilesTabClickedMessage",
+        value: function getConversationCompleteFilesTabClickedMessage() {
+            return "conversation complete files tab clicked";
+        }
+    }, {
+        key: "getConversationIncompleteFilesTabClickedMessage",
+        value: function getConversationIncompleteFilesTabClickedMessage() {
+            return "conversation incomplete files tab clicked";
+        }
+    }, {
+        key: "getConversationCompleteFilesRetrievedMessage",
+        value: function getConversationCompleteFilesRetrievedMessage() {
+            return "conversation complete files retrieved";
+        }
+    }, {
+        key: "getConversationIncompleteFilesRetrievedMessage",
+        value: function getConversationIncompleteFilesRetrievedMessage() {
+            return "conversation incomplete files retrieved";
+        }
+    }, {
+        key: "getFileMessageBoxClickedMessage",
+        value: function getFileMessageBoxClickedMessage() {
+            return "conversation complete files file message-box clicked";
+        }
+    }, {
+        key: "getFilmDroppedMessage",
+        value: function getFilmDroppedMessage() {
+            return "cinema film dropped";
+        }
+    }, {
+        key: "getHideFilmUploadMessage",
+        value: function getHideFilmUploadMessage() {
+            return "film uploading hidden";
+        }
+    }, {
+        key: "getWebSocketVariable",
+        value: function getWebSocketVariable() {
+            return "get websocket var";
+        }
+    }, {
+        key: "webSocketVariableRetrieved",
+        value: function webSocketVariableRetrieved() {
+            return "web socket variable retrieved";
+        }
+    }, {
+        key: "getAppendFilmToDOMMessage",
+        value: function getAppendFilmToDOMMessage() {
+            return "append film to dom";
+        }
+    }, {
+        key: "getFilmPlayButtonPressedMessage",
+        value: function getFilmPlayButtonPressedMessage() {
+            return "film play button pressed";
+        }
+    }, {
+        key: "getFilmPauseButtonPressedMessage",
+        value: function getFilmPauseButtonPressedMessage() {
+            return "film pause button pressed";
+        }
+    }, {
+        key: "getFilmPlayButtonPressedByOtherMessage",
+        value: function getFilmPlayButtonPressedByOtherMessage() {
+            return "other participant pressed play";
+        }
+    }, {
+        key: "getFilmPauseButtonPressedByOtherMessage",
+        value: function getFilmPauseButtonPressedByOtherMessage() {
+            return "other participant pressed pause";
+        }
+    }]);
+
+    return Config;
+}();
+
+exports.Config = Config;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -183,7 +316,7 @@ var Helper = function () {
 exports.Helper = Helper;
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -227,7 +360,7 @@ var SocketIO = function () {
 exports.SocketIO = SocketIO;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -240,7 +373,9 @@ exports.Body = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _message = __webpack_require__(7);
+var _config = __webpack_require__(0);
+
+var _helper = __webpack_require__(6);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -248,46 +383,42 @@ var Body = function () {
     function Body() {
         _classCallCheck(this, Body);
 
-        this.$box = $('.conversation-body');
+        this.$container = $('#conversation-messages-container');
+        this.$box = $('#conversation-messages-body');
+
+        this.bindListeners();
     }
 
     _createClass(Body, [{
-        key: 'appendMessagesArray',
+        key: "bindListeners",
+        value: function bindListeners() {
+            // PubSub.subscribe(Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
+            PubSub.subscribe(_config.Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
+        }
+    }, {
+        key: "appendMessagesArray",
         value: function appendMessagesArray(data, current_user_id) {
-            for (var i = 0; i < data.length; i++) {
-                this.appendMessage(data[i], current_user_id);
-            }
+            _helper.Helper.appendConversationItems(this.$box, data, current_user_id);
         }
     }, {
-        key: 'appendMessage',
+        key: "appendMessage",
         value: function appendMessage(data, current_user_id) {
-            var is_current_user = data.user_id == current_user_id;
-            var type = is_current_user ? 'message-user' : 'message-other';
-
-            if (!is_current_user) {
-                var $emitter = _message.Message.createEmitter(data.user_name);
-
-                this.append($emitter);
-            }
-
-            this.append(new _message.Message(data, type));
+            _helper.Helper.appendItem(this.$box, data, current_user_id);
         }
     }, {
-        key: 'append',
-        value: function append($element) {
-            this.$box.append($element);
-
-            this.scrollToBottom();
-        }
-    }, {
-        key: 'scrollToBottom',
-        value: function scrollToBottom() {
-            this.$box.scrollTop(this.$box[0].scrollHeight);
-        }
-    }, {
-        key: 'clear',
+        key: "clear",
         value: function clear() {
             this.$box.empty();
+        }
+    }, {
+        key: "show",
+        value: function show() {
+            this.$container.css({ display: "flex" });
+        }
+    }, {
+        key: "hide",
+        value: function hide() {
+            this.$container.css({ display: "none" });
         }
     }]);
 
@@ -297,7 +428,7 @@ var Body = function () {
 exports.Body = Body;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -350,7 +481,7 @@ var Footer = function () {
 exports.Footer = Footer;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -361,13 +492,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConversationBuilder = undefined;
 
-var _conversation = __webpack_require__(5);
+var _conversation = __webpack_require__(7);
 
-var _dom = __webpack_require__(6);
+var _dom = __webpack_require__(8);
 
-var _body = __webpack_require__(2);
+var _body = __webpack_require__(3);
 
-var _footer = __webpack_require__(3);
+var _footer = __webpack_require__(4);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -388,7 +519,74 @@ var ConversationBuilder = function ConversationBuilder(id, user_id, user_name) {
 exports.ConversationBuilder = ConversationBuilder;
 
 /***/ }),
-/* 5 */
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Helper = function () {
+    function Helper() {
+        _classCallCheck(this, Helper);
+    }
+
+    _createClass(Helper, null, [{
+        key: 'appendConversationItems',
+        value: function appendConversationItems($container, items, current_user_id) {
+            for (var i = 0; i < items.length; i++) {
+                Helper.appendItem($container, items[i], current_user_id);
+            }
+        }
+    }, {
+        key: 'appendItem',
+        value: function appendItem($container, item, current_user_id) {
+            var is_current_user = item.user_id == current_user_id;
+            var type = is_current_user ? 'message-user' : 'message-other';
+
+            // This message is from another user
+            if (!is_current_user) {
+                var sender_name = typeof item.user_name == 'undefined' ? item.user.first_name + " " + item.user.last_name : item.user_name;
+
+                var $emitter = $("<div class='message-emitter'>" + sender_name + "</div>");
+
+                Helper.append($container, $emitter);
+            }
+
+            // Either file name or message
+            var text = typeof item.message != 'undefined' ? item.message : item.name;
+
+            // This message is from current user
+            Helper.append($container, $('<div class=\'message-box ' + type + '\' data-id="' + item.id + '">' + text + "</div>"));
+        }
+    }, {
+        key: 'append',
+        value: function append($container, $element) {
+            $container.append($element);
+
+            Helper.scrollToBottom($container);
+        }
+    }, {
+        key: 'scrollToBottom',
+        value: function scrollToBottom($container) {
+            $container.scrollTop($container[0].scrollHeight);
+        }
+    }]);
+
+    return Helper;
+}();
+
+exports.Helper = Helper;
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -401,7 +599,7 @@ exports.Conversation = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _socket = __webpack_require__(1);
+var _socket = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -506,7 +704,7 @@ var Conversation = function () {
 exports.Conversation = Conversation;
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -526,98 +724,6 @@ var ConversationDOM = function ConversationDOM(body, footer) {
 };
 
 exports.ConversationDOM = ConversationDOM;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Message = function () {
-    function Message(data, type) {
-        _classCallCheck(this, Message);
-
-        return this.create(data.message, type);
-    }
-
-    _createClass(Message, [{
-        key: "create",
-        value: function create(message, type) {
-            return $("<div class='message-box " + type + "'>" + message + "</div>");
-        }
-    }], [{
-        key: "createEmitter",
-        value: function createEmitter(emitter) {
-            return $("<div class='message-emitter'>" + emitter + "</div>");
-        }
-    }]);
-
-    return Message;
-}();
-
-exports.Message = Message;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Config = function () {
-    function Config() {
-        _classCallCheck(this, Config);
-    }
-
-    _createClass(Config, null, [{
-        key: "getIceServers",
-        value: function getIceServers() {
-            return {
-                iceServers: [{
-                    urls: "stun:stun.l.google.com:19302"
-                }, {
-                    urls: "stun:stun1.l.google.com:19302"
-                }, {
-                    urls: "stun:stun.voxgratia.org"
-                }, {
-                    urls: "turn:numb.viagenie.ca",
-                    username: "darkstyle6196@gmail.com",
-                    credential: "nonney06011996"
-                }]
-            };
-        }
-    }, {
-        key: "getPeerConnectionConstraints",
-        value: function getPeerConnectionConstraints() {
-            return {
-                optional: [{
-                    DtlsSrtpKeyAgreement: true
-                }]
-            };
-        }
-    }]);
-
-    return Config;
-}();
-
-exports.Config = Config;
 
 /***/ }),
 /* 9 */
@@ -689,7 +795,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _conversation_files = __webpack_require__(9);
 
-var _index = __webpack_require__(18);
+var _index = __webpack_require__(16);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -748,9 +854,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConversationWithoutHeader = undefined;
 
-var _body = __webpack_require__(2);
+var _body = __webpack_require__(3);
 
-var _footer = __webpack_require__(3);
+var _footer = __webpack_require__(4);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -796,96 +902,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var FileReceiver = function () {
-    function FileReceiver(worker, conversation_id) {
-        _classCallCheck(this, FileReceiver);
-
-        this.worker = worker;
-
-        this.conversation_id = conversation_id;
-
-        var data = {
-            conversation_id: conversation_id
-        };
-
-        this.worker.postMessage(data);
-    }
-
-    _createClass(FileReceiver, [{
-        key: "setConversationId",
-        value: function setConversationId(conversation_id) {
-            this.conversation_id = conversation_id;
-        }
-    }]);
-
-    return FileReceiver;
-}();
-
-exports.FileReceiver = FileReceiver;
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var FileTransfer = function () {
-    function FileTransfer(worker, conversation_id) {
-        _classCallCheck(this, FileTransfer);
-
-        this.worker = worker;
-        this.conversation_id = conversation_id;
-    }
-
-    _createClass(FileTransfer, [{
-        key: "setConversationId",
-        value: function setConversationId(conversation_id) {
-            this.conversation_id = conversation_id;
-        }
-    }, {
-        key: "startSending",
-        value: function startSending(file, hash) {
-            var data = {
-                isReader: true,
-                file: file,
-                hash: hash,
-                conversation_id: this.conversation_id
-            };
-
-            // Send the file to the Web Worker to process it
-            this.worker.postMessage(data);
-        }
-    }]);
-
-    return FileTransfer;
-}();
-
-exports.FileTransfer = FileTransfer;
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Body = function Body() {
@@ -897,7 +913,7 @@ var Body = function Body() {
 exports.Body = Body;
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -921,7 +937,7 @@ var Footer = function Footer() {
 exports.Footer = Footer;
 
 /***/ }),
-/* 17 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -942,7 +958,7 @@ var Header = function Header() {
 exports.Header = Header;
 
 /***/ }),
-/* 18 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -955,11 +971,11 @@ exports.FilesDOM = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _header = __webpack_require__(17);
+var _header = __webpack_require__(15);
 
-var _body = __webpack_require__(15);
+var _body = __webpack_require__(13);
 
-var _footer = __webpack_require__(16);
+var _footer = __webpack_require__(14);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -992,7 +1008,7 @@ var FilesDOM = function () {
 exports.FilesDOM = FilesDOM;
 
 /***/ }),
-/* 19 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1066,10 +1082,127 @@ var DB = function () {
 exports.DB = DB;
 
 /***/ }),
+/* 18 */,
+/* 19 */,
 /* 20 */,
 /* 21 */,
 /* 22 */,
-/* 23 */
+/* 23 */,
+/* 24 */,
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.FileReceiver = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _config = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FileReceiver = function () {
+    function FileReceiver(worker, conversation_id) {
+        _classCallCheck(this, FileReceiver);
+
+        this.worker = worker;
+
+        this.conversation_id = conversation_id;
+
+        var data = {
+            conversation_id: conversation_id
+        };
+
+        this.worker.postMessage(data);
+
+        this.bindListeners();
+    }
+
+    _createClass(FileReceiver, [{
+        key: "bindListeners",
+        value: function bindListeners() {
+            PubSub.subscribe(_config.Config.getConversationSwitchMessage(), this.setConversationId.bind(this));
+        }
+    }, {
+        key: "setConversationId",
+        value: function setConversationId(message, conversation_id) {
+            this.conversation_id = conversation_id;
+        }
+    }]);
+
+    return FileReceiver;
+}();
+
+exports.FileReceiver = FileReceiver;
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.FileTransfer = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _config = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FileTransfer = function () {
+    function FileTransfer(worker, conversation_id) {
+        _classCallCheck(this, FileTransfer);
+
+        this.worker = worker;
+        this.conversation_id = conversation_id;
+
+        this.bindListeners();
+    }
+
+    _createClass(FileTransfer, [{
+        key: "bindListeners",
+        value: function bindListeners() {
+            PubSub.subscribe(_config.Config.getConversationSwitchMessage(), this.setConversationId.bind(this));
+        }
+    }, {
+        key: "setConversationId",
+        value: function setConversationId(message, conversation_id) {
+            this.conversation_id = conversation_id;
+        }
+    }, {
+        key: "startSending",
+        value: function startSending(file, hash) {
+            var data = {
+                isReader: true,
+                file: file,
+                hash: hash,
+                conversation_id: this.conversation_id
+            };
+
+            // Send the file to the Web Worker to process it
+            this.worker.postMessage(data);
+        }
+    }]);
+
+    return FileTransfer;
+}();
+
+exports.FileTransfer = FileTransfer;
+
+/***/ }),
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1082,17 +1215,17 @@ exports.Videocall = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(39);
+var _dom = __webpack_require__(53);
 
-var _peer_connection = __webpack_require__(43);
+var _peer_connection = __webpack_require__(58);
 
-var _helper = __webpack_require__(0);
+var _helper = __webpack_require__(1);
 
-var _file_resume_receive = __webpack_require__(41);
+var _file_resume_receive = __webpack_require__(55);
 
-var _indexedDB = __webpack_require__(19);
+var _indexedDB = __webpack_require__(17);
 
-var _index = __webpack_require__(42);
+var _index = __webpack_require__(56);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1343,13 +1476,6 @@ var Videocall = function () {
 exports.Videocall = Videocall;
 
 /***/ }),
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
 /* 31 */,
 /* 32 */,
 /* 33 */,
@@ -1358,7 +1484,21 @@ exports.Videocall = Videocall;
 /* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1429,7 +1569,7 @@ var VideocallDOM = function () {
 exports.VideocallDOM = VideocallDOM;
 
 /***/ }),
-/* 40 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1484,7 +1624,7 @@ var DataReceive = function () {
 exports.DataReceive = DataReceive;
 
 /***/ }),
-/* 41 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1497,9 +1637,9 @@ exports.FileResumeReceive = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _helper = __webpack_require__(0);
+var _helper = __webpack_require__(1);
 
-var _data_receive = __webpack_require__(40);
+var _data_receive = __webpack_require__(54);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1582,7 +1722,7 @@ var FileResumeReceive = function (_DataReceive) {
 exports.FileResumeReceive = FileResumeReceive;
 
 /***/ }),
-/* 42 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1595,11 +1735,11 @@ exports.FileDrop = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _index = __webpack_require__(14);
+var _index = __webpack_require__(26);
 
-var _file_receiver = __webpack_require__(13);
+var _file_receiver = __webpack_require__(25);
 
-var _helper = __webpack_require__(0);
+var _helper = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1662,7 +1802,36 @@ var FileDrop = function () {
 exports.FileDrop = FileDrop;
 
 /***/ }),
-/* 43 */
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _videocall = __webpack_require__(30);
+
+var _conversation_builder = __webpack_require__(5);
+
+var _helper = __webpack_require__(1);
+
+$(document).ready(function () {
+    var user_id = $('#_user_id').val();
+    var user_name = $('#_user_name').val();
+    var conversation_id = _helper.Helper.getIDfromURL();
+
+    var videocall = new _videocall.Videocall(user_id);
+
+    videocall.build();
+
+    videocall.handleSocketMessages();
+
+    videocall.bindListeners();
+
+    var build = new _conversation_builder.ConversationBuilder(conversation_id, user_id, user_name);
+});
+
+/***/ }),
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1675,9 +1844,9 @@ exports.PeerConnection = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _config = __webpack_require__(8);
+var _config = __webpack_require__(0);
 
-var _helper = __webpack_require__(0);
+var _helper = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1857,38 +2026,6 @@ var PeerConnection = function () {
 }();
 
 exports.PeerConnection = PeerConnection;
-
-/***/ }),
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _videocall = __webpack_require__(23);
-
-var _conversation_builder = __webpack_require__(4);
-
-var _helper = __webpack_require__(0);
-
-$(document).ready(function () {
-    var user_id = $('#_user_id').val();
-    var user_name = $('#_user_name').val();
-    var conversation_id = _helper.Helper.getIDfromURL();
-
-    var videocall = new _videocall.Videocall(user_id);
-
-    videocall.build();
-
-    videocall.handleSocketMessages();
-
-    videocall.bindListeners();
-
-    var build = new _conversation_builder.ConversationBuilder(conversation_id, user_id, user_name);
-});
 
 /***/ })
 /******/ ]);

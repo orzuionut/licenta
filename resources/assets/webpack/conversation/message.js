@@ -1,5 +1,5 @@
-class Message {
-
+class Message
+{
     constructor(data, type)
     {
         return this.create(data.message, type);

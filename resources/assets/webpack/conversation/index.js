@@ -7,5 +7,4 @@ $(document).ready(function ()
     const conversation_id = $('#_conversation_id').val();
     
     let conversationFull = new ConversationFull(conversation_id, user_id, user_name);
-    conversationFull.bindDOMListeners();
 });

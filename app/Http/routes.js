@@ -39,6 +39,10 @@ Route.group('auth', function()
 
 	Route.resource('files', 'FileController');
 	Route.post('downloadFile', 'FileController.downloadFile');
+
+	// Cinema
+	Route.get('cinema', 'CinemaController.index');
+	Route.get('cinema/:id', 'CinemaController.show');
 	
 }).middleware('auth');
 

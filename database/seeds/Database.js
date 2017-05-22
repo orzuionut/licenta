@@ -14,14 +14,14 @@
 
 const Factory = use('Factory')
 
-class DatabaseSeeder {
-
-  * run () {
+class DatabaseSeeder
+{
+  * run ()
+  {
     yield Factory.model('App/Model/User').create(10)
 
     yield Factory.model('App/Model/Conversation').create(10)
   }
-
 }
 
 module.exports = DatabaseSeeder

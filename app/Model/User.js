@@ -69,7 +69,6 @@ class User extends Lucid
 		return this.belongsToMany('App/Model/File', 'file_receivers', 'user_id', 'file_id');
 	}
 
-
     getFullName()
     {
     	return this.first_name + ' ' + this.last_name;

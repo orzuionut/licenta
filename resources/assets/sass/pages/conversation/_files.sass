@@ -1,0 +1,53 @@
+#conversation-files-container
+  flex: 1
+  //display: flex
+  display: none
+  flex-direction: column
+
+  #tab-header
+    margin-bottom: 10px
+
+  #conversation-files-header__complete, #conversation-files-header__incomplete
+    margin-top: 20px
+    flex-basis: 50%
+    text-align: center
+    cursor: pointer
+    color: black
+
+    .active
+      border-bottom: thin solid #9F9F9F
+      color: $primary !important
+
+
+  #conversation-files-body
+    flex: 1
+
+    overflow: auto
+    overflow-x: hidden
+    margin-top: 20px
+
+    #conversation-complete-files-body, #conversation-incomplete-files-body
+      // Display messages to left and right
+      display: flex
+      flex-direction: column
+      align-items: center
+
+      .message-box:hover
+        cursor: pointer
+        text-decoration: underline
+
+      .message-other
+        background-color: #BFBFBF
+        &:before
+          border-left:
+            color: #BFBFBF
+
+    #conversation-complete-files-body
+      .message-user
+        background-color: #9B59B6
+
+    #conversation-incomplete-files-body
+      display: none
+
+      .message-user
+        background-color: #F64747

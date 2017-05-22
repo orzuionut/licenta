@@ -1,0 +1,102 @@
+#cinema-container-vertical
+  display: flex
+
+  .card-panel
+    padding: 0
+
+  // Less than or equal to 3 people in conversation
+  #film-container
+    flex-basis: 75%
+    flex-grow: 0
+    flex-shrink: 0
+
+    display: flex
+    align-items: center
+    justify-content: center
+
+    #film-placeholder
+      background-color: #d0d0d0
+      color: #BF1E2E
+      font-size: 30px
+      text-align: center
+      border: $primary 2px dashed
+
+      height: 100vh
+      flex: 0 0 auto
+      width: 100%
+
+      display: flex
+      align-items: center
+      justify-content: center
+
+      img
+        max-width: 50%
+
+    #film-playing
+      width: 100%
+
+    video
+      width: 100%
+      padding: 0
+      margin: 0
+
+  #people-container
+    flex-basis: 25%
+    flex-grow: 0
+    flex-shrink: 0
+
+    margin-right: 5px
+
+    #videos-container
+      video
+        max-width: 100%
+        padding: 0
+        margin: 0
+
+    #conversation-container
+      display: none
+
+    #videos-conversation-toggle
+      min-height: 50px
+      border-bottom: #d2d2d2 1px solid
+      display: flex
+      justify-content: center
+      align-items: center
+
+      #videos-toggle, #conversation-toggle
+        text-align: center
+        line-height: 50px
+        width: 50px
+        height: 50px
+        border-radius: 50%
+        box-shadow: 3px 3px 3px #888888
+        background: $primary
+        color: white
+        margin-top: 2px
+        margin-bottom: 2px
+        cursor: pointer
+
+        i
+          line-height: 50px
+          margin-top: 2px
+          margin-bottom: 2px
+
+
+      #videos-toggle
+        display: none
+
+  #film-container, #people-container
+    height: 100vh
+    margin-left: 5px
+
+  // More than 3 people in conversation
+#cinema-container-horizontal
+  display: flex
+  flex-direction: column
+
+  #film-container
+    flex-basis: 70%
+
+  #people-container
+    flex-basis: 30%
+

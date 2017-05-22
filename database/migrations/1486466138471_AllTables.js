@@ -74,13 +74,13 @@ class AllTablesTableSchema extends Schema
 
         this.create('complete_files', (table) => {
             table.string('id').primary();
-            table.integer('user_sender_id').unsigned();
+            table.integer('user_id').unsigned();
             table.integer('conversation_id').unsigned();
 
             table.string('name').notNullable();
             table.string('hash').notNullable();
 
-            table.foreign('user_sender_id').references('users.id').onDelete('CASCADE');
+            table.foreign('user_id').references('users.id').onDelete('CASCADE');
             table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE');
 
             table.timestamps()
@@ -88,14 +88,14 @@ class AllTablesTableSchema extends Schema
 
         this.create('partial_files', (table) => {
             table.string('id').primary();
-            table.integer('user_sender_id').unsigned();
+            table.integer('user_id').unsigned();
             table.integer('conversation_id').unsigned();
 
             table.string('name').notNullable();
             table.string('hash').notNullable();
             table.integer('amount').unsigned();
 
-            table.foreign('user_sender_id').references('users.id').onDelete('CASCADE');
+            table.foreign('user_id').references('users.id').onDelete('CASCADE');
             table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE');
 
             table.timestamps()

@@ -1,50 +1,45 @@
-import { Message } from './../message';
+import {Config} from "../../_config";
+import {Helper} from "../helper";
 
-class Body{
-
+class Body
+{
     constructor()
     {
-        this.$box = $('.conversation-body');
+        this.$container = $('#conversation-messages-container');
+        this.$box = $('#conversation-messages-body');
+
+        this.bindListeners();
+    }
+
+    bindListeners()
+    {
+        // PubSub.subscribe(Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
+        PubSub.subscribe(Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
     }
 
     appendMessagesArray(data, current_user_id)
     {
-        for(let i = 0; i < data.length; i++)
-        {
-            this.appendMessage(data[i], current_user_id);
-        }
+        Helper.appendConversationItems(this.$box, data, current_user_id);
     }
 
     appendMessage(data, current_user_id)
     {
-        let is_current_user = data.user_id == current_user_id;
-        let type = is_current_user ? 'message-user' : 'message-other';
-
-        if( ! is_current_user )
-        {
-            let $emitter = Message.createEmitter(data.user_name);
-
-            this.append($emitter);
-        }
-
-        this.append(new Message(data, type));
-    }
-
-    append($element)
-    {
-        this.$box.append($element);
-
-        this.scrollToBottom();
-    }
-
-    scrollToBottom()
-    {
-        this.$box.scrollTop(this.$box[0].scrollHeight);
+        Helper.appendItem(this.$box, data, current_user_id);
     }
 
     clear()
     {
         this.$box.empty();
+    }
+
+    show()
+    {
+        this.$container.css({display: "flex"});
+    }
+
+    hide()
+    {
+        this.$container.css({display: "none"});
     }
 
 }

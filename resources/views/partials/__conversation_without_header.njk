@@ -2,16 +2,33 @@
 
     {% block header %}{% endblock %}
 
-    <div class="conversation-body ">  </div>
+    <div id="conversation-messages-container">
+        <div id="conversation-messages-body"></div>
 
-    <div class="conversation-footer card-panel">
+        <div class="conversation-footer card-panel">
+            <textarea id="enter-message" type="text" placeholder="Enter your message.."></textarea>
 
-        <textarea id="enter-message" type="text" placeholder="Enter your message.."></textarea>
-
-        <button id="submit-message" class="btn waves-effect waves-light center-align" type="submit" name="action">
-            <i class="material-icons">send</i>
-        </button>
-
+            <button id="submit-message" class="btn waves-effect waves-light center-align" type="submit" name="action">
+                <i class="material-icons">send</i>
+            </button>
+        </div>
     </div>
+
+    {#<div id="conversation-files-container">#}
+        {#<div id="tab-header">#}
+            {#<div id="conversation-files-header__complete" class="active"> Complete </div>#}
+            {#<div id="conversation-files-header__incomplete"> Incomplete </div>#}
+        {#</div>#}
+
+        {#<div id="conversation-files-body">#}
+            {#<div id="conversation-complete-files-body"></div>#}
+            {#<div id="conversation-incomplete-files-body"></div>#}
+        {#</div>#}
+
+        {#<div id="conversation-files-footer">#}
+            {#UPLOAD FILES HERE#}
+        {#</div>#}
+    {#</div>#}
+
 
 </div>

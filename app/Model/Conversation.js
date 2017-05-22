@@ -2,8 +2,8 @@
 
 const Lucid = use('Lucid');
 
-class Conversation extends Lucid {
-
+class Conversation extends Lucid
+{
 	users()
 	{
 		return this.belongsToMany('App/Model/User', 'conversation_user', 'conversation_id', 'user_id');
@@ -14,15 +14,15 @@ class Conversation extends Lucid {
 		return this.hasMany('App/Model/Message');
 	}
 
+    completeFiles()
+    {
+        return this.hasMany('App/Model/CompleteFile');
+    }
+
 	partialFiles()
 	{
 		return this.hasMany('App/Model/PartialFile');
 	}
-
-    completelFiles()
-    {
-        return this.hasMany('App/Model/CompleteFile');
-    }
 
 	* getNrOfParticipants()
 	{

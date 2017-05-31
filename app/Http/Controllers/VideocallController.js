@@ -25,13 +25,7 @@ class VideocallController {
 
       if(userIsAllowed)
       {
-          let files = yield user.filesToReceive().fetch();
-
-          // Workaround to sendThroughDataChannel array to view. TODO: fix this
-          const json = JSON.stringify(files);
-          files = JSON.parse(json);
-          
-          yield response.sendView('pages/videocall/show', { files: files });
+          yield response.sendView('pages/videocall/show');
 
       } else
       {

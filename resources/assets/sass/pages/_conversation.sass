@@ -171,7 +171,7 @@
 				flex-grow: 1
 
 				cursor: pointer
-				color: #0B93F6
+				color: $primary
 
 	#conversation-header-alert
 		padding-top: 20px
@@ -261,8 +261,11 @@
 			box-shadow: none !important
 
 	#submit-message
-		//flex: 0 0 20%
-		background-color: #0B93F6
+		position: relative
+		color: white
+		background: $primary
+		border-radius: 25px
+		margin-left: auto
 
 		.btn.waves-effect.waves-light.center-align
 			padding: 0 !important
@@ -308,6 +311,7 @@
 
 	.conversation-wrapper
 		height: 88vh
+		border: 1px solid #ccc
 
 	.conversation-files-wrapper
 		height: 88vh

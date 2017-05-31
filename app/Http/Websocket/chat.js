@@ -64,6 +64,11 @@ module.exports = function (io) {
             sendMessageToParticipants(socket, data.room, 'pause_button_pressed', data);
         });
 
+        socket.on('new_file', function (data)
+        {
+            sendMessageToParticipants(socket, data.room, 'new_file', data);
+        });
+
 
         // socket.on('file_chunk', function (data)
         // {

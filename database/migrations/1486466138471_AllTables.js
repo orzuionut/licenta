@@ -71,41 +71,10 @@ class AllTablesTableSchema extends Schema
             table.timestamps()
 
         })
-
-        this.create('complete_files', (table) => {
-            table.string('id').primary();
-            table.integer('user_id').unsigned();
-            table.integer('conversation_id').unsigned();
-
-            table.string('name').notNullable();
-            table.string('hash').notNullable();
-
-            table.foreign('user_id').references('users.id').onDelete('CASCADE');
-            table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE');
-
-            table.timestamps()
-        });
-
-        this.create('partial_files', (table) => {
-            table.string('id').primary();
-            table.integer('user_id').unsigned();
-            table.integer('conversation_id').unsigned();
-
-            table.string('name').notNullable();
-            table.string('hash').notNullable();
-            table.integer('amount').unsigned();
-
-            table.foreign('user_id').references('users.id').onDelete('CASCADE');
-            table.foreign('conversation_id').references('conversations.id').onDelete('CASCADE');
-
-            table.timestamps()
-        });
     }
 
     down()
     {
-        this.drop('complete_files');
-        this.drop('partial_files');
         this.drop('conversation_user');
         this.drop('messages');
         this.drop('friends');

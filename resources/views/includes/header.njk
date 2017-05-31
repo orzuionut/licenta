@@ -1,28 +1,48 @@
-<header>
-    <div class="container">
-        <div class="logo">
+<!-- Dropdown structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="/conference">Conferences</a></li>
+    <li><a href="/videocall">Videocall</a></li>
+    <li><a href="/cinema">Cinema</a></li>
+
+    <li class="divider"></li>
+
+    <li><a href="/logout">Logout</a></li>
+</ul>
+
+<nav>
+    <div class="container nav-wrapper">
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+
+        <div class="logo brand-logo">
             <h1><a href="/">Instant</a></h1>
         </div>
-        <div class="menu">
-            <ul>
-                
-                {% if not currentUser %}
 
+        <div class="menu">
+            <ul class="right hide-on-med-and-down">
+                {% if not currentUser %}
                     <li><a href="/login">Login</a></li>
                     <li><a href="/register">Register</a></li>
-
                 {% else %}
+                    <li><a href="/friends">Friends</a></li>
+                    <li><a href="/conversation">Conversations</a></li>
 
+                    <li><a class="dropdown-button" href="#!" data-activates="dropdown1"><i class="material-icons right">arrow_drop_down</i></a></li>
+                {% endif %}
+            </ul>
+
+            <ul class="side-nav" id="mobile-demo">
+                {% if not currentUser %}
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                {% else %}
                     <li><a href="/friends">Friends</a></li>
                     <li><a href="/conversation">Conversations</a></li>
                     <li><a href="/conference">Conferences</a></li>
                     <li><a href="/videocall">Videocall</a></li>
                     <li><a href="/cinema">Cinema</a></li>
                     <li><a href="/logout">Logout</a></li>
-
                 {% endif %}
-
             </ul>
         </div>
     </div>
-</header>
+</nav>

@@ -2,13 +2,19 @@
 
 {% block content %}
 
+<div class="intro-text row">
+	<div class="center-align">
+		Instant. Realtime communication
+	</div>
+</div>
+
 <div class="row register-panel">
 
-	<div class="col m6 l6">
+	<div id="auth-img" class="col s12 m12 l6">
 		<img src="img/register_panel.jpg">
 	</div>
 
-	<div class="col s12 m4 l4">
+	<div id="auth-form" class="col s12 m12 l6">
 		<div class="card-panel">
 
 		<div class="row">
@@ -63,9 +69,7 @@
 		{% endif %}
 
 
-		<button class="btn waves-effect waves-light center-align" type="submit" name="action"> Submit
-			<i class="material-icons right">send</i>
-		</button>
+		<button class="btn waves-effect waves-light center-align" type="submit" name="action"> Register </button>
 
 		{{ form.close() }}
 

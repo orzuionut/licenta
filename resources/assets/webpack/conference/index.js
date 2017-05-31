@@ -14,6 +14,4 @@ $(document).ready(function ()
     conference.listen();
     
     let build = new ConversationBuilder(conversation_id, user_id, user_name);
-
-    window.Conference = conference;
 });

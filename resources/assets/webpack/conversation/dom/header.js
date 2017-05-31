@@ -6,7 +6,6 @@ class Header {
         
         this.$voice_button = $('#conversation-voice');
         this.$video_button = $('#conversation-video');
-        this.$profile_button = $('#conversation-profile');
 
         this.$incoming_call_alert = $('#conversation-header-alert');
         this.$answer_call = $("#call-answer");

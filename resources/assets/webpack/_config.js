@@ -112,6 +112,21 @@ class Config
     {
         return "other participant pressed pause";
     }
+
+    static getFileDroppedMessage()
+    {
+        return "file dropped on dom";
+    }
+
+    static getShowFileNameOnDOMMessage()
+    {
+        return "getShowFileNameOnDOMMessage";
+    }
+
+    static getDownloadFileMessage()
+    {
+        return "download file";
+    }
 }
 
 export { Config }

@@ -1,10 +1,6 @@
 import {VideocallDOM} from './dom';
 import {PeerConnection} from './peer_connection';
-
 import {Helper} from "../helpers/helper";
-import {FileResumeReceive} from "./file_transfer/file_resume_receive";
-import {DB} from "../modules/indexedDB";
-import {FileDrop} from "./file_transfer/index";
 
 class Videocall
 {
@@ -37,12 +33,6 @@ class Videocall
         this.room = Helper.getIDfromURL();
 
         this.socket = io.connect('http://localhost:8181/videocall');
-
-        this.db = new DB();
-        
-        this.fileResumeReceive = new FileResumeReceive(this.user_id, this.socket, this.DOM, this.db);
-        this.fileResumeReceive.bindEvents();
-        this.fileResumeReceive.bindDOMListeners();
     }
 
     build()
@@ -136,11 +126,6 @@ class Videocall
         window.onbeforeunload = function() { this.hangup(); }.bind(this);
     }
 
-    bindDataChannelMessageListener(fileReceive)
-    {
-        PubSub.subscribe(this.HANDLE_DATA_CHANNEL_MESSAGE, fileReceive.handleDataChannelMessage.bind(fileReceive));
-    }
-
     handleRemoteStreamAdded(message, event)
     {
         attachMediaStream(this.DOM.remoteVideo, event.stream);
@@ -152,9 +137,6 @@ class Videocall
     {
         if (readyState == 'open')
         {
-            let fileDrop = new FileDrop(this.room);
-            fileDrop.bindDOMListeners();
-
             // enable DOM buttons
         }
         else
@@ -218,19 +200,6 @@ class Videocall
 
     hangup()
     {
-        let data = {};
-
-        if (this.fileReceive.receivedDataSize != 0)
-        {
-            data.receivedDataSize = this.fileReceive.receivedDataSize;
-            data.hash = this.fileReceive.uuid;
-        }
-
-        data.message = 'bye';
-        data.channel = this.room;
-
-        this.sendMessage(data);
-
         this.stop();
     }
 
@@ -238,11 +207,6 @@ class Videocall
     {
         this.DOM.updateVideoElementsCallStopped();
         this.DOM.showFlashMessageCallStopped();
-
-        if (message.receivedDataSize)
-        {
-            this.fileSend.uploadRemainingFileToServer(message);
-        }
     }
 
     stop()

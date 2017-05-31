@@ -2,10 +2,7 @@ import {ConversationsList} from './conversations_list';
 import {ConversationBuilder} from "./conversation_builder";
 import {Header} from "./dom/header";
 import {Helper} from "../helpers/helper";
-import {FileTransfer} from "../fileTransfer/index";
-import {FileReceiver} from "../fileTransfer/file_receiver";
 import {Config} from "../_config";
-import {ConversationFiles} from './files/index';
 import {ConversationActions} from "./header/index";
 
 class ConversationFull extends ConversationBuilder
@@ -20,37 +17,8 @@ class ConversationFull extends ConversationBuilder
         this.conversation.DOM.header = new Header();
 
         this.actionButtons = new ConversationActions(conversation_id);
-        this.files = new ConversationFiles(this.conversation.socketIO, conversation_id, user_id);
-        
-        let worker = new Worker("/js/app/file_transfer.js");
-
-        worker.onmessage = function (data) {
-            // Blob = data.data.Blob
-
-            let $fileLink = $('<a/>', {
-                text: data.data.fileName,
-                href: URL.createObjectURL(data.data.blob),
-                target: '_blank',
-                download: data.data.fileName,
-                class: 'single-file file-bubble file-bubble-download',
-                id: 'auto-download'
-            });
-
-            var $el = $('.conversation-body');
-
-            $el.append($fileLink);
-        };
-
-        this.fileTransfer = new FileTransfer(worker, conversation_id);
-
-        this.fileReceiver = new FileReceiver(worker, conversation_id);
 
         this.bindDOMListeners();
-        this.bindListeners();
-    }
-
-    bindListeners()
-    {
     }
 
     bindDOMListeners()
@@ -59,7 +27,7 @@ class ConversationFull extends ConversationBuilder
         
         this.conversations_list.item.on('click', this, self.switchConversation.bind(self));
         
-        this.conversation.DOM.header.$file_input.on('change', self.uploadFile.bind(self));
+        // this.conversation.DOM.header.$file_input.on('change', self.uploadFile.bind(self));
         
         this.conversation.DOM.header.$video_button.click(function ()
         {
@@ -121,20 +89,20 @@ class ConversationFull extends ConversationBuilder
         }
     }
 
-    uploadFile()
-    {
-        Helper.flash("Uploading file in progress..");
-
-        let file = this.getFileFromInput();
-        let hash = Helper.guid();
-        
-        this.fileTransfer.startSending(file, hash);
-    }
-
-    getFileFromInput()
-    {
-        return this.conversation.DOM.header.$file_input[0].files[0];
-    }
+    // uploadFile()
+    // {
+    //     Helper.flash("Uploading file in progress..");
+    //
+    //     let file = this.getFileFromInput();
+    //     let hash = Helper.guid();
+    //
+    //     this.fileTransfer.startSending(file, hash);
+    // }
+    //
+    // getFileFromInput()
+    // {
+    //     return this.conversation.DOM.header.$file_input[0].files[0];
+    // }
 }
 
 export {ConversationFull}

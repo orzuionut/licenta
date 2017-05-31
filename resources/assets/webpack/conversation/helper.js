@@ -13,6 +13,8 @@ class Helper
         let is_current_user = item.user_id == current_user_id;
         let type = is_current_user ? 'message-user' : 'message-other';
 
+        let isFile = item.isFile ? 'file' : '';
+
         // This message is from another user
         if( ! is_current_user )
         {
@@ -29,7 +31,7 @@ class Helper
         let text = typeof item.message != 'undefined' ? item.message : item.name;
 
         // This message is from current user
-        Helper.append($container, $(`<div class='message-box ${type}' data-id="${item.id}">` + text + "</div>"));
+        Helper.append($container, $(`<div class='message-box ${type} ${isFile}' data-id="${item.id}">` + text + "</div>"));
     }
 
     static append($container, $element)

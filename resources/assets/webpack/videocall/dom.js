@@ -1,14 +1,9 @@
-import {ConversationFilesDOM} from "../conversation/conversation_with_files";
-
-class VideocallDOM 
+class VideocallDOM
 {
     constructor()
     {
         this.localVideo = document.querySelector('#localVideo');
         this.remoteVideo = document.querySelector("#remoteVideo");
-
-        this.conversationDOM = new ConversationFilesDOM();
-        this.conversationDOM.bindListeners();
     }
     
     updateVideoElementsCallRunning()
@@ -36,19 +31,6 @@ class VideocallDOM
             imageUrl: "/img/call_ended_icon.png"
         });
     }
-    
-    handleFileInputChanged(event)
-    {
-        let fileName = null;
-
-        if( event.target.value )
-            fileName = event.target.value.split( '\\' ).pop();
-
-        if( fileName )
-            this.conversationDOM.filesDOM.footer.$inputFileLabel.find('span').html(fileName);
-    }
-
-
 }
 
 export {VideocallDOM}

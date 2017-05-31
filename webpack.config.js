@@ -5,9 +5,8 @@ module.exports = {
         conversation: `./conversation/index.js`,
         videocall: `./videocall/index.js`,
         cinema: './cinema/index.js',
+        fileTransfer: './file_transfer/index.js',
         friends: './friends/index.js',
-        workers: './workers/index.js',
-        file_transfer: './workers/file_transfer.js'
     },
     output: {
         path: `${__dirname}/public/js/app`,

@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 51);
+/******/ 	return __webpack_require__(__webpack_require__.s = 30);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 29:
+/***/ 15:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81,7 +81,7 @@ exports.FriendsController = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _modal = __webpack_require__(52);
+var _modal = __webpack_require__(31);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -193,13 +193,13 @@ exports.FriendsController = FriendsController;
 
 /***/ }),
 
-/***/ 51:
+/***/ 30:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _FriendsController = __webpack_require__(29);
+var _FriendsController = __webpack_require__(15);
 
 $(document).ready(function () {
     var friendsController = new _FriendsController.FriendsController();
@@ -207,7 +207,7 @@ $(document).ready(function () {
 
 /***/ }),
 
-/***/ 52:
+/***/ 31:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

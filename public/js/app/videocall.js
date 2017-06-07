@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 33);
+/******/ 	return __webpack_require__(__webpack_require__.s = 35);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -792,7 +792,8 @@ exports.Helper = Helper;
 /* 13 */,
 /* 14 */,
 /* 15 */,
-/* 16 */
+/* 16 */,
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -805,9 +806,9 @@ exports.Videocall = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(32);
+var _dom = __webpack_require__(34);
 
-var _peer_connection = __webpack_require__(34);
+var _peer_connection = __webpack_require__(36);
 
 var _helper = __webpack_require__(1);
 
@@ -1030,7 +1031,6 @@ var Videocall = function () {
 exports.Videocall = Videocall;
 
 /***/ }),
-/* 17 */,
 /* 18 */,
 /* 19 */,
 /* 20 */,
@@ -1045,7 +1045,9 @@ exports.Videocall = Videocall;
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
+/* 32 */,
+/* 33 */,
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1101,13 +1103,13 @@ var VideocallDOM = function () {
 exports.VideocallDOM = VideocallDOM;
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _videocall = __webpack_require__(16);
+var _videocall = __webpack_require__(17);
 
 var _conversation_builder = __webpack_require__(3);
 
@@ -1130,7 +1132,7 @@ $(document).ready(function () {
 });
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

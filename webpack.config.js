@@ -7,6 +7,7 @@ module.exports = {
         cinema: './cinema/index.js',
         fileTransfer: './file_transfer/index.js',
         friends: './friends/index.js',
+        app: './app.js'
     },
     output: {
         path: `${__dirname}/public/js/app`,

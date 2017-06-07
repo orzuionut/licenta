@@ -29,9 +29,9 @@ Route.group('auth', function()
 	Route.resource('friends', 'FriendController');
 	Route.get('people', 'FriendController.people');
 
-	Route.get('conference/:id', 'ConferenceController@show');
+	Route.get('conference/:id', 'ConferenceController.show');
 
-	Route.get('videocall/:id', 'VideocallController@show');
+	Route.get('videocall/:id', 'VideocallController.show');
 
 	// Conversation
 	Route.resource('conversation', 'ConversationController');

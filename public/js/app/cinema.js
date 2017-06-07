@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1148,7 +1148,7 @@ exports.Cinema = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _index = __webpack_require__(19);
+var _index = __webpack_require__(21);
 
 var _config = __webpack_require__(0);
 
@@ -1273,7 +1273,9 @@ exports.Cinema = Cinema;
 /* 14 */,
 /* 15 */,
 /* 16 */,
-/* 17 */
+/* 17 */,
+/* 18 */,
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1372,7 +1374,7 @@ var ConversationDOM = function () {
 exports.ConversationDOM = ConversationDOM;
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1465,7 +1467,7 @@ var FilmDOM = function () {
 exports.FilmDOM = FilmDOM;
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1476,9 +1478,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CinemaDOM = undefined;
 
-var _film = __webpack_require__(18);
+var _film = __webpack_require__(20);
 
-var _conversation = __webpack_require__(17);
+var _conversation = __webpack_require__(19);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1492,7 +1494,7 @@ var CinemaDOM = function CinemaDOM() {
 exports.CinemaDOM = CinemaDOM;
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

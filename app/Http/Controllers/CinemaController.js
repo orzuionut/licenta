@@ -2,11 +2,6 @@
 
 class CinemaController
 {
-    * index(request, response)
-    {
-        yield response.sendView('pages/cinema/index');
-    }
-
     * show(request, response)
     {
         const user = request.currentUser;
@@ -23,7 +18,6 @@ class CinemaController
         {
             response.send('Your are not allowed here. Get out! Redirect back');
         }
-
     }
 }
 

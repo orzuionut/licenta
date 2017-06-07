@@ -2,9 +2,9 @@
 
 const User = use('App/Model/User');
 
-class ProfileController {
-
-  * show(request, response) 
+class ProfileController
+{
+  * show(request, response)
   {
       const id = request.param('id');
 

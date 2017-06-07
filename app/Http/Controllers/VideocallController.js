@@ -1,20 +1,7 @@
 'use strict';
 
-class VideocallController {
-
-  * index(request, response) 
-  {
-    yield response.sendView('pages/videocall/index');
-  }
-
-  * create(request, response) {
-    //
-  }
-
-  * store(request, response) {
-    //
-  }
-
+class VideocallController
+{
   * show(request, response)
   {
       const user = request.currentUser;
@@ -33,19 +20,6 @@ class VideocallController {
       }
 
   }
-
-  * edit(request, response) {
-    //
-  }
-
-  * update(request, response) {
-    //
-  }
-
-  * destroy(request, response) {
-    //
-  }
-
 }
 
 module.exports = VideocallController;

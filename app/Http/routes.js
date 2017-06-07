@@ -29,19 +29,15 @@ Route.group('auth', function()
 	Route.resource('friends', 'FriendController');
 	Route.get('people', 'FriendController.people');
 
-	Route.resource('conference', 'ConferenceController');
+	Route.get('conference/:id', 'ConferenceController@show');
 
-	Route.resource('videocall', 'VideocallController');
+	Route.get('videocall/:id', 'VideocallController@show');
 
 	Route.resource('conversation', 'ConversationController');
 	Route.get('conversation/call/:id', 'ConversationController.call');
 	Route.get('conversation/get/friends', 'ConversationController.friends');
 
-	Route.resource('files', 'FileController');
-	Route.post('downloadFile', 'FileController.downloadFile');
-
 	// Cinema
-	Route.get('cinema', 'CinemaController.index');
 	Route.get('cinema/:id', 'CinemaController.show');
 	
 }).middleware('auth');

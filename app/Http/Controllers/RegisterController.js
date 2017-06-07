@@ -3,8 +3,8 @@
 const Validator = use('Validator');
 const User = use('App/Model/User');
 
-class RegisterController {
-    
+class RegisterController
+{
     * index(request, response)
     {
         yield response.sendView('pages/auth/register/index')
@@ -30,7 +30,6 @@ class RegisterController {
 
         response.redirect('/login');
     }
-
 }
 
-module.exports = RegisterController
+module.exports = RegisterController;

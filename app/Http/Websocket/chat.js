@@ -69,32 +69,6 @@ module.exports = function (io) {
             sendMessageToParticipants(socket, data.room, 'new_file', data);
         });
 
-
-        // socket.on('file_chunk', function (data)
-        // {
-        //     console.log("GOT CHYUNK");
-        //
-        //     sendMessageToParticipants(socket, data.room, 'file_chunk', data);
-        // });
-        //
-        // socket.on('get_conversation_complete_files', function (data)
-        // {
-        //     let conversation_id = data.room;
-        //     co(getConversationCompleteFiles(conversation_id)).then( function(files)
-        //     {
-        //         sendMessageToUser(socket, 'conversation_complete_files_retrived', files);
-        //     });
-        // });
-        //
-        // socket.on('get_conversation_partial_files', function (data)
-        // {
-        //     let conversation_id = data.room;
-        //     co(getConversationPartialFiles(conversation_id)).then( function(files)
-        //     {
-        //         sendMessageToUser(socket, 'conversation_partial_files_retrived', files);
-        //     });
-        // });
-        //
         // socket.on('download_file', function (data)
         // {
         //     co(getFile(data.room, data.file_id)).then(function (fileBuffer)

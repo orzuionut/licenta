@@ -1,10 +1,10 @@
 'use strict'
 
-class SessionController {
-
-  * index(request, response) 
+class SessionController
+{
+  * index(request, response)
   {
-      yield response.sendView('pages/auth/login/index')  
+      yield response.sendView('pages/auth/login/index')
   }
 
   * store(request, response)
@@ -12,11 +12,12 @@ class SessionController {
       const email = request.input('email')
       const password = request.input('password')
 
-      try 
+      try
       {
           yield request.auth.attempt(email, password)
 
-      } catch (e) 
+      }
+      catch (e)
       {
           yield request
             .withAll()
@@ -29,7 +30,8 @@ class SessionController {
       response.redirect('/home');
   }
 
-  * destroy(request, response) {
+  * destroy(request, response)
+  {
       yield request.auth.logout()
 
       return response.redirect('/')

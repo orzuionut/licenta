@@ -1,7 +1,6 @@
 import {ConversationsList} from './conversations_list';
 import {ConversationBuilder} from "./conversation_builder";
 import {Header} from "./dom/header";
-import {Helper} from "../helpers/helper";
 import {Config} from "../_config";
 import {ConversationActions} from "./header/index";
 

@@ -444,33 +444,6 @@ nav {
         flex-grow: 1;
         cursor: pointer;
         color: #34B7F1; }
-  .conversation-header #conversation-header-alert {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    font-size: 20px;
-    background-color: #434753;
-    color: white;
-    display: none; }
-    .conversation-header #conversation-header-alert #alert-call {
-      vertical-align: middle;
-      text-align: center;
-      line-height: 50px;
-      flex-basis: 70%; }
-    .conversation-header #conversation-header-alert #call-answer, .conversation-header #conversation-header-alert #call-reject {
-      width: 50px;
-      height: 50px;
-      line-height: 50px;
-      text-align: center;
-      vertical-align: middle;
-      color: white;
-      border-radius: 100%;
-      cursor: pointer; }
-    .conversation-header #conversation-header-alert #call-answer {
-      background-color: #4CD964;
-      margin-right: 25px; }
-    .conversation-header #conversation-header-alert #call-reject {
-      background-color: #F22613;
-      margin-left: 25px; }
 
 .conversation-footer {
   border-top: 2px solid #939393;
@@ -895,3 +868,31 @@ video {
     outline: 1px dotted #000; }
   #dataChannelSend:focus + label, #dataChannelSend + label:hover {
     color: #8E8E93; }
+
+#conversation-header-alert {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 20px;
+  background-color: #434753;
+  color: white;
+  display: none; }
+  #conversation-header-alert #alert-call {
+    vertical-align: middle;
+    text-align: center;
+    line-height: 50px;
+    flex-basis: 70%; }
+  #conversation-header-alert #call-answer, #conversation-header-alert #call-reject {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+    border-radius: 100%;
+    cursor: pointer; }
+  #conversation-header-alert #call-answer {
+    background-color: #4CD964;
+    margin-right: 25px; }
+  #conversation-header-alert #call-reject {
+    background-color: #F22613;
+    margin-left: 25px; }

@@ -35,7 +35,12 @@ class ConversationController
         {
             yield response.redirect('/videocall/' + conversationID);
         }
+    }
 
+    * cinema(request, response)
+    {
+        const conversationID = request.param('id');
+        yield response.redirect('/cinema/' + conversationID);
     }
 
     * friends (request, response)

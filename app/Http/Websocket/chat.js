@@ -49,6 +49,11 @@ module.exports = function (io) {
             sendMessageToParticipants(socket, data.room, 'call', data);
         });
 
+        socket.on('cinema', function (data)
+        {
+            sendMessageToParticipants(socket, data.room, 'cinema', data);
+        });
+
         socket.on('play_film', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'play_film', data);

@@ -30,20 +30,16 @@ class ConversationFull extends ConversationBuilder
         
         this.conversation.DOM.header.$video_button.click(function ()
         {
-            let data = {};
-            self.conversation.socketIO.sendMessage('call', data);
+            self.conversation.socketIO.sendMessage('call', {});
 
             window.location.href = "/conversation/call/" + self.conversation.id;
         });
 
-        this.conversation.DOM.header.$answer_call.click(function ()
+        this.conversation.DOM.header.$cinema_button.click(function ()
         {
-            window.location.href = "/conversation/call/" + self.conversation.id;
-        });
+            self.conversation.socketIO.sendMessage('cinema', {});
 
-        this.conversation.DOM.header.$reject_call.click(function ()
-        {
-            self.conversation.DOM.header.hideIncomingCallAlert();
+            window.location.href = "/conversation/cinema/" + self.conversation.id;
         });
 
         this.conversation.DOM.header.$conversation_settings.dropdown({

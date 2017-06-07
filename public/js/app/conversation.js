@@ -215,122 +215,7 @@ var Config = function () {
 exports.Config = Config;
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Helper = function () {
-    function Helper() {
-        _classCallCheck(this, Helper);
-    }
-
-    _createClass(Helper, null, [{
-        key: 'guid',
-        value: function guid() {
-            function s4() {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-            }
-
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        }
-    }, {
-        key: 'blobToFile',
-        value: function blobToFile(blob, fileName) {
-            blob.lastModifiedDate = new Date();
-            blob.name = fileName;
-            return blob;
-        }
-
-        // chunksObjects contains multiple objects that each contain data equal to an Array[62]
-
-    }, {
-        key: 'getArrayChunksFromObject',
-        value: function getArrayChunksFromObject(chunksObjects) {
-            var chunksArray = [];
-
-            for (var i = 0; i < chunksObjects.length; i++) {
-                chunksArray.push.apply(chunksArray, _toConsumableArray(chunksObjects[i].data));
-            }
-
-            return chunksArray;
-        }
-    }, {
-        key: 'flash',
-        value: function flash(message) {
-            Materialize.toast(message, 4000, 'flash-message');
-        }
-    }, {
-        key: 'ArrayBufferToString',
-        value: function ArrayBufferToString(buffer) {
-            return String.fromCharCode.apply(null, new Uint8Array(buffer));
-        }
-    }, {
-        key: 'StringToArrayBuffer',
-        value: function StringToArrayBuffer(string) {
-            var buf = new ArrayBuffer(string.length); // 2 bytes for each char
-            var bufView = new Uint8Array(buf);
-            for (var i = 0, strLen = string.length; i < strLen; i++) {
-                bufView[i] = string.charCodeAt(i);
-            }
-            return buf;
-        }
-    }, {
-        key: 'getIDfromURL',
-        value: function getIDfromURL() {
-            var current_url = $(location).attr("href");
-            return current_url.substring(current_url.lastIndexOf("/") + 1);
-        }
-    }, {
-        key: 'measureBW',
-        value: function measureBW() {
-            var startTime, endTime, fileSize;
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.onreadystatechange = function () {
-
-                // we only need to know when the request has completed
-                if (xhr.readyState === 4 && xhr.status === 200) {
-
-                    // Here we stop the timer & register end time
-                    endTime = new Date().getTime();
-
-                    // Also, calculate the file-size which has transferred
-                    fileSize = xhr.responseText.length;
-
-                    // Calculate the connection-speed
-                    var speed = fileSize / ((endTime - startTime) / 1000) / 1024;
-
-                    // Report the result, or have fries with it...
-                    alert(speed + " KBps\n");
-                }
-            };
-
-            startTime = new Date().getTime();
-
-            xhr.open("GET", "/img/register_panel.jpg", true);
-            xhr.send();
-        }
-    }]);
-
-    return Helper;
-}();
-
-exports.Helper = Helper;
-
-/***/ }),
+/* 1 */,
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -477,8 +362,16 @@ var Conversation = function () {
                 self.DOM.body.appendMessagesArray(data, self.user_id);
             });
 
+            self.socketIO.socket.on('voice', function () {
+                PubSub.publish('voice_in_progress', { conversation_id: self.id });
+            });
+
             self.socketIO.socket.on('call', function () {
-                self.DOM.header.showIncomingCallAlert();
+                PubSub.publish('call_in_progress', { conversation_id: self.id });
+            });
+
+            self.socketIO.socket.on('cinema', function () {
+                PubSub.publish('cinema_in_progress', { conversation_id: self.id });
             });
         }
     }, {
@@ -800,8 +693,6 @@ var _conversation_builder = __webpack_require__(3);
 
 var _header = __webpack_require__(23);
 
-var _helper = __webpack_require__(1);
-
 var _config = __webpack_require__(0);
 
 var _index = __webpack_require__(25);
@@ -841,18 +732,15 @@ var ConversationFull = function (_ConversationBuilder) {
             // this.conversation.DOM.header.$file_input.on('change', self.uploadFile.bind(self));
 
             this.conversation.DOM.header.$video_button.click(function () {
-                var data = {};
-                self.conversation.socketIO.sendMessage('call', data);
+                self.conversation.socketIO.sendMessage('call', {});
 
                 window.location.href = "/conversation/call/" + self.conversation.id;
             });
 
-            this.conversation.DOM.header.$answer_call.click(function () {
-                window.location.href = "/conversation/call/" + self.conversation.id;
-            });
+            this.conversation.DOM.header.$cinema_button.click(function () {
+                self.conversation.socketIO.sendMessage('cinema', {});
 
-            this.conversation.DOM.header.$reject_call.click(function () {
-                self.conversation.DOM.header.hideIncomingCallAlert();
+                window.location.href = "/conversation/cinema/" + self.conversation.id;
             });
 
             this.conversation.DOM.header.$conversation_settings.dropdown({
@@ -1001,40 +889,19 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Header = function () {
-    function Header() {
-        _classCallCheck(this, Header);
+var Header = function Header() {
+    _classCallCheck(this, Header);
 
-        this.$file_input = $('#dataChannelSend');
+    this.$file_input = $('#dataChannelSend');
 
-        this.$voice_button = $('#conversation-voice');
-        this.$video_button = $('#conversation-video');
+    this.$voice_button = $('#conversation-voice');
+    this.$video_button = $('#conversation-video');
+    this.$cinema_button = $('#conversation-cinema');
 
-        this.$incoming_call_alert = $('#conversation-header-alert');
-        this.$answer_call = $("#call-answer");
-        this.$reject_call = $("#call-reject");
-
-        this.$conversation_settings = $('#conversation-settings');
-    }
-
-    _createClass(Header, [{
-        key: 'showIncomingCallAlert',
-        value: function showIncomingCallAlert() {
-            this.$incoming_call_alert.css('display', 'flex');
-        }
-    }, {
-        key: 'hideIncomingCallAlert',
-        value: function hideIncomingCallAlert() {
-            this.$incoming_call_alert.css('display', 'none');
-        }
-    }]);
-
-    return Header;
-}();
+    this.$conversation_settings = $('#conversation-settings');
+};
 
 exports.Header = Header;
 

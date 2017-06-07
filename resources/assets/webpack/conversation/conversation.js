@@ -49,9 +49,19 @@ class Conversation
             self.DOM.body.appendMessagesArray(data, self.user_id);
         });
 
+        self.socketIO.socket.on('voice', function ()
+        {
+            PubSub.publish('voice_in_progress', {conversation_id: self.id});
+        });
+
         self.socketIO.socket.on('call', function ()
         {
-            self.DOM.header.showIncomingCallAlert();
+            PubSub.publish('call_in_progress', {conversation_id: self.id});
+        });
+
+        self.socketIO.socket.on('cinema', function ()
+        {
+            PubSub.publish('cinema_in_progress', {conversation_id: self.id});
         });
     }
 

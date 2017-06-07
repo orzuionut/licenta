@@ -33,8 +33,10 @@ Route.group('auth', function()
 
 	Route.get('videocall/:id', 'VideocallController@show');
 
+	// Conversation
 	Route.resource('conversation', 'ConversationController');
 	Route.get('conversation/call/:id', 'ConversationController.call');
+	Route.get('conversation/cinema/:id', 'ConversationController.cinema');
 	Route.get('conversation/get/friends', 'ConversationController.friends');
 
 	// Cinema

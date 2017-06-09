@@ -19,8 +19,6 @@ Route.group('guest', function ()
  */
 Route.group('auth', function()
 {	
-	Route.on('home').render('pages/homepage');
-
 	Route.get('logout', 'SessionController.destroy');
 
 	Route.get('profile/:id', 'ProfileController.show');

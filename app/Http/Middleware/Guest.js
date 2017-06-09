@@ -9,7 +9,7 @@ class Guest
         yield next
     }
 
-    response.redirect('home');
+    response.redirect('conversation');
   }
 }
 

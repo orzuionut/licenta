@@ -18,9 +18,9 @@ class DatabaseSeeder
 {
   * run ()
   {
-    yield Factory.model('App/Model/User').create(10)
+    yield Factory.model('App/Model/User').create(100);
 
-    yield Factory.model('App/Model/Conversation').create(10)
+    yield Factory.model('App/Model/Conversation').create(10);
   }
 }
 

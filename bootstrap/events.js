@@ -22,6 +22,7 @@ Event.when('file.uploaded', 'FileUpload.insert');
 Event.when('file.uploaded', 'FileUpload.addReceivers');
 
 Event.when('friendship.new', 'Friendship.new');
+Event.when('friendship.delete', 'Friendship.delete');
 
 Event.when('Http.error.*', 'Http.handleError');
 Event.when('Http.start', 'Http.onStart');

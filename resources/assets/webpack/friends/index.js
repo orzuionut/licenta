@@ -1,6 +1,6 @@
-import {FriendsController} from "./FriendsController";
+import {Friends} from "./friends";
 
 $(document).ready(function ()
 {
-    let friendsController = new FriendsController();
+    let friends = new Friends();
 });

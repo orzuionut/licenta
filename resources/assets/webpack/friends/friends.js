@@ -1,6 +1,6 @@
 import {Modal} from "./modal";
 
-class FriendsController
+class Friends
 {
     constructor()
     {
@@ -110,4 +110,4 @@ class FriendsController
     }
 }
 
-export {FriendsController}
+export {Friends}

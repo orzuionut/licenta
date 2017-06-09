@@ -235,10 +235,7 @@ class Videocall
             this.pc.close();
         }
         this.pc = null;
-
-        // this.DOM.sendButton.disabled = true;
     }
-
 }
 
 export {Videocall}

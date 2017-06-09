@@ -231,18 +231,39 @@ nav {
         font-weigth: 400;
         color: #456ec9; }
 
+#no-friends {
+  font-size: 30px;
+  padding-top: 20%; }
+
 .profile-box {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%; }
   .profile-box #profile-picture {
-    flex-basis: 50%; }
+    flex-basis: 50%;
+    padding-left: 20px;
+    padding-right: 20px; }
     .profile-box #profile-picture img {
-      width: 100%; }
+      width: 100%;
+      border-radius: 50%; }
   .profile-box #profile-info {
     display: flex;
-    flex-basis: 50%; }
+    flex-direction: column;
+    flex-basis: 50%;
+    height: 50%;
+    padding-left: 30px;
+    padding-right: 30px; }
+    .profile-box #profile-info #profile-name {
+      font-size: 30px; }
+    .profile-box #profile-info #areFriends, .profile-box #profile-info #areNotFriends {
+      margin-top: 20%;
+      width: 60%; }
+    .profile-box #profile-info #areNotFriends {
+      background: #34B7F1;
+      color: white; }
+    .profile-box #profile-info #areFriends {
+      background: #919191; }
 
 #conversation-modal h2 {
   font-size: 40px;

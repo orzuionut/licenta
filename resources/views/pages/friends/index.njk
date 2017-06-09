@@ -5,9 +5,14 @@
     <div id="persons-content" class="card-panel">
         <div id="tab-header">
             <a href="/friends" id="friends-tab" class="active"> Friends </a>
-
             <a href="/people" id="people-tab"> People </a>
         </div>
+
+        {% if persons.length <= 0 %}
+            <div id="no-friends" class="center-align">
+                You currently have not added any friends. Go to the PEOPLE tab and find your friends
+            </div>
+        {% endif %}
 
         {% include 'partials/friends/listing.njk' %}
     </div>

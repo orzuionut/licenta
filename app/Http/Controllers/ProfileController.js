@@ -10,13 +10,8 @@ class ProfileController
 
       let user = yield User.query().where('id', id).fetch()
 
-      // Workaround to sendThroughDataChannel array to view. TODO: fix this
-      const json_user = JSON.stringify(user)
-      user = JSON.parse(json_user) 
-
-      yield response.sendView('pages/profile/show', { user: user[0] })
+      yield response.sendView('pages/profile/show', { user: user.toJSON() })
   }
-
 }
 
 module.exports = ProfileController

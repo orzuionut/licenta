@@ -4,35 +4,34 @@ class SessionController
 {
   * index(request, response)
   {
-      yield response.sendView('pages/auth/login/index')
+      yield response.sendView('pages/auth/login/index');
   }
 
   * store(request, response)
    {
-      const email = request.input('email')
-      const password = request.input('password')
+      const email = request.input('email');
+      const password = request.input('password');
 
       try
       {
           yield request.auth.attempt(email, password)
-
       }
       catch (e)
       {
           yield request
             .withAll()
             .andWith({ error: e.message })
-            .flash()
+            .flash();
 
-          response.redirect('back')
+          response.redirect('back');
       }
 
-      response.redirect('/home');
+      response.redirect('/conversation');
   }
 
   * destroy(request, response)
   {
-      yield request.auth.logout()
+      yield request.auth.logout();
 
       return response.redirect('/')
   }

@@ -3,6 +3,7 @@
 const Event = use('Event');
 const User = use('App/Model/User');
 const Friend = use('App/Model/Friend');
+const Database = use('Database');
 
 class FriendController
 {
@@ -44,12 +45,12 @@ class FriendController
         let user = yield User.query().where('id', id).fetch();
         user = user.toJSON();
 
-        let friend = yield request.currentUser.friendById(id);
+        let isFriend = yield request.currentUser.isFriend(id);
 
         let user_info = {
             id: user[0].id,
-            fullname: user[0].first_name + user[0].last_name,
-            isFriend: friend.length > 0
+            fullname: user[0].first_name + " " + user[0].last_name,
+            isFriend: isFriend
         };
 
         response.send(user_info);
@@ -60,27 +61,39 @@ class FriendController
         const friend_id = request.param('id');
         const user_id = request.currentUser.id;
 
+        let deleteSuccess = 0;
+
         if (user_id > friend_id)
         {
-            const friendship = yield Database
+            deleteSuccess = yield Database
                 .table('friends')
-                .where('user_id_1', friend_id)
-                .where('user_id_2', user_id)
-                .limit(1);
-
-            yield friendship.delete();
+                .where('user_id_1', user_id)
+                .where('user_id_2', friend_id)
+                .delete();
         }
         else
         {
-
+            deleteSuccess = yield Database
+                .table('friends')
+                .where('user_id_1', friend_id)
+                .where('user_id_2', user_id)
+                .delete();
         }
 
-        response.send(true)
+        Event.fire('friendship.delete', {
+            user_id_1: friend_id,
+            user_id_2: user_id
+        });
+
+        response.send(deleteSuccess > 0);
     }
 
     * people(request, response)
     {
-        let users = yield User.query().where('id', "!=", request.currentUser.id).fetch();
+        let users = yield User
+            .query()
+            .where('id', "!=", request.currentUser.id)
+            .fetch();
 
         yield response.sendView('pages/friends/people', {persons: users.toJSON()});
     }

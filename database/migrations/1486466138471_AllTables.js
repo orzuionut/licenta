@@ -18,19 +18,18 @@ class AllTablesTableSchema extends Schema
             table.timestamps()
         });
 
-        this.create('friends', (table) => {
+        this.create('friends', (table) =>
+        {
+            table.increments('id').primary();
 
-            table.integer('user_id_1').unsigned()
-            table.integer('user_id_2').unsigned()
+            table.integer('user_id_1').unsigned();
+            table.integer('user_id_2').unsigned();
 
-            table.primary(['user_id_1', 'user_id_2'])
-
-            table.foreign('user_id_1').references('users.id').onDelete('CASCADE')
-            table.foreign('user_id_2').references('users.id').onDelete('CASCADE')
-
+            table.foreign('user_id_1').references('users.id');
+            table.foreign('user_id_2').references('users.id');
 
             table.timestamps()
-        })
+        });
 
         this.create('conversations', (table) => {
 

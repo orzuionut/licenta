@@ -998,6 +998,11 @@ var Videocall = function () {
     }, {
         key: 'hangup',
         value: function hangup() {
+            this.sendMessage({
+                message: 'bye',
+                channel: this.room
+            });
+
             this.stop();
         }
     }, {

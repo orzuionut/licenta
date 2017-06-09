@@ -205,6 +205,11 @@ class Videocall
 
     hangup()
     {
+        this.sendMessage({
+            message: 'bye',
+            channel: this.room
+        });
+
         this.stop();
     }
 

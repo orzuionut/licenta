@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 25);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -825,6 +825,11 @@ var Conference = function () {
 
         this.iceServers = _config.Config.getIceServers();
 
+        this.constraints = {
+            audio: true,
+            video: true
+        };
+
         window.onbeforeunload = function () {
             this.socketIO.socket.disconnect();
         }.bind(this);
@@ -833,6 +838,11 @@ var Conference = function () {
     }
 
     _createClass(Conference, [{
+        key: 'setConfig',
+        value: function setConfig(constraints) {
+            this.constraints = constraints;
+        }
+    }, {
         key: 'init',
         value: function init() {
             var data = {
@@ -895,22 +905,17 @@ var Conference = function () {
             dataChannelConfig.onopen = function () {};
             dataChannelConfig.onclose = null;
 
-            var constraints = {
-                audio: true,
-                video: true
-            };
-
             // create video for current user to sendThroughDataChannel to server
             var localParticipant = new _participants.Participant(this.sessionId, this.socketIO.socket);
 
             this.participants[this.sessionId] = localParticipant;
 
-            var video = _dom.ConferenceDOM.createVideo(localParticipant);
+            var video = _dom.ConferenceDOM.createVideo(localParticipant.id, true);
 
             // bind function so that calling 'this' in that function will receive the current instance
             var options = {
                 localVideo: video,
-                mediaConstraints: constraints,
+                mediaConstraints: self.constraints,
                 onicecandidate: localParticipant.onIceCandidate.bind(localParticipant),
                 configuration: this.iceServers,
                 dataChannelConfig: dataChannelConfig,
@@ -936,7 +941,7 @@ var Conference = function () {
             var participant = new _participants.Participant(sender, this.socketIO.socket);
             this.participants[sender] = participant;
 
-            var video = _dom.ConferenceDOM.createVideo(participant);
+            var video = _dom.ConferenceDOM.createVideo(participant.id, false);
 
             var options = {
                 remoteVideo: video,
@@ -1036,27 +1041,36 @@ var ConferenceDOM = function () {
 
     _createClass(ConferenceDOM, null, [{
         key: 'createVideo',
+        value: function createVideo(id, isLocal) {
+            var videoId = "video-" + id;
+            var videoHtml = void 0;
 
-        // handleFileInputChanged(event)
-        // {
-        //     let fileName = null;
-        //
-        //     if( event.target.value )
-        //         fileName = event.target.value.split( '\\' ).pop();
-        //
-        //     if( fileName )
-        //         this.conversationDOM.filesDOM.footer.$inputFileLabel.find('span').html(fileName);
-        // }
-        //
-
-
-        value: function createVideo(participant) {
-            var videoId = "video-" + participant.id;
-            var videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay muted></video>';
+            if (isLocal)
+                // Mute local video to remove echo/noise
+                videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay muted poster="/img/profile.jpg"></video>';else videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay poster="/img/profile.jpg"></video>';
 
             $("#videos-container").append(videoHtml);
 
+            ConferenceDOM.resizeVideos();
+
             return $("#" + videoId)[0];
+        }
+    }, {
+        key: 'resizeVideos',
+        value: function resizeVideos() {
+            var nrOfChilds = $("#videos-container").children().length;
+
+            if (nrOfChilds > 4) {
+                $("#videos-container#conference-video").css({
+                    "flex-basis": " 30%",
+                    "margin": "1px"
+                });
+            } else if (nrOfChilds > 7) {
+                $("#videos-container#conference-video").css({
+                    "flex-basis": " 23%",
+                    "margin": "1px"
+                });
+            }
         }
     }]);
 
@@ -1146,7 +1160,9 @@ exports.Participant = Participant;
 /* 20 */,
 /* 21 */,
 /* 22 */,
-/* 23 */
+/* 23 */,
+/* 24 */,
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

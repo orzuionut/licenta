@@ -14,6 +14,11 @@ class Videocall
         this.HANDLE_DATA_CHANNEL_OPEN = 'handle data channel open';
         this.HANDLE_DATA_CHANNEL_CLOSE = 'handle data channel close';
 
+        this.constraints = {
+            video: true,
+            audio: true
+        };
+
         this.DOM = new VideocallDOM();
 
         this.nav = navigator;
@@ -35,6 +40,11 @@ class Videocall
         this.socket = io.connect('http://localhost:8181/videocall');
     }
 
+    setConfig(constraints)
+    {
+        this.constraints = constraints;
+    }
+
     build()
     {
         if (this.room !== '')
@@ -46,12 +56,7 @@ class Videocall
             this.socket.emit('create or join', data);
         }
 
-        var constraints = {
-            video: true,
-            audio: true
-        };
-
-        this.nav.getUserMedia(constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
+        this.nav.getUserMedia(this.constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
     }
 
     handleSocketMessages()

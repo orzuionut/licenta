@@ -1,0 +1,25 @@
+{% extends 'layouts/master.njk' %}
+
+{% block content %}
+
+    <input type="hidden" id="_user_id" value="{{ currentUser.id }}">
+    <input type="hidden" id="_user_name" value="{{ currentUser.getFullName() }}">
+
+    <div id="videocall-container">
+
+        <section id="videos-container" class="col-flex-3-4">
+            <div id="videos-wrapper" class="card-panel">
+                <video id="localVideo" class="videocallLocal video-fullscreen" autoplay muted poster="/img/profile.jpg"></video>
+                <video id="remoteVideo" class="videocallRemote video-hidden" autoplay poster="/img/profile.jpg"></video>
+            </div>
+        </section>
+
+        <section id="conversation-container" class="col-flex-1-4">
+            {% include "partials/__conversation_without_header.njk" %}
+        </section>
+
+    </div>
+
+    <script src="/js/app/voice_two_peers.js"></script>
+
+{% endblock %}

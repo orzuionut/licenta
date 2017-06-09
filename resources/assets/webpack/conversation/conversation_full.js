@@ -26,7 +26,12 @@ class ConversationFull extends ConversationBuilder
         
         this.conversations_list.item.on('click', this, self.switchConversation.bind(self));
         
-        // this.conversation.DOM.header.$file_input.on('change', self.uploadFile.bind(self));
+        this.conversation.DOM.header.$voice_button.click(function ()
+        {
+            self.conversation.socketIO.sendMessage('voice', {});
+
+            window.location.href = "/conversation/voice/" + self.conversation.id;
+        });
         
         this.conversation.DOM.header.$video_button.click(function ()
         {
@@ -83,21 +88,6 @@ class ConversationFull extends ConversationBuilder
             PubSub.publish(Config.getConversationSwitchMessage(), new_conversation_id);
         }
     }
-
-    // uploadFile()
-    // {
-    //     Helper.flash("Uploading file in progress..");
-    //
-    //     let file = this.getFileFromInput();
-    //     let hash = Helper.guid();
-    //
-    //     this.fileTransfer.startSending(file, hash);
-    // }
-    //
-    // getFileFromInput()
-    // {
-    //     return this.conversation.DOM.header.$file_input[0].files[0];
-    // }
 }
 
 export {ConversationFull}

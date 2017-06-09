@@ -1,29 +1,42 @@
 class ConferenceDOM
 {
-    // handleFileInputChanged(event)
-    // {
-    //     let fileName = null;
-    //
-    //     if( event.target.value )
-    //         fileName = event.target.value.split( '\\' ).pop();
-    //
-    //     if( fileName )
-    //         this.conversationDOM.filesDOM.footer.$inputFileLabel.find('span').html(fileName);
-    // }
-    //
-    
-    
-    static createVideo(participant)
+    static createVideo(id, isLocal)
     {
-        var videoId = "video-" + participant.id;
-        var videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay muted></video>';
+        let videoId = "video-" + id;
+        let videoHtml;
+
+        if ( isLocal )
+            // Mute local video to remove echo/noise
+            videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay muted poster="/img/profile.jpg"></video>';
+        else
+            videoHtml = '<video id="' + videoId + '" class="conference-video" autoplay poster="/img/profile.jpg"></video>';
 
         $("#videos-container").append(videoHtml);
 
+        ConferenceDOM.resizeVideos();
+
         return $("#" + videoId)[0];
     }
-    
-    
+
+    static resizeVideos()
+    {
+        let nrOfChilds = $("#videos-container").children().length;
+
+        if ( nrOfChilds > 4)
+        {
+            $("#videos-container#conference-video").css({
+                "flex-basis": " 30%",
+                "margin": "1px"
+            });
+        }
+        else if ( nrOfChilds > 7 )
+        {
+            $("#videos-container#conference-video").css({
+                "flex-basis": " 23%",
+                "margin": "1px"
+            });
+        }
+    }
 }
 
 export { ConferenceDOM }

@@ -35,13 +35,18 @@ Route.group('auth', function()
 
 	// Conversation
 	Route.resource('conversation', 'ConversationController');
+	Route.get('conversation/voice/:id', 'ConversationController.voice');
 	Route.get('conversation/call/:id', 'ConversationController.call');
 	Route.get('conversation/cinema/:id', 'ConversationController.cinema');
 	Route.get('conversation/get/friends', 'ConversationController.friends');
 
 	// Cinema
 	Route.get('cinema/:id', 'CinemaController.show');
-	
+
+	// Voice call
+	Route.get('voice/v/:id', 'VoiceCallController.twoPeers');
+	Route.get('voice/c/:id', 'VoiceCallController.conference');
+
 }).middleware('auth');
 
 

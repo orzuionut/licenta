@@ -20,6 +20,23 @@ class ConversationController
         yield response.sendView('pages/conversation/index', {conversations: conversations})
     }
 
+    * voice(request, response)
+    {
+        const conversationID = request.param('id');
+        const conversation = yield Conversation.find(conversationID);
+
+        const nrOfParticipantsInConversation = yield conversation.getNrOfParticipants();
+
+        if (nrOfParticipantsInConversation > 2)
+        {
+            yield response.redirect('/voice/c/' + conversationID);
+        }
+        else
+        {
+            yield response.redirect('/voice/v/' + conversationID);
+        }
+    }
+
     * call(request, response)
     {
         const conversationID = request.param('id');

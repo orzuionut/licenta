@@ -1,4 +1,5 @@
-class Helper {
+class Helper
+{
     static guid()
     {
         function s4() {

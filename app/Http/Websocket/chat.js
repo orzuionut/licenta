@@ -44,6 +44,11 @@ module.exports = function (io) {
             sendMessageToParticipants(socket, data.room, 'output', data);
         });
 
+        socket.on('voice', function (data)
+        {
+            sendMessageToParticipants(socket, data.room, 'voice', data);
+        });
+
         socket.on('call', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'call', data);

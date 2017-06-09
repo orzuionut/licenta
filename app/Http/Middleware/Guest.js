@@ -1,8 +1,8 @@
-'use strict'
+'use strict';
 
-class Guest {
-
-  * handle (request, response, next) 
+class Guest
+{
+  * handle (request, response, next)
   {
     if(! request.currentUser)
     {
@@ -11,7 +11,6 @@ class Guest {
 
     response.redirect('home');
   }
-
 }
 
-module.exports = Guest
+module.exports = Guest;

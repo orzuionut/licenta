@@ -20,9 +20,19 @@ class Conference
 
         this.iceServers = Config.getIceServers();
 
+        this.constraints = {
+            audio: true,
+            video: true
+        };
+
         window.onbeforeunload = function () { this.socketIO.socket.disconnect(); }.bind(this);
 
         this.DOM = new ConferenceDOM();
+    }
+
+    setConfig(constraints)
+    {
+        this.constraints = constraints;
     }
 
     init()
@@ -88,22 +98,17 @@ class Conference
         dataChannelConfig.onopen = function () {};
         dataChannelConfig.onclose = null;
 
-        var constraints = {
-            audio: true,
-            video: true
-        };
-
         // create video for current user to sendThroughDataChannel to server
         var localParticipant = new Participant(this.sessionId, this.socketIO.socket);
 
         this.participants[this.sessionId] = localParticipant;
 
-        var video = ConferenceDOM.createVideo(localParticipant);
+        var video = ConferenceDOM.createVideo(localParticipant.id, true);
 
         // bind function so that calling 'this' in that function will receive the current instance
         var options = {
             localVideo: video,
-            mediaConstraints: constraints,
+            mediaConstraints: self.constraints,
             onicecandidate: localParticipant.onIceCandidate.bind(localParticipant),
             configuration: this.iceServers,
             dataChannelConfig: dataChannelConfig,
@@ -130,7 +135,7 @@ class Conference
         var participant = new Participant(sender, this.socketIO.socket);
         this.participants[sender] = participant;
 
-        var video = ConferenceDOM.createVideo(participant);
+        var video = ConferenceDOM.createVideo(participant.id, false);
 
         var options = {
             remoteVideo: video,

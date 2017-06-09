@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 35);
+/******/ 	return __webpack_require__(__webpack_require__.s = 36);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -788,12 +788,7 @@ exports.Helper = Helper;
 /* 9 */,
 /* 10 */,
 /* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -806,9 +801,9 @@ exports.Videocall = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dom = __webpack_require__(34);
+var _dom = __webpack_require__(13);
 
-var _peer_connection = __webpack_require__(36);
+var _peer_connection = __webpack_require__(14);
 
 var _helper = __webpack_require__(1);
 
@@ -825,6 +820,11 @@ var Videocall = function () {
         this.HANDLE_DATA_CHANNEL_MESSAGE = 'handle data channel message';
         this.HANDLE_DATA_CHANNEL_OPEN = 'handle data channel open';
         this.HANDLE_DATA_CHANNEL_CLOSE = 'handle data channel close';
+
+        this.constraints = {
+            video: true,
+            audio: true
+        };
 
         this.DOM = new _dom.VideocallDOM();
 
@@ -848,6 +848,11 @@ var Videocall = function () {
     }
 
     _createClass(Videocall, [{
+        key: 'setConfig',
+        value: function setConfig(constraints) {
+            this.constraints = constraints;
+        }
+    }, {
         key: 'build',
         value: function build() {
             if (this.room !== '') {
@@ -858,12 +863,7 @@ var Videocall = function () {
                 this.socket.emit('create or join', data);
             }
 
-            var constraints = {
-                video: true,
-                audio: true
-            };
-
-            this.nav.getUserMedia(constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
+            this.nav.getUserMedia(this.constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
         }
     }, {
         key: 'handleSocketMessages',
@@ -1031,23 +1031,7 @@ var Videocall = function () {
 exports.Videocall = Videocall;
 
 /***/ }),
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1103,36 +1087,7 @@ var VideocallDOM = function () {
 exports.VideocallDOM = VideocallDOM;
 
 /***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _videocall = __webpack_require__(17);
-
-var _conversation_builder = __webpack_require__(3);
-
-var _helper = __webpack_require__(1);
-
-$(document).ready(function () {
-    var user_id = $('#_user_id').val();
-    var user_name = $('#_user_name').val();
-    var conversation_id = _helper.Helper.getIDfromURL();
-
-    var videocall = new _videocall.Videocall(user_id);
-
-    videocall.build();
-
-    videocall.handleSocketMessages();
-
-    videocall.bindListeners();
-
-    var build = new _conversation_builder.ConversationBuilder(conversation_id, user_id, user_name);
-});
-
-/***/ }),
-/* 36 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1327,6 +1282,56 @@ var PeerConnection = function () {
 }();
 
 exports.PeerConnection = PeerConnection;
+
+/***/ }),
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _videocall = __webpack_require__(12);
+
+var _conversation_builder = __webpack_require__(3);
+
+var _helper = __webpack_require__(1);
+
+$(document).ready(function () {
+    var user_id = $('#_user_id').val();
+    var user_name = $('#_user_name').val();
+    var conversation_id = _helper.Helper.getIDfromURL();
+
+    var videocall = new _videocall.Videocall(user_id);
+
+    videocall.build();
+
+    videocall.handleSocketMessages();
+
+    videocall.bindListeners();
+
+    var build = new _conversation_builder.ConversationBuilder(conversation_id, user_id, user_name);
+});
 
 /***/ })
 /******/ ]);

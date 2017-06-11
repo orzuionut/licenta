@@ -575,9 +575,6 @@ var Body = function () {
         value: function bindListeners() {
             var self = this;
 
-            // PubSub.subscribe(Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
-            PubSub.subscribe(_config.Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
-
             DragDrop(this.$box.selector, this.handleFileDropped.bind(this));
 
             PubSub.subscribe(_config.Config.getShowFileNameOnDOMMessage(), this.handleShowFile.bind(this));

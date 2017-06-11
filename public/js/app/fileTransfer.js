@@ -367,12 +367,16 @@ var FileTransfer = function () {
         this.files = {};
 
         this.bindListeners();
+
+        console.log(id);
     }
 
     _createClass(FileTransfer, [{
         key: 'bindListeners',
         value: function bindListeners() {
             PubSub.subscribe(_config.Config.getFileDroppedMessage(), this.handleFileDropped.bind(this));
+
+            PubSub.subscribe(_config.Config.getConversationSwitchMessage(), this.handleConversationSwitched.bind(this));
 
             this.socketIO.socket.on('new_file', this.handleNewFile.bind(this));
 
@@ -440,9 +444,12 @@ var FileTransfer = function () {
     }, {
         key: 'handleFileDownload',
         value: function handleFileDownload(message, fileName) {
-            var self = this;
             var torrentMagnetURI = this.files[fileName];
             var webtorrentClient = new WebTorrent();
+
+            console.log(torrentMagnetURI);
+
+            this.showFlashMessageFileDownloading();
 
             webtorrentClient.add(torrentMagnetURI, function (torrent) {
                 torrent.on('done', function () {
@@ -451,9 +458,10 @@ var FileTransfer = function () {
                             if (err) throw err;
 
                             var $downloadLink = $("<a/>", {
+                                class: 'message-file-downloaded',
                                 download: file.name,
                                 href: url,
-                                text: "Download"
+                                text: file.name + " downloaded"
                             });
 
                             $('#conversation-messages-body').append($downloadLink);
@@ -461,6 +469,16 @@ var FileTransfer = function () {
                     });
                 });
             });
+        }
+    }, {
+        key: 'handleConversationSwitched',
+        value: function handleConversationSwitched(message, new_conversation_id) {
+            this.socketIO.setRoom(new_conversation_id);
+        }
+    }, {
+        key: 'showFlashMessageFileDownloading',
+        value: function showFlashMessageFileDownloading() {
+            Materialize.toast('File is downloading. Click on download when finished', 3000);
         }
     }]);
 
@@ -529,7 +547,7 @@ var _helper = __webpack_require__(1);
 $(document).ready(function () {
     var user_id = $('#_user_id').val();
     var user_name = $('#_user_name').val();
-    var conversation_id = _helper.Helper.getIDfromURL();
+    var conversation_id = $('#_conversation_id').val();
 
     var fileTransfer = new _file_transfer.FileTransfer(conversation_id, user_id, user_name);
 });

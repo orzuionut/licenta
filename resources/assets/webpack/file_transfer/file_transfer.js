@@ -15,11 +15,15 @@ class FileTransfer
         this.files = {};
 
         this.bindListeners();
+
+        console.log(id);
     }
 
     bindListeners()
     {
         PubSub.subscribe(Config.getFileDroppedMessage(), this.handleFileDropped.bind(this));
+
+        PubSub.subscribe(Config.getConversationSwitchMessage(), this.handleConversationSwitched.bind(this));
 
         this.socketIO.socket.on('new_file', this.handleNewFile.bind(this));
 
@@ -73,7 +77,7 @@ class FileTransfer
 
     handleNewFile(data)
     {
-        this.storeFileInfo(data[0].fileName, data[0].torrentMagnetURI)
+        this.storeFileInfo(data[0].fileName, data[0].torrentMagnetURI);
 
         let fileData = {
             sender_id: data[0].sender_id,
@@ -91,9 +95,12 @@ class FileTransfer
 
     handleFileDownload(message, fileName)
     {
-        const self = this;
         const torrentMagnetURI = this.files[fileName];
         const webtorrentClient = new WebTorrent();
+
+        console.log(torrentMagnetURI);
+
+        this.showFlashMessageFileDownloading();
 
         webtorrentClient.add(torrentMagnetURI, function (torrent)
         {
@@ -106,9 +113,10 @@ class FileTransfer
                         if (err) throw err;
 
                         let $downloadLink = $("<a/>", {
+                            class: 'message-file-downloaded',
                             download: file.name,
                             href: url,
-                            text: "Download"
+                            text: file.name + " downloaded"
                         });
 
                         $('#conversation-messages-body').append($downloadLink);
@@ -116,6 +124,16 @@ class FileTransfer
                 });
             });
         });
+    }
+
+    handleConversationSwitched(message, new_conversation_id)
+    {
+        this.socketIO.setRoom(new_conversation_id);
+    }
+
+    showFlashMessageFileDownloading()
+    {
+        Materialize.toast('File is downloading. Click on download when finished', 3000);
     }
 }
 

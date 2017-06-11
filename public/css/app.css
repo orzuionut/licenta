@@ -156,6 +156,45 @@ nav {
       justify-content: center;
       text-align: center; }
 
+#landing {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+  background-size: cover;
+  background: url("/img/intro.jpg") no-repeat center; }
+  #landing img {
+    opacity: 0.5; }
+  #landing #landing-text {
+    position: absolute;
+    top: 15%;
+    width: 100%;
+    color: white;
+    font-size: 60px;
+    text-transform: uppercase;
+    letter-spacing: 10px; }
+  #landing #landing-btn {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    margin-top: 50vh;
+    display: flex;
+    cursor: pointer; }
+    #landing #landing-btn a {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      min-width: 20%;
+      padding-left: 10px;
+      padding-right: 10px;
+      height: 50px;
+      line-height: 50px;
+      text-transform: uppercase;
+      color: white;
+      border: 1px solid #34B7F1;
+      background: #34B7F1;
+      font-size: 1.7em;
+      border-radius: 25px; }
+
 #register {
   margin-top: 30px; }
 
@@ -235,6 +274,11 @@ nav {
   font-size: 30px;
   padding-top: 20%; }
 
+@media (max-width: 700px) {
+  #tab-header {
+    padding-left: 0;
+    padding-right: 0; } }
+
 .profile-box {
   display: flex;
   align-items: center;
@@ -264,6 +308,11 @@ nav {
       color: white; }
     .profile-box #profile-info #areFriends {
       background: #919191; }
+
+@media (max-width: 700px) {
+  #areFriends, #areNotFriends {
+    margin-top: 20%;
+    width: 100% !important; } }
 
 #conversation-modal h2 {
   font-size: 40px;
@@ -617,7 +666,6 @@ nav {
     max-height: 88vh;
     padding: 0;
     margin-bottom: 0;
-    margin-left: 5px;
     border: 1px solid #ccc; }
     #conference-container #videos-container .conference-video {
       flex: 1;
@@ -712,6 +760,9 @@ nav {
   #cinema-container-horizontal #people-container {
     flex-basis: 30%; }
 
+.btn {
+  border-radius: 25px !important; }
+
 video {
   min-width: 200px;
   display: inline;
@@ -782,16 +833,6 @@ video {
   color: black;
   margin-left: 5%;
   margin-right: auto; }
-  .message-other:before {
-    content: "";
-    position: absolute;
-    z-index: 2;
-    bottom: -2px;
-    left: -7px;
-    height: 20px;
-    border-left: 20px solid #E5E5EA;
-    border-bottom-right-radius: 16px 14px;
-    transform: translate(0, -2px); }
   .message-other:after {
     content: "";
     position: absolute;
@@ -821,6 +862,15 @@ video {
     border-left: 20px solid #075E54; }
   .message-other.file:hover {
     text-decoration: underline; }
+
+.message-file-downloaded {
+  position: relative;
+  padding: 10px 20px;
+  color: white;
+  background: grey;
+  border-radius: 25px;
+  margin-right: auto;
+  margin-left: auto; }
 
 .file-bubble {
   font-family: "Helvetica Neue";

@@ -1,5 +1,5 @@
-class Footer{
-
+class Footer
+{
     constructor()
     {
         this.$message_input = $('#enter-message');

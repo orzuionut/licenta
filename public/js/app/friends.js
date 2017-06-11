@@ -77,7 +77,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.FriendsController = undefined;
+exports.Friends = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -85,9 +85,9 @@ var _modal = __webpack_require__(35);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var FriendsController = function () {
-    function FriendsController() {
-        _classCallCheck(this, FriendsController);
+var Friends = function () {
+    function Friends() {
+        _classCallCheck(this, Friends);
 
         // Variables
         this.$filter = $('#persons-filter');
@@ -96,7 +96,7 @@ var FriendsController = function () {
         this.bindListeners();
     }
 
-    _createClass(FriendsController, [{
+    _createClass(Friends, [{
         key: 'bindListeners',
         value: function bindListeners() {
             var self = this;
@@ -186,10 +186,10 @@ var FriendsController = function () {
         }
     }]);
 
-    return FriendsController;
+    return Friends;
 }();
 
-exports.FriendsController = FriendsController;
+exports.Friends = Friends;
 
 /***/ }),
 
@@ -199,10 +199,10 @@ exports.FriendsController = FriendsController;
 "use strict";
 
 
-var _FriendsController = __webpack_require__(18);
+var _friends = __webpack_require__(18);
 
 $(document).ready(function () {
-    var friendsController = new _FriendsController.FriendsController();
+    var friends = new _friends.Friends();
 });
 
 /***/ }),

@@ -159,6 +159,8 @@ var _notification = __webpack_require__(19);
 
 $(document).ready(function () {
     var notification = new _notification.Notification();
+
+    $(".button-collapse").sideNav();
 });
 
 /***/ })

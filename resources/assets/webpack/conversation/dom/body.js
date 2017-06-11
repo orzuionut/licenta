@@ -17,9 +17,6 @@ class Body
     {
         let self = this;
 
-        // PubSub.subscribe(Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
-        PubSub.subscribe(Config.getConversationFilesButtonClickedMessage(), this.hide.bind(this));
-
         DragDrop(this.$box.selector, this.handleFileDropped.bind(this));
 
         PubSub.subscribe(Config.getShowFileNameOnDOMMessage(), this.handleShowFile.bind(this));

@@ -24,7 +24,6 @@ module.exports = function (io)
         for (let userId in userRegistry.usersById) {
             userList += ' ' + userId + ',';
         }
-        // console.log("SERVER:" + 'receive new client : ' + socket.id + '. Currently have : ' + userList);
 
         socket.emit('id', socket.id);
 
@@ -42,20 +41,12 @@ module.exports = function (io)
         {
             switch (message.id) {
                 case 'joinRoom':
-                    joinRoom(socket, message.room, function () {
-                        console.log("SERVER:" + "ERROR HAPPENED");
-                    });
+                    joinRoom(socket, message.room, function () {});
                     break;
                 case 'receiveVideoFrom':
-                    console.log("SERVER:" + socket.id + ' receiveVideoFrom : ' + message.sender);
-
-                    receiveVideoFrom(socket, message.sender, message.sdpOffer, function () {
-
-                    });
+                    receiveVideoFrom(socket, message.sender, message.sdpOffer, function () {});
                     break;
                 case 'leaveRoom':
-                    console.log("SERVER:" + socket.id + ' leaveRoom');
-
                     leaveRoom(socket);
                     break;
                 case 'onIceCandidate':
@@ -71,7 +62,6 @@ module.exports = function (io)
     });
 
 };
-
 
 function joinRoom(socket, roomName, callback)
 {
@@ -92,8 +82,7 @@ function getRoom(roomName, callback)
 
     if (room == null)
     {
-        console.log("SERVER:" + 'create new room : ' + roomName);
-
+        // Create new room
         getKurentoClient(function (error, kurentoClient) {
             if (error)
             {
@@ -132,9 +121,7 @@ function join(socket, room, callback)
     room.pipeline.create('WebRtcEndpoint', {useDataChannels: true}, function (error, outgoingMedia) {
         if (error)
         {
-            console.error('no participant in room');
-
-            // no participants in room yet release pipeline
+            // No participants in room yet release pipeline
             if (Object.keys(room.participants).length == 0) {
                 room.pipeline.release();
             }
@@ -143,11 +130,9 @@ function join(socket, room, callback)
         }
 
         userSession.outgoingMedia = outgoingMedia;
-        console.log("SERVER:" + "outgoing media:", outgoingMedia);
 
         // add ice candidate the get sent before endpoint is established
         var iceCandidateQueue = userSession.iceCandidateQueue[socket.id];
-        console.log("SERVER:" + "iceCandidateQueue: ", iceCandidateQueue);
 
         if (iceCandidateQueue)
         {
@@ -155,14 +140,11 @@ function join(socket, room, callback)
             {
                 var message = iceCandidateQueue.shift();
 
-                console.error('User : ' + userSession.id + ' collect candidate for outgoing media');
-
                 userSession.outgoingMedia.addIceCandidate(message.candidate);
             }
         }
 
         userSession.outgoingMedia.on('OnIceCandidate', function (event) {
-            console.log("SERVER:" + "Generate outgoing candidate : " + userSession.id);
 
             var candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
 
@@ -173,7 +155,7 @@ function join(socket, room, callback)
             });
         });
 
-        // notify other users that new user is joining
+        // Notify other users that new user is joining
         var usersInRoom = room.participants;
         var data = {
             id: 'newParticipantArrived',
@@ -218,7 +200,6 @@ function receiveVideoFrom(socket, senderId, sdpOffer, callback)
         }
 
         endpoint.processOffer(sdpOffer, function (error, sdpAnswer) {
-            console.log("SERVER:" + "process offer from : " + senderId + " to " + userSession.id);
 
             if (error)
             {
@@ -238,6 +219,7 @@ function receiveVideoFrom(socket, senderId, sdpOffer, callback)
                     return callback(error);
                 }
             });
+
             return callback(null, sdpAnswer);
         });
     });
@@ -245,7 +227,7 @@ function receiveVideoFrom(socket, senderId, sdpOffer, callback)
 
 function getEndpointForUser(userSession, sender, callback)
 {
-    // request for self media
+    // Request for self media
     if (userSession.id === sender.id) {
         callback(null, userSession.outgoingMedia);
         return;
@@ -255,8 +237,6 @@ function getEndpointForUser(userSession, sender, callback)
 
     if (incoming == null)
     {
-        console.log("SERVER:" + 'user : ' + userSession.id + ' create endpoint to receive video from : ' + sender.id);
-
         getRoom(userSession.roomName, function (error, room) {
             if (error) {
                 return callback(error);
@@ -272,17 +252,19 @@ function getEndpointForUser(userSession, sender, callback)
                     }
                     return callback(error);
                 }
-                console.log("SERVER:" + 'user : ' + userSession.id + ' successfully create pipeline');
+
+                // User successfully create pipeline');
                 userSession.incomingMedia[sender.id] = incomingMedia;
 
-                // add ice candidate the get sent before endpoint is established
+                // Add ice candidate the get sent before endpoint is established
                 var iceCandidateQueue = userSession.iceCandidateQueue[sender.id];
                 if (iceCandidateQueue)
                 {
                     while (iceCandidateQueue.length)
                     {
                         var message = iceCandidateQueue.shift();
-                        console.log("SERVER:" + 'user : ' + userSession.id + ' collect candidate for : ' + message.data.sender);
+
+                        // User userSession.id collect candidate for message.data.sender
                         incomingMedia.addIceCandidate(message.candidate);
                     }
                 }

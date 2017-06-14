@@ -17,10 +17,6 @@
 */
 const Event = use('Event');
 
-Event.when('file.upload', 'FileUpload.store');
-Event.when('file.uploaded', 'FileUpload.insert');
-Event.when('file.uploaded', 'FileUpload.addReceivers');
-
 Event.when('friendship.new', 'Friendship.new');
 Event.when('friendship.delete', 'Friendship.delete');
 

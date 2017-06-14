@@ -22,9 +22,8 @@ Route.group('auth', function()
 	Route.get('logout', 'SessionController.destroy');
 
 	Route.get('profile/:id', 'ProfileController.show');
-	// TODO: add routes for edit and update on ProfileController
 
-	Route.resource('friends', 'FriendController');
+	Route.resource('friends', 'FriendController').except('create', 'edit', 'update');
 	Route.get('people', 'FriendController.people');
 
 	Route.get('conference/:id', 'ConferenceController.show');
@@ -32,7 +31,7 @@ Route.group('auth', function()
 	Route.get('videocall/:id', 'VideocallController.show');
 
 	// Conversation
-	Route.resource('conversation', 'ConversationController');
+	Route.resource('conversation', 'ConversationController').except('create', 'show', 'edit', 'update');
 	Route.get('conversation/voice/:id', 'ConversationController.voice');
 	Route.get('conversation/call/:id', 'ConversationController.call');
 	Route.get('conversation/cinema/:id', 'ConversationController.cinema');

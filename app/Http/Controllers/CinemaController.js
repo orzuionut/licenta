@@ -11,7 +11,7 @@ class CinemaController
         if(userIsAllowed)
             yield response.sendView('pages/cinema/show');
         else
-            response.send('Your are not allowed here. Get out! Redirect back');
+            response.redirect('back');
     }
 }
 

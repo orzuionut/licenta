@@ -10,14 +10,9 @@ class ConversationController
     * index(request, response)
     {
         const user = request.currentUser;
-
         let conversations = yield user.conversations().with('users').fetch();
 
-        // Workaround to send array to view. TODO: fix this
-        const json = JSON.stringify(conversations);
-        conversations = JSON.parse(json);
-        
-        yield response.sendView('pages/conversation/index', {conversations: conversations})
+        yield response.sendView('pages/conversation/index', {conversations: conversations.toJSON()})
     }
 
     * voice(request, response)
@@ -28,13 +23,9 @@ class ConversationController
         const nrOfParticipantsInConversation = yield conversation.getNrOfParticipants();
 
         if (nrOfParticipantsInConversation > 2)
-        {
             yield response.redirect('/voice/c/' + conversationID);
-        }
         else
-        {
             yield response.redirect('/voice/v/' + conversationID);
-        }
     }
 
     * call(request, response)
@@ -45,13 +36,9 @@ class ConversationController
         const nrOfParticipantsInConversation = yield conversation.getNrOfParticipants();
 
         if (nrOfParticipantsInConversation > 2)
-        {
             yield response.redirect('/conference/' + conversationID);
-        }
         else
-        {
             yield response.redirect('/videocall/' + conversationID);
-        }
     }
 
     * cinema(request, response)
@@ -86,7 +73,6 @@ class ConversationController
     * destroy (request, response)
     {
         const id = request.param('id');
-
         const conversation = yield Conversation.find(id);
 
         yield conversation.delete();

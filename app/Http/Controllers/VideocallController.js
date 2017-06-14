@@ -11,7 +11,7 @@ class VideocallController
       if(userIsAllowed)
           yield response.sendView('pages/videocall/show');
       else
-         response.send('Your are not allowed here. Get out! Redirect later to conversation');
+          response.redirect('back');
     }
 }
 

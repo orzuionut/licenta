@@ -1,16 +1,10 @@
 'use strict';
 
-const fs = use('fs');
-const Storage = use('Storage');
-
 const User = use('App/Model/User');
 const Conversation = use('App/Model/Conversation');
 const Message = use('App/Model/Message');
-const CompleteFile = use('App/Model/CompleteFile');
 
 const co = use('co');
-const webTorrent = use('webtorrent-hybrid');
-const webTorrentClient = new webTorrent();
 
 module.exports = function (io) {
 
@@ -78,36 +72,8 @@ module.exports = function (io) {
         {
             sendMessageToParticipants(socket, data.room, 'new_file', data);
         });
-
-        // socket.on('download_file', function (data)
-        // {
-        //     co(getFile(data.room, data.file_id)).then(function (fileBuffer)
-        //     {
-        //         try
-        //         {
-        //             webTorrentClient.seed(fileBuffer, function (torrent)
-        //             {
-        //                 data.torrentId = torrent.magnetURI;
-        //                 sendMessageToUser(socket, 'download_file', data);
-        //             });
-        //         }
-        //         catch(e)
-        //         {
-        //             console.log(e);
-        //         }
-        //     });
-        // });
-
     });
 };
-
-function* getFile(conversation_id, file_id)
-{
-    const file = yield CompleteFile.find(file_id);
-
-    return `/vagrant/storage/${conversation_id}/${file.name}${file.hash}`;
-}
-
 
 function* getConversationMessages(conversation_id)
 {
@@ -144,42 +110,6 @@ function* insertMessageIntoDB(data)
     message.message = data.message;
 
     yield message.save();
-}
-
-function* getConversationCompleteFiles (conversation_id)
-{
-    let files = yield getCompleteFiles(conversation_id);
-
-    return files;
-}
-
-function* getCompleteFiles(conversation_id)
-{
-    const conversation = yield Conversation
-        .query()
-        .with('completeFiles.user')
-        .where('id', conversation_id)
-        .first();
-
-    return conversation.toJSON().completeFiles;
-}
-
-function* getConversationPartialFiles (conversation_id)
-{
-    let files = yield getPartialFiles(conversation_id);
-
-    return files;
-}
-
-function* getPartialFiles(conversation_id)
-{
-    const conversation = yield Conversation
-        .query()
-        .with('partialFiles.user')
-        .where('id', conversation_id)
-        .first();
-
-    return conversation.toJSON().partialFiles;
 }
 
 function sendMessageToUser(socket, message, data)

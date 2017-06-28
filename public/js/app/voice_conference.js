@@ -451,7 +451,7 @@ var Conversation = function () {
 
             var data = {};
 
-            self.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + ':8443/chat');
+            self.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + '/chat');
 
             if (self.socketIO.socket === undefined) {
                 //show modal alert ERROR and EXIT
@@ -812,7 +812,7 @@ var Conference = function () {
 
         this.id = conversation_id;
 
-        this.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + ':8181');
+        this.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname);
 
         this.socketIO.setRoom(this.id);
 

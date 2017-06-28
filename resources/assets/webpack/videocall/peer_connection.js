@@ -37,7 +37,7 @@ class PeerConnection
         }
         catch (e)
         {
-            alert('Cannot create RTCPeerConnection object.');
+            alert('Cannot create RTCPeerConnection object. ' + e.message);
             return;
         }
 

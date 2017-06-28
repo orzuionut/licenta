@@ -119,7 +119,7 @@ module.exports = function (callback) {
 
       io.listen(Env.get('SOCKET_PORT'));
 
-      use('App/Http/Websocket/conference')(io);
+      use('App/Http/Websocket/conference')(io.of('/'));
       use('App/Http/Websocket/videocall')(io.of('/videocall'));
       use('App/Http/Websocket/chat')(io.of('/chat'));
 

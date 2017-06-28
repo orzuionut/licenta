@@ -19,7 +19,7 @@ class Conversation
 
         let data = {};
 
-        self.socketIO = new SocketIO(io, 'https://' + window.location.hostname + ':8443/chat');
+        self.socketIO = new SocketIO(io, 'https://' + window.location.hostname + '/chat');
 
         if (self.socketIO.socket === undefined)
         {

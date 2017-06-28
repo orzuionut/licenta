@@ -10,6 +10,10 @@ $(document).ready(function ()
     
     const conference = new Conference(conversation_id);
 
+    conference.setConfig({
+        audio: true,
+        video: true
+    });
     conference.init();
     conference.listen();
     

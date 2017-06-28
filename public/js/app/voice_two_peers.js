@@ -451,7 +451,7 @@ var Conversation = function () {
 
             var data = {};
 
-            self.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + ':8443/chat');
+            self.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + '/chat');
 
             if (self.socketIO.socket === undefined) {
                 //show modal alert ERROR and EXIT
@@ -842,7 +842,7 @@ var Videocall = function () {
 
         this.room = _helper.Helper.getIDfromURL();
 
-        this.socket = io.connect('https://' + window.location.hostname + ':8181/videocall');
+        this.socket = io.connect('https://' + window.location.hostname + '/videocall', { secure: true, reconnect: true, rejectUnauthorized: false });
     }
 
     _createClass(Videocall, [{
@@ -1139,7 +1139,7 @@ var PeerConnection = function () {
                 this.rtcConnection.addStream(localStream);
                 this.rtcConnection.onicecandidate = this.handleIceCandidate.bind(this);
             } catch (e) {
-                alert('Cannot create RTCPeerConnection object.');
+                alert('Cannot create RTCPeerConnection object. ' + e.message);
                 return;
             }
 

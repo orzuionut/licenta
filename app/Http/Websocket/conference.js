@@ -5,7 +5,7 @@ const kurento = use('kurento-client');
 const UserRegistry = require('../../Services/user-registry.js');
 const UserSession = require('../../Services/user-session.js');
 
-const ws_uri = "ws://localhost:8888/kurento";
+const ws_uri = "ws://0.0.0.0:8888/kurento";
 
 // store global variables
 const userRegistry = new UserRegistry();

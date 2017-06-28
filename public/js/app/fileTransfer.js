@@ -361,14 +361,12 @@ var FileTransfer = function () {
         this.user_id = user_id;
         this.user_name = user_name;
 
-        this.socketIO = new _socket.SocketIO(io, 'http://' + window.location.hostname + ':8181/chat');
+        this.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + ':8443/chat');
         this.socketIO.setRoom(this.id);
 
         this.files = {};
 
         this.bindListeners();
-
-        console.log(id);
     }
 
     _createClass(FileTransfer, [{
@@ -507,7 +505,8 @@ var SocketIO = function () {
     function SocketIO(io, url) {
         _classCallCheck(this, SocketIO);
 
-        this.socket = io.connect(url);
+        // Connection
+        this.socket = io.connect(url, { secure: true, reconnect: true, rejectUnauthorized: false });
     }
 
     _createClass(SocketIO, [{

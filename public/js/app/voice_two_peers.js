@@ -349,7 +349,8 @@ var SocketIO = function () {
     function SocketIO(io, url) {
         _classCallCheck(this, SocketIO);
 
-        this.socket = io.connect(url);
+        // Connection
+        this.socket = io.connect(url, { secure: true, reconnect: true, rejectUnauthorized: false });
     }
 
     _createClass(SocketIO, [{
@@ -450,7 +451,7 @@ var Conversation = function () {
 
             var data = {};
 
-            self.socketIO = new _socket.SocketIO(io, 'http://' + window.location.hostname + ':8181/chat');
+            self.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + ':8443/chat');
 
             if (self.socketIO.socket === undefined) {
                 //show modal alert ERROR and EXIT
@@ -841,7 +842,7 @@ var Videocall = function () {
 
         this.room = _helper.Helper.getIDfromURL();
 
-        this.socket = io.connect('http://' + window.location.hostname + ':8181/videocall');
+        this.socket = io.connect('https://' + window.location.hostname + ':8181/videocall');
     }
 
     _createClass(Videocall, [{

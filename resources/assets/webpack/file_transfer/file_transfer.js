@@ -9,7 +9,7 @@ class FileTransfer
         this.user_id = user_id;
         this.user_name = user_name;
 
-        this.socketIO = new SocketIO(io, 'http://' + window.location.hostname + ':8181/chat');
+        this.socketIO = new SocketIO(io, 'https://' + window.location.hostname + ':8443/chat');
         this.socketIO.setRoom(this.id);
 
         this.files = {};

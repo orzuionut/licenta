@@ -106,13 +106,20 @@ module.exports = function (callback) {
       const key = fs.readFileSync(Env.get('HTTPS_KEY'));
       const cert = fs.readFileSync(Env.get('HTTPS_CERT'));
 
-      const httpsServer = https.createServer({key, cert}, Server.handle.bind(Server));
+      const httpsServer = https.createServer({
+	key, 
+	cert,
+        requestCert: false,
+        rejectUnauthorized: false
+      }, Server.handle.bind(Server));
 
       Server.httpInstance = httpsServer;
 
       const io = use('socket.io')(Server.getInstance());
 
-      io.listen(8181);
+      io.listen(Env.get('SOCKET_PORT'))
+
+	console.log(Server.getInstance());
 
       use('App/Http/Websocket/conference')(io);
       use('App/Http/Websocket/videocall')(io.of('/videocall'));

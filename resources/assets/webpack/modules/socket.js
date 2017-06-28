@@ -3,7 +3,7 @@ class SocketIO
     constructor(io, url)
     {
         // Connection
-        this.socket = io.connect(url);
+        this.socket = io.connect(url, { secure: true, reconnect: true, rejectUnauthorized : false } );
     }
 
     sendMessage(event, data)

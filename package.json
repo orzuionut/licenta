@@ -23,6 +23,7 @@
     "App": "./app"
   },
   "devDependencies": {
+    "aws-sdk": "^2.78.0",
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-preset-es2015": "^6.24.1",
@@ -42,7 +43,7 @@
     "adonis-lucid": "^3.0.16",
     "adonis-middleware": "^1.0.13",
     "adonis-mongorito": "^0.0.2",
-    "adonis-storage": "^0.0.4",
+    "adonis-storage": "0.0.4",
     "adonis-validation-provider": "^3.0.5",
     "adonis-websocket": "^1.0.4",
     "co": "^4.6.0",

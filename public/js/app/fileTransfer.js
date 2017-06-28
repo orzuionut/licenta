@@ -361,7 +361,7 @@ var FileTransfer = function () {
         this.user_id = user_id;
         this.user_name = user_name;
 
-        this.socketIO = new _socket.SocketIO(io, 'http://localhost:8181/chat');
+        this.socketIO = new _socket.SocketIO(io, 'http://' + window.location.hostname + ':8181/chat');
         this.socketIO.setRoom(this.id);
 
         this.files = {};

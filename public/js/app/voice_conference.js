@@ -382,7 +382,7 @@ exports.SocketIO = SocketIO;
 
 
 Object.defineProperty(exports, "__esModule", {
-        value: true
+    value: true
 });
 exports.ConversationBuilder = undefined;
 
@@ -397,17 +397,17 @@ var _footer = __webpack_require__(7);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ConversationBuilder = function ConversationBuilder(id, user_id, user_name) {
-        _classCallCheck(this, ConversationBuilder);
+    _classCallCheck(this, ConversationBuilder);
 
-        // Main chat-box
-        var body = new _body.Body();
-        var footer = new _footer.Footer();
+    // Main chat-box
+    var body = new _body.Body();
+    var footer = new _footer.Footer();
 
-        var DOM = new _dom.ConversationDOM(body, footer);
+    var DOM = new _dom.ConversationDOM(body, footer);
 
-        this.conversation = new _conversation.Conversation(DOM, id, user_id, user_name);
+    this.conversation = new _conversation.Conversation(DOM, id, user_id, user_name);
 
-        this.conversation.init();
+    this.conversation.init();
 };
 
 exports.ConversationBuilder = ConversationBuilder;
@@ -450,7 +450,7 @@ var Conversation = function () {
 
             var data = {};
 
-            self.socketIO = new _socket.SocketIO(io, 'http://localhost:8181/chat');
+            self.socketIO = new _socket.SocketIO(io, 'http://' + window.location.hostname + ':8181/chat');
 
             if (self.socketIO.socket === undefined) {
                 //show modal alert ERROR and EXIT
@@ -811,7 +811,7 @@ var Conference = function () {
 
         this.id = conversation_id;
 
-        this.socketIO = new _socket.SocketIO(io, 'http://localhost:8181');
+        this.socketIO = new _socket.SocketIO(io, 'http://' + window.location.hostname + ':8181');
 
         this.socketIO.setRoom(this.id);
 

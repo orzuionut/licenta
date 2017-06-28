@@ -100,6 +100,15 @@ module.exports = function (callback) {
       |
       */
       const Server = use('Adonis/Src/Server');
+      const https = require('https');
+      const fs = require('fs');
+
+      const key = fs.readFileSync(Env.get('HTTPS_KEY'));
+      const cert = fs.readFileSync(Env.get('HTTPS_CERT'));
+
+      const httpsServer = https.createServer({key, cert}, Server.handle.bind(Server));
+
+      Server.httpInstance = httpsServer;
 
       const io = use('socket.io')(Server.getInstance());
 
@@ -108,16 +117,6 @@ module.exports = function (callback) {
       use('App/Http/Websocket/conference')(io);
       use('App/Http/Websocket/videocall')(io.of('/videocall'));
       use('App/Http/Websocket/chat')(io.of('/chat'));
-
-      const https = require('https');
-      const fs = require('fs');
-	
-      const key = fs.readFileSync(Env.get('HTTPS_KEY'));
-      const cert = fs.readFileSync(Env.get('HTTPS_CERT'));
-
-      const httpsServer = https.createServer({key, cert}, Server.handle.bind(Server));
-   
-      Server.httpInstance = httpsServer;
 
       Server.listen(Env.get('HOST'), Env.get('PORT'));
       	

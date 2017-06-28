@@ -426,7 +426,8 @@ nav {
 
 #conversations-side {
   height: 88vh;
-  border-right: 2px solid #939393; }
+  border-right: 2px solid #939393;
+  overflow: auto; }
   #conversations-side.card-panel {
     margin-left: 0 !important;
     margin-bottom: 0 !important;
@@ -445,7 +446,8 @@ nav {
         margin-bottom: 0 !important;
         padding-left: 10px; }
       #conversations-side #conversations-list-header #filter-conversations input {
-        border-bottom: none !important; }
+        border-bottom: none !important;
+        text-overflow: ellipsis; }
         #conversations-side #conversations-list-header #filter-conversations input:focus {
           box-shadow: none; }
     #conversations-side #conversations-list-header #add-conversation {
@@ -461,9 +463,7 @@ nav {
     order: -1;
     display: flex;
     flex-direction: column;
-    height: 88vh;
-    flex-basis: 23%;
-    overflow: auto; }
+    flex-basis: 23%; }
     #conversations-side .conversations-list .conversation-item {
       margin-left: 0 !important;
       margin-right: 0 !important;
@@ -607,6 +607,10 @@ nav {
     border-radius: 50%; }
   #conversation-container .conversation-footer .btn {
     padding: 0; }
+
+@media (max-width: 700px) {
+  #conversations-side .conversation-item {
+    font-size: 12px; } }
 
 #videocall-container {
   display: flex;
@@ -871,6 +875,12 @@ video {
   border-radius: 25px;
   margin-right: auto;
   margin-left: auto; }
+
+@media (max-width: 700px) {
+  .message-box {
+    font-size: 12px !important; }
+  .message-emitter {
+    font-size: 10px !important; } }
 
 .file-bubble {
   font-family: "Helvetica Neue";

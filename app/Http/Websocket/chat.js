@@ -8,18 +8,24 @@ const co = use('co');
 
 module.exports = function (io) {
 
+    /**
+     * Connection request received from a client
+     */
     io.on('connection', function (socket)
     {
+        // User joins a conversation
         socket.on('join', function (data)
         {
             socket.join(data.room);
         });
 
+        // User changes conversation
         socket.on('roomChanged', function(data)
         {
             socket.leave(data.leaveRoom);
         });
 
+        // Client loads all messages for a conversation
         socket.on('init', function(data)
         {
             socket.join(data.room);
@@ -31,6 +37,7 @@ module.exports = function (io) {
             });
         });
 
+        // New message from a user
         socket.on('input', function (data)
         {
             saveMessage(data);
@@ -38,36 +45,43 @@ module.exports = function (io) {
             sendMessageToParticipants(socket, data.room, 'output', data);
         });
 
+        // User makes a voice call
         socket.on('voice', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'voice', data);
         });
 
+        // User makes a video call
         socket.on('call', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'call', data);
         });
 
+        // User makes a video call with cinema
         socket.on('cinema', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'cinema', data);
         });
 
+        // User uploaded a film, send to other users magnetURI for add to WebTorrent
         socket.on('play_film', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'play_film', data);
         });
 
+        // A user pressed the play button
         socket.on('play_button_pressed', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'play_button_pressed', data);
         });
 
+        // A user pressed the pause button
         socket.on('pause_button_pressed', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'pause_button_pressed', data);
         });
 
+        // A user uploaded a new file
         socket.on('new_file', function (data)
         {
             sendMessageToParticipants(socket, data.room, 'new_file', data);

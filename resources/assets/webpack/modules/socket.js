@@ -1,7 +1,8 @@
-class SocketIO {
-
+class SocketIO
+{
     constructor(io, url)
     {
+        // Connection
         this.socket = io.connect(url);
     }
 

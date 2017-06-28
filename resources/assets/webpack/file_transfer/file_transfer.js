@@ -15,8 +15,6 @@ class FileTransfer
         this.files = {};
 
         this.bindListeners();
-
-        console.log(id);
     }
 
     bindListeners()

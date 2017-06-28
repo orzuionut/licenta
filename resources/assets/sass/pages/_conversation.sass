@@ -54,6 +54,8 @@
 #conversations-side
 	height: 88vh
 	border-right: 2px solid #939393
+	overflow: auto
+
 
 	&.card-panel
 		margin-left: 0 !important
@@ -65,7 +67,6 @@
 		display: flex
 		align-items: center
 		justify-content: center
-
 		height: 50px
 		border-bottom: 2px solid #939393
 
@@ -79,6 +80,7 @@
 
 			input
 				border-bottom: none !important
+				text-overflow: ellipsis
 
 				&:focus
 					box-shadow: none
@@ -102,9 +104,7 @@
 		// Used for scrolling items when overflowing
 		display: flex
 		flex-direction: column
-		height: 88vh
 		flex-basis: 23%
-		overflow: auto
 
 		.conversation-item
 			margin-left: 0 !important
@@ -289,4 +289,9 @@
 
 		.btn
 			padding: 0
+
+@media (max-width: 700px)
+	#conversations-side
+		.conversation-item
+			font-size: 12px
 

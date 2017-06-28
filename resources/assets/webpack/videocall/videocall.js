@@ -37,7 +37,7 @@ class Videocall
 
         this.room = Helper.getIDfromURL();
 
-        this.socket = io.connect('http://' + window.location.hostname + ':8181/videocall');
+        this.socket = io.connect('https://' + window.location.hostname + ':8181/videocall');
     }
 
     setConfig(constraints)

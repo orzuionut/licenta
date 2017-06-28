@@ -9,7 +9,7 @@ class Conference
     {
         this.id = conversation_id;
 
-        this.socketIO = new SocketIO(io, 'http://' + window.location.hostname + ':8181');
+        this.socketIO = new SocketIO(io, 'https://' + window.location.hostname + ':8181');
 
         this.socketIO.setRoom(this.id);
 

@@ -109,7 +109,18 @@ module.exports = function (callback) {
       use('App/Http/Websocket/videocall')(io.of('/videocall'));
       use('App/Http/Websocket/chat')(io.of('/chat'));
 
-      Server.listen(Env.get('HOST'), Env.get('PORT'));
+      const https = require('https')
+      const fs = require('fs')
+	
+      const key = fs.readFileSync(Env.get('HTTPS_KEY'))
+      const cert = fs.readFileSync(Env.get('HTTPS_CERT'))
+
+      const httpsServer = https.createServer({key, cert}, Server.handle.bind(Server))
+   
+      Server.httpInstance = httpsServer
+
+      Server.listen(Env.get('HOST'), Env.get('PORT'))
+      	
       if (typeof (callback) === 'function') {
         callback()
       }

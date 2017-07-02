@@ -353,44 +353,6 @@ nav {
   #conversation-messages-body #conversation-alert {
     position: absolute; }
 
-#conversation-files-container {
-  flex: 1;
-  display: none;
-  flex-direction: column; }
-  #conversation-files-container #tab-header {
-    margin-bottom: 10px; }
-  #conversation-files-container #conversation-files-header__complete, #conversation-files-container #conversation-files-header__incomplete {
-    margin-top: 20px;
-    flex-basis: 50%;
-    text-align: center;
-    cursor: pointer;
-    color: black; }
-    #conversation-files-container #conversation-files-header__complete .active, #conversation-files-container #conversation-files-header__incomplete .active {
-      border-bottom: thin solid #9F9F9F;
-      color: #34B7F1 !important; }
-  #conversation-files-container #conversation-files-body {
-    flex: 1;
-    overflow: auto;
-    overflow-x: hidden;
-    margin-top: 20px; }
-    #conversation-files-container #conversation-files-body #conversation-complete-files-body, #conversation-files-container #conversation-files-body #conversation-incomplete-files-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center; }
-      #conversation-files-container #conversation-files-body #conversation-complete-files-body .message-box:hover, #conversation-files-container #conversation-files-body #conversation-incomplete-files-body .message-box:hover {
-        cursor: pointer;
-        text-decoration: underline; }
-      #conversation-files-container #conversation-files-body #conversation-complete-files-body .message-other, #conversation-files-container #conversation-files-body #conversation-incomplete-files-body .message-other {
-        background-color: #BFBFBF; }
-        #conversation-files-container #conversation-files-body #conversation-complete-files-body .message-other:before, #conversation-files-container #conversation-files-body #conversation-incomplete-files-body .message-other:before {
-          border-left-color: #BFBFBF; }
-    #conversation-files-container #conversation-files-body #conversation-complete-files-body .message-user {
-      background-color: #9B59B6; }
-    #conversation-files-container #conversation-files-body #conversation-incomplete-files-body {
-      display: none; }
-      #conversation-files-container #conversation-files-body #conversation-incomplete-files-body .message-user {
-        background-color: #F64747; }
-
 .conversations-content {
   display: flex;
   overflow-y: hidden; }
@@ -618,6 +580,7 @@ nav {
   #videocall-container #videos-container {
     max-height: 90vh; }
     #videocall-container #videos-container #videos-wrapper {
+      display: flex;
       height: 88vh;
       padding: 0;
       position: relative;
@@ -630,7 +593,7 @@ nav {
         width: 100%;
         margin: 0 auto; }
       #videocall-container #videos-container #videos-wrapper .video-small {
-        width: 20vh;
+        height: 20vh;
         position: absolute;
         top: 20px;
         right: 20px; }
@@ -659,7 +622,9 @@ nav {
 
 @media screen and (max-width: 750px) {
   #videocall-container {
-    flex-direction: column; } }
+    flex-direction: column; }
+  .video-small {
+    height: 20vh !important; } }
 
 #conference-container {
   display: flex; }
@@ -763,6 +728,16 @@ nav {
     flex-basis: 70%; }
   #cinema-container-horizontal #people-container {
     flex-basis: 30%; }
+
+@media (max-width: 900px) {
+  #cinema-container-vertical {
+    flex-wrap: wrap; }
+    #cinema-container-vertical #film-container {
+      flex-basis: 100%; }
+    #cinema-container-vertical #people-container {
+      flex-basis: 100%;
+      padding-left: 10px;
+      padding-right: 10px; } }
 
 .btn {
   border-radius: 25px !important; }
@@ -873,6 +848,7 @@ video {
   color: white;
   background: grey;
   border-radius: 25px;
+  margin-top: 5px;
   margin-right: auto;
   margin-left: auto; }
 

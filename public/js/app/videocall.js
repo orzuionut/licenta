@@ -861,7 +861,9 @@ var Videocall = function () {
                 this.socket.emit('create or join', data);
             }
 
-            this.nav.getUserMedia(this.constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
+            navigator.mediaDevices.getUserMedia(this.constraints).then(this.handleUserMedia.bind(this)).catch(this.handleUserMediaErrors);
+
+            //        this.nav.getUserMedia(this.constraints, this.handleUserMedia.bind(this), this.handleUserMediaError);
         }
     }, {
         key: 'handleSocketMessages',

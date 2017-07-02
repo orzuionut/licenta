@@ -9,7 +9,7 @@ class Cinema
         this.id = id;
         this.dom = new CinemaDOM();
 
-        this.socketIO = new SocketIO(io, 'http://' + window.location.hostname +'/chat');
+        this.socketIO = new SocketIO(io, 'https://' + window.location.hostname +'/chat');
         this.socketIO.setRoom(this.id);
 
         this.bindListeners();

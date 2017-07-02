@@ -5,7 +5,7 @@ const kurento = use('kurento-client');
 const UserRegistry = require('../../Services/user-registry.js');
 const UserSession = require('../../Services/user-session.js');
 
-const ws_uri = "ws://0.0.0.0:8888/kurento";
+const ws_uri = "ws://13.94.150.164:8888/kurento";
 
 // store global variables
 const userRegistry = new UserRegistry();
@@ -198,6 +198,9 @@ function receiveVideoFrom(socket, senderId, sdpOffer, callback)
         if (error) {
             callback(error);
         }
+
+	console.log("!!!!!!!!!!");
+	console.log(endpoint.getStunServerAddress());
 
         endpoint.processOffer(sdpOffer, function (error, sdpAnswer) {
 

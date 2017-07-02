@@ -915,10 +915,12 @@ var Conference = function () {
                 localVideo: video,
                 mediaConstraints: self.constraints,
                 onicecandidate: localParticipant.onIceCandidate.bind(localParticipant),
-                configuration: this.iceServers,
+                //  configuration: this.iceServers,
                 dataChannelConfig: dataChannelConfig,
                 dataChannels: true
             };
+
+            console.log(self.constraints);
 
             localParticipant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options, function (error) {
                 if (error) return console.error(error);
@@ -927,6 +929,7 @@ var Conference = function () {
             });
 
             this.localPeer = localParticipant.rtcPeer;
+            window.PEER = this.iceServers;
 
             // @message.data => existing Participants in the room
             for (var i in message.data) {
@@ -943,8 +946,9 @@ var Conference = function () {
 
             var options = {
                 remoteVideo: video,
+                mediaConstraints: this.constraints,
                 onicecandidate: participant.onIceCandidate.bind(participant),
-                configuration: this.iceServers,
+                //  configuration: this.iceServers,
                 dataChannels: true
             };
 
@@ -955,6 +959,8 @@ var Conference = function () {
 
                 this.generateOffer(participant.offerToReceiveVideo.bind(participant));
             });
+
+            window.OPEER = participant.rtcPeer;
         }
 
         /**
@@ -1178,7 +1184,7 @@ var Cinema = function () {
         this.id = id;
         this.dom = new _index.CinemaDOM();
 
-        this.socketIO = new _socket.SocketIO(io, 'http://' + window.location.hostname + '/chat');
+        this.socketIO = new _socket.SocketIO(io, 'https://' + window.location.hostname + '/chat');
         this.socketIO.setRoom(this.id);
 
         this.bindListeners();

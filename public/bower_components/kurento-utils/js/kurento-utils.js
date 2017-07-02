@@ -136,6 +136,9 @@ function WebRtcPeer(mode, options, callback) {
     var dataChannel;
     var guid = uuid.v4();
     var configuration = recursive({ iceServers: freeice() }, options.configuration);
+
+	console.log(configuration);
+
     var onicecandidate = options.onicecandidate;
     if (onicecandidate)
         this.on('icecandidate', onicecandidate);

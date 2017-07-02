@@ -110,10 +110,12 @@ class Conference
             localVideo: video,
             mediaConstraints: self.constraints,
             onicecandidate: localParticipant.onIceCandidate.bind(localParticipant),
-            configuration: this.iceServers,
+          //  configuration: this.iceServers,
             dataChannelConfig: dataChannelConfig,
             dataChannels: true
         };
+
+	console.log(self.constraints);
 
         localParticipant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options, function (error)
         {
@@ -123,6 +125,8 @@ class Conference
         });
         
         this.localPeer = localParticipant.rtcPeer;
+	window.PEER =this.iceServers;
+
 
         // @message.data => existing Participants in the room
         for (var i in message.data) {
@@ -139,8 +143,9 @@ class Conference
 
         var options = {
             remoteVideo: video,
+	    mediaConstraints: this.constraints,
             onicecandidate: participant.onIceCandidate.bind(participant),
-            configuration: this.iceServers,
+          //  configuration: this.iceServers,
             dataChannels: true
         };
 
@@ -150,6 +155,8 @@ class Conference
 
             this.generateOffer(participant.offerToReceiveVideo.bind(participant));
         });
+
+	window.OPEER = participant.rtcPeer;
     }
 
     /**
